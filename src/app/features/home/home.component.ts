@@ -46,6 +46,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
     { name: 'Soporte', icon: 'fas fa-headset', section: 'soporte', badge: 0 },
   ];
 
+  vendorNavItems = [
+    { name: 'Dashboard', icon: 'fas fa-th-large', section: 'dashboard' },
+    { name: 'Productos', icon: 'fas fa-box', section: 'productos' },
+    { name: 'Pedidos', icon: 'fas fa-shopping-cart', section: 'pedidos' },
+    { name: 'Notificaciones', icon: 'fas fa-bell', section: 'notificaciones', badge: 0 },
+    { name: 'Configuración', icon: 'fas fa-cog', section: 'config' },
+  ];
+
   adminNavItems = [
     { name: 'Dashboard', icon: 'fas fa-th-large', section: 'dashboard' },
     { name: 'Productos', icon: 'fas fa-box', section: 'productos' },
@@ -245,7 +253,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   get activeNavItems() {
-    return this.isClient ? this.navItems : this.adminNavItems;
+    if (this.isClient) return this.navItems;
+    if (this.isVendor) return this.vendorNavItems;
+    return this.adminNavItems;
   }
 
   toggleSidebar(): void {

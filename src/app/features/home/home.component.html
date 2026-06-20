@@ -249,7 +249,7 @@
             <h1>Productos</h1>
             <p>Catálogo de productos Free Fire</p>
           </div>
-          <button class="btn-primary" *ngIf="user?.role === 'admin' || user?.role === 'vendedor'">
+          <button class="btn-primary" *ngIf="isAdmin">
             <i class="fas fa-plus"></i> Nuevo Producto
           </button>
         </div>
@@ -277,9 +277,10 @@
                 <span class="product-stock" [ngClass]="product.stock > 0 ? 'in-stock' : 'out-of-stock'">
                   {{ product.stock > 0 ? 'Disponible' : 'Próximamente' }}
                 </span>
-                <span class="badge" [ngClass]="product.status === 'active' ? 'badge-success' : 'badge-danger'">
-                  {{ product.status === 'active' ? 'Activo' : 'Inactivo' }}
-                </span>
+                <div *ngIf="isAdmin || isVendor" style="display: flex; gap: 6px;">
+                  <button class="btn-sm btn-outline" title="Editar"><i class="fas fa-edit"></i></button>
+                  <button class="btn-sm btn-danger" *ngIf="isAdmin" title="Eliminar"><i class="fas fa-trash"></i></button>
+                </div>
               </div>
             </div>
           </div>
@@ -338,7 +339,7 @@
       </section>
 
       <!-- ==================== GANANCIAS ==================== -->
-      <section *ngIf="activeSection === 'ganancias'" class="section-content">
+      <section *ngIf="isAdmin && activeSection === 'ganancias'" class="section-content">
         <div class="section-header">
           <div>
             <h1>Ganancias</h1>
@@ -413,7 +414,7 @@
       </section>
 
       <!-- ==================== SOCIOS ==================== -->
-      <section *ngIf="activeSection === 'socios'" class="section-content">
+      <section *ngIf="isAdmin && activeSection === 'socios'" class="section-content">
         <div class="section-header">
           <div>
             <h1>Socios</h1>
@@ -453,7 +454,7 @@
       </section>
 
       <!-- ==================== ANALITICAS ==================== -->
-      <section *ngIf="activeSection === 'analytics'" class="section-content">
+      <section *ngIf="isAdmin && activeSection === 'analytics'" class="section-content">
         <div class="section-header">
           <div>
             <h1>Analíticas</h1>
@@ -681,41 +682,91 @@
         </div>
       </section>
 
-      <!-- ==================== CLIENT: TIENDA ==================== -->
+      <!-- ==================== CLIENT: BIENVENIDA ==================== -->
       <section *ngIf="isClient && activeSection === 'tienda'" class="section-content">
         <div class="section-header">
           <div>
-            <h1>Tienda</h1>
-            <p>Explora nuestros productos Free Fire</p>
+            <h1>Bienvenido, {{ user?.name || 'Usuario' }}</h1>
+            <p>Explora nuestros productos y ofertas</p>
           </div>
         </div>
 
-        <div class="products-grid">
-          <div class="product-card" *ngFor="let product of products">
-            <div class="product-card-image">
-              <i [class]="product.icon" class="product-icon-display"></i>
-              <span class="badge" [ngClass]="'badge-' + product.badgeType">{{ product.badge }}</span>
+        <!-- Fotos / Galería -->
+        <div style="margin-bottom: 32px;">
+          <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 16px;"><i class="fas fa-images" style="color: #22d3ee; margin-right: 8px;"></i>Galería de Productos</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; height: 160px; display: flex; align-items: center; justify-content: center; color: #555; font-size: 13px;">
+              <div style="text-align: center;"><i class="fas fa-image" style="font-size: 24px; display: block; margin-bottom: 8px;"></i>Próximamente</div>
             </div>
-            <div class="product-card-body">
-              <span class="product-category">{{ product.category }}</span>
-              <h3 class="product-card-name">{{ product.name }}</h3>
-              <p class="product-card-desc">{{ product.description }}</p>
-              <div class="product-card-prices" *ngIf="product.prices.length > 0">
-                <div class="price-row" *ngFor="let p of product.prices">
-                  <span class="price-duration">{{ p.duration }}</span>
-                  <span class="price-value">${{ p.price }}</span>
+            <div style="background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; height: 160px; display: flex; align-items: center; justify-content: center; color: #555; font-size: 13px;">
+              <div style="text-align: center;"><i class="fas fa-image" style="font-size: 24px; display: block; margin-bottom: 8px;"></i>Próximamente</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; height: 160px; display: flex; align-items: center; justify-content: center; color: #555; font-size: 13px;">
+              <div style="text-align: center;"><i class="fas fa-image" style="font-size: 24px; display: block; margin-bottom: 8px;"></i>Próximamente</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Videos -->
+        <div style="margin-bottom: 32px;">
+          <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 16px;"><i class="fas fa-video" style="color: #f472b6; margin-right: 8px;"></i>Videos</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; height: 200px; display: flex; align-items: center; justify-content: center; color: #555; font-size: 13px;">
+              <div style="text-align: center;"><i class="fas fa-play-circle" style="font-size: 32px; display: block; margin-bottom: 8px;"></i>Video demo próximamente</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); border-radius: 12px; height: 200px; display: flex; align-items: center; justify-content: center; color: #555; font-size: 13px;">
+              <div style="text-align: center;"><i class="fas fa-play-circle" style="font-size: 32px; display: block; margin-bottom: 8px;"></i>Tutorial próximamente</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Referencias -->
+        <div style="margin-bottom: 32px;">
+          <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 16px;"><i class="fas fa-star" style="color: #fbbf24; margin-right: 8px;"></i>Referencias de Clientes</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 20px; color: #555; text-align: center;">
+              <i class="fas fa-quote-left" style="font-size: 24px; display: block; margin-bottom: 12px; color: #444;"></i>
+              <p style="font-size: 13px; font-style: italic;">"Las referencias de clientes aparecerán aquí"</p>
+              <div style="margin-top: 12px; color: #333; font-size: 12px;">— Próximamente</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 20px; color: #555; text-align: center;">
+              <i class="fas fa-quote-left" style="font-size: 24px; display: block; margin-bottom: 12px; color: #444;"></i>
+              <p style="font-size: 13px; font-style: italic;">"Más reseñas de compradores aquí"</p>
+              <div style="margin-top: 12px; color: #333; font-size: 12px;">— Próximamente</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Productos destacados -->
+        <div>
+          <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 16px;"><i class="fas fa-fire" style="color: #ef4444; margin-bottom: 8px; margin-right: 8px;"></i>Productos Destacados</h3>
+          <div class="products-grid">
+            <div class="product-card" *ngFor="let product of products">
+              <div class="product-card-image">
+                <i [class]="product.icon" class="product-icon-display"></i>
+                <span class="badge" [ngClass]="'badge-' + product.badgeType">{{ product.badge }}</span>
+              </div>
+              <div class="product-card-body">
+                <span class="product-category">{{ product.category }}</span>
+                <h3 class="product-card-name">{{ product.name }}</h3>
+                <p class="product-card-desc">{{ product.description }}</p>
+                <div class="product-card-prices" *ngIf="product.prices.length > 0">
+                  <div class="price-row" *ngFor="let p of product.prices">
+                    <span class="price-duration">{{ p.duration }}</span>
+                    <span class="price-value">${{ p.price }}</span>
+                  </div>
                 </div>
-              </div>
-              <div class="product-card-prices" *ngIf="product.prices.length === 0">
-                <span class="price-soon">Precios próximamente</span>
-              </div>
-              <div class="product-card-footer">
-                <span class="product-stock" [ngClass]="product.stock > 0 ? 'in-stock' : 'out-of-stock'">
-                  {{ product.stock > 0 ? 'Disponible' : 'Próximamente' }}
-                </span>
-                <button class="btn-sm btn-primary" *ngIf="product.prices.length > 0" (click)="buyProduct(product)">
-                  <i class="fas fa-shopping-cart"></i> Comprar
-                </button>
+                <div class="product-card-prices" *ngIf="product.prices.length === 0">
+                  <span class="price-soon">Precios próximamente</span>
+                </div>
+                <div class="product-card-footer">
+                  <span class="product-stock" [ngClass]="product.stock > 0 ? 'in-stock' : 'out-of-stock'">
+                    {{ product.stock > 0 ? 'Disponible' : 'Próximamente' }}
+                  </span>
+                  <button class="btn-sm btn-primary" *ngIf="product.prices.length > 0" (click)="buyProduct(product)">
+                    <i class="fas fa-shopping-cart"></i> Comprar
+                  </button>
+                </div>
               </div>
             </div>
           </div>
