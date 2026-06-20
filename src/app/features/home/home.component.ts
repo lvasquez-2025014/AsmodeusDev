@@ -28,7 +28,25 @@ export class HomeComponent implements OnInit, AfterViewInit {
   discordUrl = 'https://discord.gg/HazXhwWMS';
   todayDate = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
+  get isClient(): boolean {
+    return this.user?.role === 'cliente';
+  }
+
+  get isAdmin(): boolean {
+    return this.user?.role === 'admin';
+  }
+
+  get isVendor(): boolean {
+    return this.user?.role === 'vendedor';
+  }
+
   navItems = [
+    { name: 'Tienda', icon: 'fas fa-store', section: 'tienda', badge: 0 },
+    { name: 'Mis Pedidos', icon: 'fas fa-shopping-cart', section: 'mis-pedidos', badge: 0 },
+    { name: 'Soporte', icon: 'fas fa-headset', section: 'soporte', badge: 0 },
+  ];
+
+  adminNavItems = [
     { name: 'Dashboard', icon: 'fas fa-th-large', section: 'dashboard' },
     { name: 'Productos', icon: 'fas fa-box', section: 'productos' },
     { name: 'Pedidos', icon: 'fas fa-shopping-cart', section: 'pedidos' },
@@ -206,7 +224,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.user = this.auth.user;
-    this.loadPartners();
+    if (this.isClient) {
+      this.activeSection = 'tienda';
+    }
+    if (!this.isClient) {
+      this.loadPartners();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -219,6 +242,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (section === 'dashboard' || section === 'analytics' || section === 'ganancias') {
       setTimeout(() => this.initCharts(), 50);
     }
+  }
+
+  get activeNavItems() {
+    return this.isClient ? this.navItems : this.adminNavItems;
   }
 
   toggleSidebar(): void {
