@@ -1512,6 +1512,14 @@ $topbar-height: 64px;
 
 .product-modal {
   max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+
+  .modal-body {
+    overflow-y: auto;
+    flex: 1;
+  }
 }
 
 .product-image-upload {
