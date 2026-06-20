@@ -39,6 +39,9 @@ export class AuthService {
 
   googleLogin(): Promise<LoginResponse> {
     return this.firebaseInit.init().then(() => {
+      if (!this.firebaseInit.auth || !this.firebaseInit.googleProvider) {
+        throw new Error('Firebase no configurado correctamente');
+      }
       return signInWithPopup(this.firebaseInit.auth, this.firebaseInit.googleProvider)
         .then((result: UserCredential) => result.user.getIdToken())
         .then((idToken) => {
