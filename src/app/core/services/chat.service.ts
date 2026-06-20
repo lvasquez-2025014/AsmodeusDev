@@ -21,8 +21,20 @@ export class ChatService {
     return this.http.get(`${this.apiUrl}/chat/conversations/${conversationId}/messages`);
   }
 
-  sendMessage(conversationId: string, content: string, type: string = 'text'): Observable<any> {
-    return this.http.post(`${this.apiUrl}/chat/conversations/${conversationId}/messages`, { content, type });
+  sendMessage(conversationId: string, content: string, type: string = 'text', replyToId?: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/chat/conversations/${conversationId}/messages`, { content, type, replyToId });
+  }
+
+  deleteMessage(convId: string, msgId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/chat/conversations/${convId}/messages/${msgId}`);
+  }
+
+  addReaction(msgId: string, emoji: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/chat/messages/${msgId}/reactions`, { emoji });
+  }
+
+  togglePin(msgId: string): Observable<any> {
+    return this.http.put(`${this.apiUrl}/chat/messages/${msgId}/pin`, {});
   }
 
   markAsRead(conversationId: string): Observable<any> {
@@ -43,5 +55,13 @@ export class ChatService {
 
   markAllNotificationsRead(): Observable<any> {
     return this.http.put(`${this.apiUrl}/chat/notifications/read-all`, {});
+  }
+
+  sendHeartbeat(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/chat/heartbeat`, {});
+  }
+
+  getOnlineUsers(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/chat/online`);
   }
 }

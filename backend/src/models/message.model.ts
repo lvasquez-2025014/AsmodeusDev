@@ -23,6 +23,15 @@ export class Message extends TimeStamps {
 
   @prop({ type: () => [ReactionSchema], default: [] })
   reactions!: ReactionSchema[];
+
+  @prop({ ref: () => Message })
+  replyTo?: Ref<Message>;
+
+  @prop({ default: false })
+  isPinned!: boolean;
+
+  @prop({ default: false })
+  isDeleted!: boolean;
 }
 
 export class ReactionSchema {

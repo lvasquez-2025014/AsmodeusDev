@@ -338,131 +338,346 @@
         </div>
       </section>
 
-      <!-- ==================== CHAT EN VIVO ==================== -->
-      <section *ngIf="activeSection === 'chat'" class="section-content" style="padding: 0; display: flex; height: calc(100vh - 56px); overflow: hidden;">
+      <!-- ==================== CHAT EN VIVO - DISCORD STYLE ==================== -->
+      <section *ngIf="activeSection === 'chat'" class="discord-chat-section">
 
-        <!-- Panel izquierdo: canales -->
-        <div style="width: 240px; flex-shrink: 0; background: #0d0d10; border-right: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; overflow: hidden;">
-          <div style="padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between;">
-            <h3 style="font-size: 13px; font-weight: 800; color: #fff;">Canales</h3>
-            <button (click)="openNewChatModal()" style="background: none; border: none; color: #888; cursor: pointer; font-size: 16px;" title="Nuevo chat">+</button>
+        <!-- SERVER BAR -->
+        <div class="discord-server-bar">
+          <div class="discord-server-icon active" title="Mensajes Directos" (click)="switchChatView('dms')"
+               [class.active]="chatView === 'dms'">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
           </div>
-          <div style="flex: 1; overflow-y: auto; padding: 8px;">
-            <p style="font-size: 10px; font-weight: 700; color: #666; letter-spacing: 0.1em; padding: 4px 8px; margin-bottom: 4px;">CANALES</p>
-            <div *ngFor="let ch of chatChannels" (click)="openChatChannel(ch)"
-              style="padding: 6px 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 2px; transition: all 0.15s;"
-              [style.background]="activeChat?._id === ch._id ? 'rgba(34,211,238,0.08)' : 'transparent'"
-              [style.color]="activeChat?._id === ch._id ? '#fff' : '#888'"
-              onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background=activeChat?._id === ch._id ? 'rgba(34,211,238,0.08)' : 'transparent'">
-              <span style="font-size: 16px;">#</span>
-              <span style="font-size: 13px;">{{ ch.name }}</span>
+          <div class="discord-server-divider"></div>
+          <div class="discord-server-icon" title="Supremo Cheats"
+               [class.active]="chatView === 'channels'" (click)="switchChatView('channels')">
+            <span class="discord-server-text">SC</span>
+          </div>
+          <div class="flex-1"></div>
+          <div class="discord-user-avatar" [title]="user?.name">
+            <div class="discord-avatar-circle" [style.background]="'linear-gradient(135deg, ' + (user?.role === 'admin' ? '#ef4444, #f472b6' : user?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+              {{ getInitials(user?.name) }}
             </div>
-            <p style="font-size: 10px; font-weight: 700; color: #666; letter-spacing: 0.1em; padding: 4px 8px; margin-top: 12px; margin-bottom: 4px;">CONVERSACIONES</p>
-            <div *ngFor="let conv of chatConversations" (click)="openChatChannel(conv)"
-              style="padding: 6px 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-bottom: 2px; transition: all 0.15s;"
-              [style.background]="activeChat?._id === conv._id ? 'rgba(34,211,238,0.08)' : 'transparent'"
-              [style.color]="activeChat?._id === conv._id ? '#fff' : '#888'"
-              onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background=activeChat?._id === conv._id ? 'rgba(34,211,238,0.08)' : 'transparent'">
-              <span style="font-size: 13px;">💬</span>
-              <span style="font-size: 13px;">{{ conv.name }}</span>
+            <div class="discord-status-dot online"></div>
+          </div>
+        </div>
+
+        <!-- CHANNELS / DMs PANEL -->
+        <div class="discord-channels-panel">
+          <div class="discord-channels-header">
+            <h2 class="discord-channels-title">{{ chatView === 'dms' ? 'Mensajes Directos' : 'Supremo Cheats' }}</h2>
+            <button *ngIf="chatView === 'dms'" class="discord-icon-btn" (click)="openNewChatModal()" title="Nueva conversacion">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+
+          <!-- Search -->
+          <div class="discord-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Buscar conversacion..." [(ngModel)]="chatSearchInput" (input)="filterConversations()" />
+          </div>
+
+          <!-- DMs List -->
+          <div class="discord-channels-list scrollbar" *ngIf="chatView === 'dms'">
+            <div class="discord-channel-label">MENSAJES DIRECTOS</div>
+            <div *ngFor="let conv of chatConversations" class="discord-dm-item"
+                 [class.active]="activeChat?._id === conv._id"
+                 (click)="selectConversation(conv)">
+              <div class="discord-dm-avatar">
+                <div class="discord-avatar-sm" [style.background]="'linear-gradient(135deg, ' + (getOtherMember(conv)?.role === 'admin' ? '#ef4444, #f472b6' : getOtherMember(conv)?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                  {{ getInitials(getOtherMember(conv)?.name || conv.name) }}
+                </div>
+                <div class="discord-status-dot-sm" [class.online]="isOnline(getOtherMember(conv)?._id)"></div>
+              </div>
+              <div class="discord-dm-info">
+                <div class="discord-dm-name-row">
+                  <span class="discord-dm-name">{{ getOtherMember(conv)?.name || conv.name }}</span>
+                  <span class="discord-role-badge" [ngClass]="getRoleBadgeClass(getOtherMember(conv)?.role)">{{ getRoleLabel(getOtherMember(conv)?.role) }}</span>
+                </div>
+                <span class="discord-dm-preview">{{ conv.lastMessage?.content || 'Sin mensajes' }}</span>
+              </div>
+              <div class="discord-dm-meta">
+                <span class="discord-dm-time" *ngIf="conv.lastMessage">{{ conv.lastMessage.createdAt | date:'HH:mm' }}</span>
+                <span class="discord-unread-badge" *ngIf="conv.unreadCount > 0">{{ conv.unreadCount }}</span>
+              </div>
+            </div>
+            <div *ngIf="chatConversations.length === 0" class="discord-empty-state">
+              <p>No hay conversaciones aun</p>
             </div>
           </div>
-          <div style="padding: 8px; border-top: 1px solid rgba(255,255,255,0.05);">
-            <div style="display: flex; align-items: center; gap: 8px; padding: 6px 8px; background: rgba(0,0,0,0.3); border-radius: 8px;">
-              <div style="width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #22d3ee, #84cc16); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #000;">{{ user?.name?.charAt(0) || 'U' }}</div>
-              <div style="flex: 1; min-width: 0;">
-                <p style="font-size: 12px; font-weight: 700; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ user?.name }}</p>
-                <p style="font-size: 10px; color: #666;">{{ user?.role }}</p>
+
+          <!-- Channels List -->
+          <div class="discord-channels-list scrollbar" *ngIf="chatView === 'channels'">
+            <div class="discord-channel-label">CANALES DE TEXTO</div>
+            <div *ngFor="let ch of chatChannels" class="discord-channel-item"
+                 [class.active]="activeChat?._id === ch._id"
+                 (click)="selectChannel(ch)">
+              <span class="discord-hash">#</span>
+              <span class="discord-channel-name">{{ ch.name }}</span>
+              <span class="discord-unread-badge" *ngIf="ch.unreadCount > 0">{{ ch.unreadCount }}</span>
+            </div>
+            <div *ngIf="chatChannels.length === 0" class="discord-empty-state">
+              <p>No hay canales disponibles</p>
+            </div>
+          </div>
+
+          <!-- User Bar -->
+          <div class="discord-user-bar">
+            <div class="discord-user-bar-inner">
+              <div class="discord-avatar-container">
+                <div class="discord-avatar-xs" [style.background]="'linear-gradient(135deg, ' + (user?.role === 'admin' ? '#ef4444, #f472b6' : user?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                  {{ getInitials(user?.name) }}
+                </div>
+                <div class="discord-status-dot-xs online"></div>
+              </div>
+              <div class="discord-user-bar-info">
+                <p class="discord-user-bar-name">{{ user?.name }}</p>
+                <p class="discord-user-bar-role">{{ user?.role }}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Panel central: chat -->
-        <div style="flex: 1; display: flex; flex-direction: column; min-width: 0; background: #0a0a0c;">
-          <!-- Header -->
-          <div *ngIf="activeChat" style="padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
-            <span style="font-size: 18px; color: #22d3ee;">#</span>
-            <div>
-              <h3 style="font-size: 14px; font-weight: 800; color: #fff;">{{ activeChat.name }}</h3>
-              <p style="font-size: 11px; color: #666;">{{ activeChat.description || 'Canal de chat' }}</p>
-            </div>
-          </div>
-          <!-- Messages -->
-          <div style="flex: 1; overflow-y: auto; padding: 16px;">
-            <!-- Empty state -->
-            <div *ngIf="!activeChat" style="display: flex; align-items: center; justify-content: center; height: 100%;">
-              <div style="text-align: center; color: #555;">
-                <div style="font-size: 48px; margin-bottom: 12px;">💬</div>
-                <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 4px;">Selecciona un canal</h3>
-                <p style="font-size: 13px;">Elige un canal o conversación para empezar a chatear</p>
-              </div>
-            </div>
-            <!-- Loading -->
-            <div *ngIf="activeChat && chatLoading" style="text-align: center; padding: 40px;">
-              <p style="color: #666; font-size: 13px;">Cargando mensajes...</p>
-            </div>
-            <!-- Messages list -->
-            <div *ngIf="activeChat && !chatLoading">
-              <div *ngIf="chatMessages.length === 0" style="text-align: center; padding: 40px; color: #555;">
-                <p style="font-size: 13px;">No hay mensajes aún. ¡Sé el primero!</p>
-              </div>
-              <div *ngFor="let msg of chatMessages" style="display: flex; gap: 10px; padding: 8px; border-radius: 8px; margin-bottom: 4px; transition: background 0.1s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
-                <div style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; flex-shrink: 0;"
-                  [style.background]="msg.sender?.role === 'admin' ? 'linear-gradient(135deg, #ef4444, #f472b6)' : msg.sender?.role === 'vendedor' ? 'linear-gradient(135deg, #22d3ee, #3b82f6)' : 'linear-gradient(135deg, #84cc16, #22c55e)'"
-                  [style.color]="msg.sender?.role === 'admin' ? '#fff' : '#000'">
-                  {{ msg.sender?.name?.charAt(0) || '?' }}
+        <!-- MAIN CHAT PANEL -->
+        <div class="discord-chat-main">
+          <!-- Chat Header -->
+          <div class="discord-chat-header" *ngIf="activeChat">
+            <div class="discord-chat-header-info">
+              <div class="discord-avatar-container" *ngIf="chatView === 'dms'">
+                <div class="discord-avatar-sm" [style.background]="'linear-gradient(135deg, ' + (getOtherMember(activeChat)?.role === 'admin' ? '#ef4444, #f472b6' : getOtherMember(activeChat)?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                  {{ getInitials(getOtherMember(activeChat)?.name || activeChat.name) }}
                 </div>
-                <div style="flex: 1; min-width: 0;">
-                  <div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
-                    <span style="font-size: 13px; font-weight: 700; color: {{ msg.sender?.role === 'admin' ? '#f472b6' : msg.sender?.role === 'vendedor' ? '#22d3ee' : '#84cc16' }};">{{ msg.sender?.name || 'Usuario' }}</span>
-                    <span style="font-size: 9px; padding: 1px 6px; border-radius: 4px; font-weight: 700;"
-                      [style.background]="msg.sender?.role === 'admin' ? 'rgba(244,114,182,0.15)' : msg.sender?.role === 'vendedor' ? 'rgba(34,211,238,0.15)' : 'rgba(132,204,22,0.15)'"
-                      [style.color]="msg.sender?.role === 'admin' ? '#f472b6' : msg.sender?.role === 'vendedor' ? '#22d3ee' : '#84cc16'"
-                      [style.border]="'1px solid ' + (msg.sender?.role === 'admin' ? 'rgba(244,114,182,0.3)' : msg.sender?.role === 'vendedor' ? 'rgba(34,211,238,0.3)' : 'rgba(132,204,22,0.3)')">
-                      {{ msg.sender?.role === 'admin' ? 'ADMIN' : msg.sender?.role === 'vendedor' ? 'VENDEDOR' : 'CLIENTE' }}
-                    </span>
-                    <span style="font-size: 10px; color: #555;">{{ msg.createdAt | date:'HH:mm' }}</span>
-                  </div>
-                  <p style="font-size: 13px; color: #ccc; margin-top: 2px; white-space: pre-wrap; word-break: break-word;">{{ msg.content }}</p>
+                <div class="discord-status-dot-sm" [class.online]="isOnline(getOtherMember(activeChat)?._id)"></div>
+              </div>
+              <div class="discord-hash-icon" *ngIf="chatView === 'channels'">
+                <span>#</span>
+              </div>
+              <div>
+                <div class="discord-header-name-row">
+                  <h3 class="discord-header-name">{{ chatView === 'dms' ? (getOtherMember(activeChat)?.name || activeChat.name) : activeChat.name }}</h3>
+                  <span class="discord-role-badge" *ngIf="chatView === 'dms'" [ngClass]="getRoleBadgeClass(getOtherMember(activeChat)?.role)">{{ getRoleLabel(getOtherMember(activeChat)?.role) }}</span>
                 </div>
+                <p class="discord-header-desc">{{ chatView === 'dms' ? (getOtherMember(activeChat)?.role === 'admin' ? 'Administrador' : getOtherMember(activeChat)?.role === 'vendedor' ? 'Vendedor' : 'Cliente') : activeChat.description || 'Canal de texto' }}</p>
               </div>
             </div>
-          </div>
-          <!-- Input -->
-          <div *ngIf="activeChat" style="padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;">
-            <div style="display: flex; gap: 8px; align-items: flex-end;">
-              <textarea [(ngModel)]="chatInput" rows="1" placeholder="Escribe un mensaje..."
-                (keydown.enter)="$event.preventDefault(); sendChatMessage()"
-                style="flex: 1; background: #1a1a1f; border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; padding: 10px 14px; color: #fff; font-size: 13px; resize: none; outline: none; font-family: inherit; min-height: 40px; max-height: 120px;"
-                onfocus="this.style.borderColor='rgba(34,211,238,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.06)'">
-              </textarea>
-              <button (click)="sendChatMessage()"
-                style="padding: 10px 16px; background: linear-gradient(135deg, #22d3ee, #84cc16); border: none; border-radius: 10px; color: #000; font-weight: 800; font-size: 13px; cursor: pointer; white-space: nowrap;">
-                Enviar
+            <div class="discord-chat-header-actions">
+              <button class="discord-icon-btn" (click)="toggleMembers()" title="Miembros">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
               </button>
             </div>
           </div>
-        </div>
 
-        <!-- Modal: nuevo chat -->
-        <div *ngIf="showChatModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center;" (click)="showChatModal = false">
-          <div style="background: #14141a; border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; max-width: 400px; width: 90%; max-height: 80vh; overflow-y: auto; padding: 24px;" (click)="$event.stopPropagation()">
-            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 16px; color: #fff;">💬 Nuevo chat</h3>
-            <div *ngFor="let u of chatUsers" (click)="startDirectChat(u._id)"
-              style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 10px; cursor: pointer; margin-bottom: 4px; transition: all 0.15s;"
-              onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='transparent'">
-              <div style="width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;"
-                [style.background]="u.role === 'admin' ? 'linear-gradient(135deg, #ef4444, #f472b6)' : u.role === 'vendedor' ? 'linear-gradient(135deg, #22d3ee, #3b82f6)' : 'linear-gradient(135deg, #84cc16, #22c55e)'"
-                [style.color]="u.role === 'admin' ? '#fff' : '#000'">
-                {{ u.name?.charAt(0) || '?' }}
+          <!-- Empty State -->
+          <div class="discord-chat-empty" *ngIf="!activeChat">
+            <div class="discord-empty-icon">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            </div>
+            <h3>Selecciona una conversacion</h3>
+            <p>Elige un canal o conversacion para empezar a chatear</p>
+          </div>
+
+          <!-- Messages Area -->
+          <div class="discord-messages-area scrollbar" id="chatMessagesContainer" *ngIf="activeChat">
+            <!-- Welcome -->
+            <div class="discord-welcome" *ngIf="chatView === 'dms'">
+              <div class="discord-avatar-lg" [style.background]="'linear-gradient(135deg, ' + (getOtherMember(activeChat)?.role === 'admin' ? '#ef4444, #f472b6' : getOtherMember(activeChat)?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                {{ getInitials(getOtherMember(activeChat)?.name || activeChat.name) }}
               </div>
-              <div style="flex: 1;">
-                <p style="font-size: 13px; font-weight: 600; color: #fff;">{{ u.name }}</p>
-                <p style="font-size: 11px; color: #666;">{{ u.role }}</p>
+              <h2>{{ getOtherMember(activeChat)?.name || activeChat.name }}</h2>
+              <p>Este es el comienzo de tu conversacion.</p>
+              <div class="discord-welcome-badges">
+                <span class="discord-role-badge" [ngClass]="getRoleBadgeClass(getOtherMember(activeChat)?.role)">{{ getRoleLabel(getOtherMember(activeChat)?.role) }}</span>
               </div>
             </div>
-            <div *ngIf="chatUsers.length === 0" style="text-align: center; padding: 20px; color: #555; font-size: 13px;">No hay usuarios disponibles</div>
+            <div class="discord-welcome channel" *ngIf="chatView === 'channels'">
+              <div class="discord-hash-lg">#</div>
+              <h2>Bienvenido a #{{ activeChat.name }}</h2>
+              <p>Este es el comienzo del canal #{{ activeChat.name }}.</p>
+            </div>
+
+            <div class="discord-date-divider" *ngIf="chatMessages.length > 0">
+              <span>HOY</span>
+            </div>
+
+            <!-- Loading -->
+            <div class="discord-loading" *ngIf="chatLoading">
+              <div class="discord-loading-spinner"></div>
+              <p>Cargando mensajes...</p>
+            </div>
+
+            <!-- Messages -->
+            <div *ngFor="let msg of chatMessages; let i = index" class="discord-msg-row"
+                 [class.deleted]="msg.isDeleted">
+              <div *ngIf="msg.isDeleted" class="discord-msg-deleted">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity="0.4"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                <span>Este mensaje ha sido eliminado</span>
+              </div>
+              <ng-container *ngIf="!msg.isDeleted">
+                <div class="discord-msg-avatar">
+                  <div class="discord-avatar-sm" [style.background]="getGradient(msg.sender?.role, msg.sender?.name)">
+                    {{ getInitials(msg.sender?.name) }}
+                  </div>
+                </div>
+                <div class="discord-msg-content">
+                  <div class="discord-msg-header">
+                    <span class="discord-msg-author" [ngClass]="getTextColor(msg.sender?.role, msg.sender?.name)">{{ msg.sender?.name || 'Usuario' }}</span>
+                    <span class="discord-role-badge sm" [ngClass]="getRoleBadgeClass(msg.sender?.role)">{{ getRoleLabel(msg.sender?.role) }}</span>
+                    <span class="discord-msg-time">{{ msg.createdAt | date:'HH:mm' }}</span>
+                  </div>
+                  <!-- Reply -->
+                  <div class="discord-reply-preview" *ngIf="msg.replyTo">
+                    <p class="discord-reply-author">En respuesta a {{ msg.replyTo.sender?.name }}</p>
+                    <p class="discord-reply-text">{{ msg.replyTo.content }}</p>
+                  </div>
+                  <p class="discord-msg-text">{{ msg.content }}</p>
+                  <!-- Reactions -->
+                  <div class="discord-reactions" *ngIf="msg.reactions && msg.reactions.length > 0">
+                    <div *ngFor="let r of msg.reactions" class="discord-reaction"
+                         [class.active]="true"
+                         (click)="toggleReaction(msg, r.emoji)">
+                      <span>{{ r.emoji }}</span>
+                      <span class="discord-reaction-count">{{ msg.reactions.length }}</span>
+                    </div>
+                  </div>
+                  <!-- Actions -->
+                  <div class="discord-msg-actions">
+                    <button class="discord-msg-action" (click)="toggleReaction(msg, '👍')" title="Reaccionar">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                    </button>
+                    <button class="discord-msg-action" (click)="setReplyTo(msg)" title="Responder">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 00-4-4H4"/></svg>
+                    </button>
+                    <button class="discord-msg-action" (click)="togglePinMessage(msg)" [title]="msg.isPinned ? 'Desfijar' : 'Fijar'">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17v5"/><path d="M9 11l-4 4h14l-4-4"/><path d="M15 3.5L9.5 9 15 11l-2.5 2.5"/></svg>
+                    </button>
+                    <button class="discord-msg-action" (click)="copyMessageText(msg)" title="Copiar">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                    </button>
+                    <button class="discord-msg-action danger" (click)="deleteMessage(msg)" title="Eliminar" *ngIf="isCurrentUser(msg.sender) || user?.role === 'admin'">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+
+            <!-- No messages -->
+            <div class="discord-no-messages" *ngIf="chatMessages.length === 0 && !chatLoading">
+              <p>No hay mensajes aun. Se el primero en escribir!</p>
+            </div>
+          </div>
+
+          <!-- Reply Preview -->
+          <div class="discord-reply-bar" *ngIf="replyTo">
+            <div class="discord-reply-info">
+              <span>Respondiendo a <strong>{{ replyTo.sender?.name }}</strong></span>
+              <span class="discord-reply-preview-text">{{ replyTo.content }}</span>
+            </div>
+            <button class="discord-icon-btn-sm" (click)="cancelReply()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          <!-- Message Input -->
+          <div class="discord-input-area" *ngIf="activeChat">
+            <div class="discord-input-wrapper">
+              <button class="discord-icon-btn" title="Adjuntar archivo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+              </button>
+              <textarea [(ngModel)]="chatInput" rows="1"
+                [placeholder]="chatView === 'dms' ? 'Enviar mensaje a @' + (getOtherMember(activeChat)?.name || '') : 'Enviar mensaje a #' + activeChat?.name"
+                (keydown)="handleChatKeyDown($event); autoResize($event)"
+                class="discord-textarea scrollbar"></textarea>
+              <div class="discord-input-actions">
+                <button class="discord-icon-btn" (click)="toggleEmojiPickerFn()" title="Emoji">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                </button>
+                <div class="discord-input-divider"></div>
+                <button class="discord-send-btn" (click)="sendChatMessage()" [disabled]="!chatInput.trim()" title="Enviar">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+              </div>
+            </div>
+            <p class="discord-input-hint">
+              <strong>Enter</strong> enviar &middot; <strong>Shift + Enter</strong> nueva linea
+            </p>
+          </div>
+
+          <!-- Emoji Picker -->
+          <div class="discord-emoji-picker" *ngIf="showEmojiPicker">
+            <p class="discord-emoji-label">EMOJIS</p>
+            <div class="discord-emoji-grid">
+              <button *ngFor="let e of emojis" class="discord-emoji-btn" (click)="insertEmoji(e)">{{ e }}</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEMBERS PANEL -->
+        <div class="discord-members-panel scrollbar" *ngIf="membersVisible && activeChat">
+          <div class="discord-members-header" *ngIf="chatView === 'channels'">
+            <p class="discord-channel-label">MIEMBROS</p>
+          </div>
+          <div class="discord-members-header" *ngIf="chatView === 'dms'">
+            <p class="discord-channel-label">INFO DEL USUARIO</p>
+          </div>
+
+          <!-- DM: Other user info -->
+          <div *ngIf="chatView === 'dms' && getOtherMember(activeChat)" class="discord-member-info">
+            <div class="discord-member-avatar">
+              <div class="discord-avatar-lg" [style.background]="'linear-gradient(135deg, ' + (getOtherMember(activeChat)?.role === 'admin' ? '#ef4444, #f472b6' : getOtherMember(activeChat)?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                {{ getInitials(getOtherMember(activeChat)?.name) }}
+              </div>
+            </div>
+            <h3 class="discord-member-name">{{ getOtherMember(activeChat)?.name }}</h3>
+            <p class="discord-member-role">{{ getOtherMember(activeChat)?.role }}</p>
+            <span class="discord-role-badge" [ngClass]="getRoleBadgeClass(getOtherMember(activeChat)?.role)">{{ getRoleLabel(getOtherMember(activeChat)?.role) }}</span>
+          </div>
+
+          <!-- Channel: Members list -->
+          <div *ngIf="chatView === 'channels'">
+            <div *ngFor="let member of getChannelMembers()" class="discord-member-item">
+              <div class="discord-avatar-container">
+                <div class="discord-avatar-sm" [style.background]="'linear-gradient(135deg, ' + (member.role === 'admin' ? '#ef4444, #f472b6' : member.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                  {{ getInitials(member.name) }}
+                </div>
+                <div class="discord-status-dot-sm" [class.online]="isOnline(member._id)"></div>
+              </div>
+              <div class="discord-member-item-info">
+                <span class="discord-member-item-name">{{ member.name }}</span>
+                <span class="discord-role-badge sm" [ngClass]="getRoleBadgeClass(member.role)">{{ getRoleLabel(member.role) }}</span>
+              </div>
+            </div>
+            <div *ngIf="getChannelMembers().length === 0" class="discord-empty-state">
+              <p>No hay miembros</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- New Chat Modal -->
+        <div class="discord-modal-backdrop" *ngIf="showChatModal" (click)="showChatModal = false">
+          <div class="discord-modal-content" (click)="$event.stopPropagation()">
+            <div class="discord-modal-header">
+              <h3>Nueva Conversacion</h3>
+              <button class="discord-icon-btn" (click)="showChatModal = false">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div class="discord-modal-body">
+              <div *ngFor="let u of chatUsers" class="discord-user-option" (click)="startDirectChat(u._id)">
+                <div class="discord-avatar-container">
+                  <div class="discord-avatar-sm" [style.background]="'linear-gradient(135deg, ' + (u.role === 'admin' ? '#ef4444, #f472b6' : u.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                    {{ getInitials(u.name) }}
+                  </div>
+                  <div class="discord-status-dot-sm" [class.online]="isOnline(u._id)"></div>
+                </div>
+                <div class="discord-user-option-info">
+                  <span class="discord-user-option-name">{{ u.name }}</span>
+                  <span class="discord-role-badge sm" [ngClass]="getRoleBadgeClass(u.role)">{{ getRoleLabel(u.role) }}</span>
+                </div>
+              </div>
+              <div *ngIf="chatUsers.length === 0" class="discord-empty-state">
+                <p>No hay usuarios disponibles</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
