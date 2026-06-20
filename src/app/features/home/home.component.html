@@ -1,0 +1,619 @@
+<div class="dashboard-layout">
+  <div class="mobile-overlay" [class.active]="mobileMenuOpen" (click)="toggleMobileMenu()"></div>
+
+  <aside class="sidebar" [class.collapsed]="sidebarCollapsed" [class.mobile-open]="mobileMenuOpen">
+    <div class="sidebar-logo">
+      <div class="logo-icon">
+        <i class="fas fa-gamepad"></i>
+      </div>
+      <div class="logo-text-wrap" *ngIf="!sidebarCollapsed">
+        <span class="logo-text">SUPREMO CHEATS</span>
+        <span class="logo-subtitle">PANEL DE CONTROL</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div
+        *ngFor="let item of navItems"
+        class="nav-item"
+        [class.active]="activeSection === item.section"
+        (click)="showSection(item.section)"
+      >
+        <i [class]="item.icon"></i>
+        <span class="nav-label" *ngIf="!sidebarCollapsed">{{ item.name }}</span>
+        <span class="nav-badge" *ngIf="item.badge && item.badge > 0 && !sidebarCollapsed">{{ item.badge }}</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-user">
+      <div class="user-avatar">
+        {{ user?.name?.charAt(0) || 'U' }}
+      </div>
+      <div class="user-info" *ngIf="!sidebarCollapsed">
+        <div class="user-name">{{ user?.name || 'Usuario' }}</div>
+        <div class="user-role">{{ user?.role || 'admin' }}</div>
+      </div>
+      <button class="logout-btn" (click)="logout()" title="Cerrar Sesión" *ngIf="!sidebarCollapsed">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </aside>
+
+  <div class="main-content" [class.sidebar-collapsed]="sidebarCollapsed">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" (click)="toggleMobileMenu()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <button class="collapse-btn" (click)="toggleSidebar()">
+          <i class="fas" [ngClass]="sidebarCollapsed ? 'fa-angle-right' : 'fa-angle-left'"></i>
+        </button>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Buscar..." [(ngModel)]="searchQuery" class="input-search" />
+        </div>
+      </div>
+      <div class="topbar-right">
+        <a [href]="discordUrl" target="_blank" class="topbar-discord-btn" title="Soporte Discord">
+          <i class="fab fa-discord"></i>
+          <span class="discord-label">Discord</span>
+        </a>
+        <button class="topbar-icon-btn" (click)="showSection('notificaciones')">
+          <i class="fas fa-bell"></i>
+          <span class="topbar-badge" *ngIf="unreadNotifications > 0">{{ unreadNotifications }}</span>
+        </button>
+        <div class="topbar-user">
+          <div class="topbar-avatar">{{ user?.name?.charAt(0) || 'U' }}</div>
+          <span class="topbar-username">{{ user?.name || 'Usuario' }}</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content">
+
+      <!-- ==================== DASHBOARD ==================== -->
+      <section *ngIf="activeSection === 'dashboard'" class="section-content">
+        <div class="section-header">
+          <div>
+            <h1>Dashboard</h1>
+            <p>Bienvenido de vuelta, {{ user?.name || 'Usuario' }} &middot; {{ todayDate }}</p>
+          </div>
+          <a [href]="discordUrl" target="_blank" class="btn-discord">
+            <i class="fab fa-discord"></i> Soporte Discord
+          </a>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card" *ngFor="let stat of statsCards">
+            <div class="stat-card-header">
+              <div class="stat-icon" [ngClass]="'stat-icon-' + stat.color">
+                <i [class]="stat.icon"></i>
+              </div>
+              <span class="stat-change" [ngClass]="stat.changeType === 'positive' ? 'positive' : 'negative'">
+                <i class="fas" [ngClass]="stat.changeType === 'positive' ? 'fa-arrow-up' : 'fa-arrow-down'"></i>
+                {{ stat.change }}
+              </span>
+            </div>
+            <div class="stat-value">{{ stat.value }}</div>
+            <div class="stat-title">{{ stat.title }}</div>
+          </div>
+        </div>
+
+        <div class="charts-row">
+          <div class="card chart-card">
+            <div class="card-header">
+              <h3>Ingresos Mensuales</h3>
+              <span class="card-badge success">+0%</span>
+            </div>
+            <div class="chart-container">
+              <canvas #revenueChart></canvas>
+            </div>
+          </div>
+          <div class="card chart-card-sm">
+            <div class="card-header">
+              <h3>Por Producto</h3>
+            </div>
+            <div class="chart-container">
+              <canvas #categoryChart></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-row">
+          <div class="card">
+            <div class="card-header">
+              <h3>Top Productos</h3>
+            </div>
+            <div class="top-products-list">
+              <div class="top-product-item" *ngFor="let product of topProducts; let i = index">
+                <span class="product-rank">{{ i + 1 }}</span>
+                <div class="product-details">
+                  <span class="product-name">{{ product.name }}</span>
+                  <span class="product-sales-count">{{ product.sales }} ventas &middot; {{ product.priceRange }}</span>
+                </div>
+                <div class="product-right">
+                  <span class="product-revenue">{{ product.revenue }}</span>
+                  <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="product.trend"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Actividad Reciente</h3>
+            </div>
+            <div class="activity-feed">
+              <div class="activity-item" *ngFor="let activity of recentActivity">
+                <div class="activity-avatar">{{ activity.user.charAt(0) }}</div>
+                <div class="activity-details">
+                  <span class="activity-user">{{ activity.user }}</span>
+                  {{ activity.action }}
+                  <span class="activity-product" *ngIf="activity.product">{{ activity.product }}</span>
+                  <div class="activity-time">{{ activity.time }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PRODUCTOS ==================== -->
+      <section *ngIf="activeSection === 'productos'" class="section-content">
+        <div class="section-header">
+          <div>
+            <h1>Productos</h1>
+            <p>Catálogo de productos Free Fire</p>
+          </div>
+          <button class="btn-primary" *ngIf="user?.role === 'admin' || user?.role === 'vendedor'">
+            <i class="fas fa-plus"></i> Nuevo Producto
+          </button>
+        </div>
+
+        <div class="products-grid">
+          <div class="product-card" *ngFor="let product of products">
+            <div class="product-card-image">
+              <i [class]="product.icon" class="product-icon-display"></i>
+              <span class="badge" [ngClass]="'badge-' + product.badgeType">{{ product.badge }}</span>
+            </div>
+            <div class="product-card-body">
+              <span class="product-category">{{ product.category }}</span>
+              <h3 class="product-card-name">{{ product.name }}</h3>
+              <p class="product-card-desc">{{ product.description }}</p>
+              <div class="product-card-prices" *ngIf="product.prices.length > 0">
+                <div class="price-row" *ngFor="let p of product.prices">
+                  <span class="price-duration">{{ p.duration }}</span>
+                  <span class="price-value">${{ p.price }}</span>
+                </div>
+              </div>
+              <div class="product-card-prices" *ngIf="product.prices.length === 0">
+                <span class="price-soon">Precios próximamente</span>
+              </div>
+              <div class="product-card-footer">
+                <span class="product-stock" [ngClass]="product.stock > 0 ? 'in-stock' : 'out-of-stock'">
+                  {{ product.stock > 0 ? 'Disponible' : 'Próximamente' }}
+                </span>
+                <span class="badge" [ngClass]="product.status === 'active' ? 'badge-success' : 'badge-danger'">
+                  {{ product.status === 'active' ? 'Activo' : 'Inactivo' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== PEDIDOS ==================== -->
+      <section *ngIf="activeSection === 'pedidos'" class="section-content">
+        <div class="section-header">
+          <div>
+            <h1>Pedidos</h1>
+            <p>Historial de pedidos y transacciones</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="empty-state" *ngIf="orders.length === 0">
+            <i class="fas fa-shopping-cart empty-icon"></i>
+            <h3>Sin pedidos aún</h3>
+            <p>Los pedidos aparecerán aquí cuando se realicen compras</p>
+          </div>
+          <div class="table-container" *ngIf="orders.length > 0">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Cliente</th>
+                  <th>Producto</th>
+                  <th>Monto</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let order of orders">
+                  <td class="order-id">{{ order.id }}</td>
+                  <td>{{ order.customer }}</td>
+                  <td>{{ order.product }}</td>
+                  <td class="order-amount">${{ order.amount.toFixed(2) }}</td>
+                  <td>{{ order.date }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="{
+                      'badge-success': order.status === 'completed',
+                      'badge-warning': order.status === 'pending',
+                      'badge-info': order.status === 'processing',
+                      'badge-danger': order.status === 'cancelled'
+                    }">
+                      {{ order.status === 'completed' ? 'Completado' : order.status === 'pending' ? 'Pendiente' : order.status === 'processing' ? 'Procesando' : 'Cancelado' }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== GANANCIAS ==================== -->
+      <section *ngIf="activeSection === 'ganancias'" class="section-content">
+        <div class="section-header">
+          <div>
+            <h1>Ganancias</h1>
+            <p>Resumen de ingresos y gastos</p>
+          </div>
+        </div>
+
+        <div class="earnings-summary">
+          <div class="card earnings-card">
+            <div class="earnings-icon green">
+              <i class="fas fa-arrow-down"></i>
+            </div>
+            <div class="earnings-info">
+              <span class="earnings-label">Ingresos</span>
+              <span class="earnings-value green">${{ totalRevenue.toFixed(2) }}</span>
+            </div>
+          </div>
+          <div class="card earnings-card">
+            <div class="earnings-icon red">
+              <i class="fas fa-arrow-up"></i>
+            </div>
+            <div class="earnings-info">
+              <span class="earnings-label">Gastos</span>
+              <span class="earnings-value red">${{ totalExpenses.toFixed(2) }}</span>
+            </div>
+          </div>
+          <div class="card earnings-card">
+            <div class="earnings-icon cyan">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="earnings-info">
+              <span class="earnings-label">Neto</span>
+              <span class="earnings-value cyan">${{ (totalRevenue - totalExpenses).toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="charts-row">
+          <div class="card chart-card">
+            <div class="card-header">
+              <h3>Ganancias Semanales</h3>
+            </div>
+            <div class="chart-container">
+              <canvas #earningsChart></canvas>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>Transacciones Recientes</h3>
+            </div>
+            <div class="empty-state" *ngIf="transactions.length === 0">
+              <i class="fas fa-receipt empty-icon"></i>
+              <h3>Sin transacciones</h3>
+              <p>Las transacciones aparecerán aquí</p>
+            </div>
+            <div class="transactions-list" *ngIf="transactions.length > 0">
+              <div class="transaction-item" *ngFor="let tx of transactions">
+                <div class="transaction-icon" [ngClass]="'transaction-' + tx.color">
+                  <i [class]="tx.icon"></i>
+                </div>
+                <div class="transaction-details">
+                  <span class="transaction-desc">{{ tx.description }}</span>
+                  <span class="transaction-date">{{ tx.date }}</span>
+                </div>
+                <span class="transaction-amount" [ngClass]="tx.amount > 0 ? 'positive' : 'negative'">
+                  {{ tx.amount > 0 ? '+' : '' }}${{ tx.amount.toFixed(2) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== SOCIOS ==================== -->
+      <section *ngIf="activeSection === 'socios'" class="section-content">
+        <div class="section-header">
+          <div>
+            <h1>Socios</h1>
+            <p>Vendedores afiliados al panel</p>
+          </div>
+          <button class="btn-primary" *ngIf="user?.role === 'admin'">
+            <i class="fas fa-plus"></i> Invitar Socio
+          </button>
+        </div>
+
+        <div class="empty-state" *ngIf="partners.length === 0">
+          <i class="fas fa-handshake empty-icon"></i>
+          <h3>Sin socios registrados</h3>
+          <p>Los socios vendedores aparecerán aquí cuando se registren</p>
+        </div>
+
+        <div class="partners-grid" *ngIf="partners.length > 0">
+          <div class="card partner-card" *ngFor="let partner of partners">
+            <div class="partner-header">
+              <div class="partner-avatar">{{ partner.avatar }}</div>
+              <span class="badge" [ngClass]="partner.status === 'active' ? 'badge-success' : 'badge-danger'">
+                {{ partner.status === 'active' ? 'Activo' : 'Inactivo' }}
+              </span>
+            </div>
+            <h3 class="partner-name">{{ partner.name }}</h3>
+            <div class="partner-stats">
+              <div class="partner-stat">
+                <span class="partner-stat-value">{{ partner.sales }}</span>
+                <span class="partner-stat-label">Ventas</span>
+              </div>
+              <div class="partner-stat">
+                <span class="partner-stat-value">{{ partner.earnings }}</span>
+                <span class="partner-stat-label">Ganancias</span>
+              </div>
+              <div class="partner-stat">
+                <span class="partner-stat-value">
+                  <i class="fas fa-star" style="color: #fbbf24;"></i> {{ partner.rating }}
+                </span>
+                <span class="partner-stat-label">Rating</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ANALITICAS ==================== -->
+      <section *ngIf="activeSection === 'analytics'" class="section-content">
+        <div class="section-header">
+          <div>
+            <h1>Analíticas</h1>
+            <p>Métricas y estadísticas del panel</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-icon stat-icon-cyan"><i class="fas fa-eye"></i></div>
+            </div>
+            <div class="stat-value">0</div>
+            <div class="stat-title">Visitas Totales</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-icon stat-icon-pink"><i class="fas fa-mouse-pointer"></i></div>
+            </div>
+            <div class="stat-value">0</div>
+            <div class="stat-title">Clics Únicos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-icon stat-icon-lime"><i class="fas fa-user-plus"></i></div>
+            </div>
+            <div class="stat-value">0</div>
+            <div class="stat-title">Nuevos Usuarios</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-header">
+              <div class="stat-icon stat-icon-violet"><i class="fas fa-clock"></i></div>
+            </div>
+            <div class="stat-value">0:00</div>
+            <div class="stat-title">Tiempo Promedio</div>
+          </div>
+        </div>
+
+        <div class="charts-row">
+          <div class="card chart-card">
+            <div class="card-header">
+              <h3>Visitas por Día</h3>
+            </div>
+            <div class="chart-container">
+              <canvas #analyticsVisits></canvas>
+            </div>
+          </div>
+          <div class="card chart-card">
+            <div class="card-header">
+              <h3>Ventas por Día</h3>
+            </div>
+            <div class="chart-container">
+              <canvas #analyticsSales></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="charts-row single">
+          <div class="card chart-card-sm">
+            <div class="card-header">
+              <h3>Tasa de Conversión</h3>
+            </div>
+            <div class="chart-container">
+              <canvas #analyticsConversion></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== NOTIFICACIONES ==================== -->
+      <section *ngIf="activeSection === 'notificaciones'" class="section-content">
+        <div class="section-header">
+          <div>
+            <h1>Notificaciones</h1>
+            <p>Centro de notificaciones y alertas</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="empty-state" *ngIf="notifications.length === 0">
+            <i class="fas fa-bell-slash empty-icon"></i>
+            <h3>Sin notificaciones</h3>
+            <p>Las notificaciones aparecerán aquí</p>
+          </div>
+          <div class="notifications-list" *ngIf="notifications.length > 0">
+            <div
+              class="notif-item"
+              *ngFor="let notif of notifications"
+              [class.unread]="!notif.read"
+            >
+              <div class="notif-icon" [ngClass]="'notif-' + notif.color">
+                <i [class]="notif.icon"></i>
+              </div>
+              <div class="notif-content">
+                <span class="notif-title">{{ notif.title }}</span>
+                <p class="notif-message">{{ notif.message }}</p>
+                <span class="notif-time">{{ notif.time }}</span>
+              </div>
+              <div class="notif-actions">
+                <span class="pulse-dot" *ngIf="!notif.read"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== CONFIGURACIÓN ==================== -->
+      <section *ngIf="activeSection === 'config'" class="section-content">
+        <div class="section-header">
+          <div>
+            <h1>Configuración</h1>
+            <p>Ajustes generales del panel</p>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <div class="card settings-card">
+            <div class="card-header">
+              <h3>Información del Panel</h3>
+            </div>
+            <div class="settings-form">
+              <div class="form-group">
+                <label class="form-label">Nombre del Panel</label>
+                <input type="text" class="input-field" [(ngModel)]="settings.storeName" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email de Contacto</label>
+                <input type="email" class="input-field" [(ngModel)]="settings.storeEmail" />
+              </div>
+              <button class="btn-primary">Guardar Cambios</button>
+            </div>
+          </div>
+
+          <div class="card settings-card">
+            <div class="card-header">
+              <h3>Preferencias</h3>
+            </div>
+            <div class="settings-form">
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">Notificaciones Push</span>
+                  <span class="toggle-desc">Recibe alertas en tiempo real</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" [(ngModel)]="settings.notifications" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">Alertas por Email</span>
+                  <span class="toggle-desc">Resumen diario de actividad</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" [(ngModel)]="settings.emailAlerts" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">Modo Oscuro</span>
+                  <span class="toggle-desc">Tema oscuro de la interfaz</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" [(ngModel)]="settings.darkMode" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info">
+                  <span class="toggle-label">Autenticación en 2 Pasos</span>
+                  <span class="toggle-desc">Seguridad adicional para tu cuenta</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" [(ngModel)]="settings.twoFactor" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="card settings-card">
+            <div class="card-header">
+              <h3>Métodos de Pago</h3>
+            </div>
+            <div class="settings-form">
+              <div class="payment-methods-list">
+                <div class="payment-method-item" *ngFor="let pm of paymentMethods">
+                  <div class="payment-method-icon" [style.color]="pm.color">
+                    <i [class]="pm.icon"></i>
+                  </div>
+                  <span class="payment-method-name">{{ pm.name }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card settings-card">
+            <div class="card-header">
+              <h3>Soporte</h3>
+            </div>
+            <div class="settings-form">
+              <div class="support-info">
+                <p class="support-text">Para soporte y ayuda, únete a nuestro Discord oficial:</p>
+                <a [href]="discordUrl" target="_blank" class="btn-discord-full">
+                  <i class="fab fa-discord"></i> Unirse al Discord
+                </a>
+                <p class="support-note">Solo Discord para soporte</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card settings-card full-width">
+            <div class="card-header">
+              <h3>Zona de Peligro</h3>
+            </div>
+            <div class="settings-form danger-zone">
+              <p class="danger-text">Estas acciones son irreversibles. Asegúrate de entender las consecuencias antes de proceder.</p>
+              <div class="danger-actions">
+                <button class="btn-outline danger">Eliminar Cuenta</button>
+                <button class="btn-outline">Exportar Datos</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="dashboard-footer">
+      <div class="footer-content">
+        <span>&copy; 2026 SUPREMO CHEATS &middot; Todos los derechos reservados</span>
+        <a [href]="discordUrl" target="_blank" class="footer-discord">
+          <i class="fab fa-discord"></i> Soporte en Discord
+        </a>
+      </div>
+    </footer>
+  </div>
+</div>

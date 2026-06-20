@@ -1,0 +1,129 @@
+.grid-pattern {
+  background-color: #060a1f;
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(14, 165, 233, 0.15) 0%, rgba(6, 10, 31, 0) 70%);
+    pointer-events: none;
+  }
+}
+
+.glow-btn { box-shadow: 0 10px 40px -10px rgba(34, 211, 238, 0.5), 0 0 30px rgba(132, 204, 22, 0.3); }
+.glow-btn:hover { box-shadow: 0 15px 50px -10px rgba(34, 211, 238, 0.7), 0 0 40px rgba(132, 204, 22, 0.5); transform: translateY(-2px); }
+
+.text-gradient-brand {
+  background: linear-gradient(135deg, #22d3ee 0%, #f472b6 50%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-btn { background: linear-gradient(90deg, #22d3ee 0%, #84cc16 100%); }
+
+.input-glow:focus {
+  border-color: #22d3ee;
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15), 0 0 20px rgba(34, 211, 238, 0.2);
+}
+
+.benefit-pill {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  &:hover {
+    border-color: rgba(34, 211, 238, 0.3);
+    background: rgba(34, 211, 238, 0.05);
+    transform: translateX(4px);
+  }
+}
+
+.google-btn {
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  &:hover {
+    background: #f3f4f6;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+  }
+}
+
+.divider-line { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent); }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+.float-anim { animation: float 4s ease-in-out infinite; }
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+.pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
+
+.form-panel {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  &.hidden-panel {
+    opacity: 0;
+    transform: translateX(20px);
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    visibility: hidden;
+  }
+  &.active-panel {
+    opacity: 1;
+    transform: translateX(0);
+    visibility: visible;
+  }
+}
+
+.custom-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  background: #1a1a1f;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  &:checked {
+    background: linear-gradient(135deg, #22d3ee 0%, #84cc16 100%);
+    border-color: transparent;
+    &::after {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 1px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+  &:hover { border-color: rgba(34, 211, 238, 0.5); }
+}
+
+.strength-bar {
+  height: 3px;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+.strength-fill {
+  height: 100%;
+  width: 0%;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}

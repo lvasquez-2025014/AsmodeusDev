@@ -1,0 +1,33 @@
+import { prop, getModelForClass, pre } from '@typegoose/typegoose';
+import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
+import bcrypt from 'bcryptjs';
+
+export enum UserRole {
+  ADMIN = 'admin',
+  VENDEDOR = 'vendedor',
+  CLIENTE = 'cliente',
+}
+
+@pre<User>('save', async function () {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 12);
+  }
+})
+export class User extends TimeStamps {
+  @prop({ required: true, trim: true })
+  name!: string;
+
+  @prop({ required: true, unique: true, lowercase: true, trim: true })
+  email!: string;
+
+  @prop({ required: true, minlength: 6 })
+  password!: string;
+
+  @prop({ enum: UserRole, default: UserRole.CLIENTE })
+  role!: UserRole;
+
+  @prop({ default: true })
+  isActive!: boolean;
+}
+
+export const UserModel = getModelForClass(User);

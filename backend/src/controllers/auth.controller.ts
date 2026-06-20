@@ -1,0 +1,79 @@
+import { Response } from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { UserModel } from '../models/user.model';
+import { config } from '../config';
+import { AuthRequest } from '../middleware/auth.middleware';
+
+export async function register(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const { name, email, password } = req.body;
+
+    const exists = await UserModel.findOne({ email });
+    if (exists) {
+      res.status(400).json({ message: 'El email ya está registrado' });
+      return;
+    }
+
+    const user = await UserModel.create({ name, email, password });
+    const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
+
+    res.status(201).json({
+      success: true,
+      data: {
+        token,
+        user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+}
+
+export async function login(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const { email, password } = req.body;
+
+    const user = await UserModel.findOne({
+      $or: [
+        { email: { $regex: new RegExp(`^${email}$`, 'i') } },
+        { name: { $regex: new RegExp(`^${email}$`, 'i') } },
+      ],
+    });
+    if (!user) {
+      res.status(401).json({ message: 'Credenciales inválidas' });
+      return;
+    }
+
+    const valid = await bcrypt.compare(password, user.password);
+    if (!valid) {
+      res.status(401).json({ message: 'Credenciales inválidas' });
+      return;
+    }
+
+    const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
+
+    res.json({
+      success: true,
+      data: {
+        token,
+        user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+}
+
+export async function getProfile(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const user = await UserModel.findById(req.userId).select('-password');
+    if (!user) {
+      res.status(404).json({ message: 'Usuario no encontrado' });
+      return;
+    }
+    res.json({ success: true, data: user });
+  } catch {
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+}

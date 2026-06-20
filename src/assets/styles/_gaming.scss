@@ -1,0 +1,111 @@
+$bg-dark: #0d0e12;
+$neon-orange: #ff5f1f;
+$neon-pink: #ff2a6d;
+$neon-green: #00ff9d;
+$neon-cyan: #00e5ff;
+
+.bg-gaming { background-color: $bg-dark; }
+
+.gradient-primary { background: linear-gradient(90deg, $neon-orange, $neon-pink); }
+.gradient-secondary { background: linear-gradient(90deg, $neon-cyan, $neon-green); }
+.neon-orange { color: $neon-orange; }
+.neon-pink { color: $neon-pink; }
+.neon-green { color: $neon-green; }
+.neon-cyan { color: $neon-cyan; }
+
+.text-glow { text-shadow: 0 0 10px rgba(255, 100, 200, 0.7); }
+
+.glass-card {
+  background: rgba(15, 20, 30, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glow-button {
+  box-shadow: 0 0 20px rgba(255, 42, 109, 0.4);
+  transition: all 0.3s ease;
+  &:hover {
+    box-shadow: 0 0 30px rgba(255, 42, 109, 0.7);
+    transform: translateY(-2px);
+  }
+}
+
+.sidebar-active {
+  background: linear-gradient(90deg, rgba(255, 95, 31, 0.2), transparent);
+  border-left: 3px solid $neon-orange;
+}
+
+.product-card {
+  background: rgba(15, 20, 30, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.stat-pill {
+  background: rgba(255, 95, 31, 0.1);
+  border: 1px solid rgba(255, 95, 31, 0.3);
+}
+
+.product-label {
+  position: absolute;
+  top: 10px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.label-hot {
+  background: rgba(255, 42, 109, 0.2);
+  color: $neon-pink;
+  border: 1px solid $neon-pink;
+}
+
+.label-vip {
+  background: rgba(0, 229, 255, 0.2);
+  color: $neon-cyan;
+  border: 1px solid $neon-cyan;
+}
+
+.label-discount {
+  background: rgba(255, 95, 31, 0.2);
+  color: $neon-orange;
+  border: 1px solid $neon-orange;
+}
+
+.duration-pill {
+  background: rgba(255, 95, 31, 0.2);
+  border: 1px solid $neon-orange;
+  color: $neon-orange;
+}
+
+.price-tag {
+  color: $neon-green;
+  text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+}
+
+.section-title {
+  position: relative;
+  padding-bottom: 15px;
+  margin-bottom: 30px;
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, $neon-orange, $neon-pink);
+  }
+}
+
+html { scroll-behavior: smooth; }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: $bg-dark; }
+::-webkit-scrollbar-thumb { background: $neon-pink; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: $neon-orange; }

@@ -1,0 +1,33 @@
+@import 'variables';
+
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == sm { @media (min-width: $breakpoint-sm) { @content; } }
+  @if $breakpoint == md { @media (min-width: $breakpoint-md) { @content; } }
+  @if $breakpoint == lg { @media (min-width: $breakpoint-lg) { @content; } }
+  @if $breakpoint == xl { @media (min-width: $breakpoint-xl) { @content; } }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin card {
+  background: white;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-sm;
+  padding: $spacing-lg;
+}
+
+@mixin ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
