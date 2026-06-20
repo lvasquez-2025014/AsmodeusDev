@@ -235,6 +235,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     if (this.isClient) {
       this.activeSection = 'tienda';
     }
+    this.loadProducts();
     if (!this.isClient) {
       this.loadPartners();
     }
@@ -290,6 +291,22 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.api.get<any>('admin/users').subscribe({
       next: (res) => {
         this.partners = (res.data || []).filter((u: any) => u.role === 'vendedor');
+      },
+      error: () => {}
+    });
+  }
+
+  loadProducts(): void {
+    this.api.get<any>('products').subscribe({
+      next: (res) => {
+        if (res.data && res.data.length > 0) {
+          this.products = res.data.map((p: any) => ({
+            ...p,
+            id: p._id,
+            priceFrom: p.prices?.length > 0 ? Math.min(...p.prices.map((pr: any) => pr.price)) : 0,
+            priceTo: p.prices?.length > 0 ? Math.max(...p.prices.map((pr: any) => pr.price)) : 0,
+          }));
+        }
       },
       error: () => {}
     });
