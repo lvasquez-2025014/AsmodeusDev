@@ -29,11 +29,13 @@ const upload = multer({
 const router = Router();
 
 router.get('/', async (_req, res: Response) => {
+  await ProductModel.updateMany({ image: { $regex: /^data:image/ } }, { $set: { image: '' } });
   const products = await ProductModel.find({ isActive: true }).sort({ createdAt: -1 });
   res.json({ success: true, data: products });
 });
 
 router.get('/all', authenticate, authorize('admin', 'vendedor'), async (_req: AuthRequest, res: Response) => {
+  await ProductModel.updateMany({ image: { $regex: /^data:image/ } }, { $set: { image: '' } });
   const products = await ProductModel.find().sort({ createdAt: -1 });
   res.json({ success: true, data: products });
 });
