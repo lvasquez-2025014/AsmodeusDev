@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, map } from 'rxjs';
+import { signInWithPopup, GoogleAuthProvider, UserCredential } from 'firebase/auth';
+import { FirebaseInitService } from './firebase-init.service';
 import { environment } from '@env/environment';
 import { LoginRequest, LoginResponse, ApiResponse } from '@models/index';
 
@@ -11,7 +13,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private firebaseInit: FirebaseInitService
   ) {}
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
@@ -32,6 +35,21 @@ export class AuthService {
         localStorage.setItem('user', JSON.stringify(data.user));
       })
     );
+  }
+
+  googleLogin(): Promise<LoginResponse> {
+    return signInWithPopup(this.firebaseInit.auth, this.firebaseInit.googleProvider)
+      .then((result: UserCredential) => result.user.getIdToken())
+      .then((idToken) => {
+        return this.http.post<ApiResponse<LoginResponse>>(`${this.apiUrl}/google`, { idToken })
+          .pipe(
+            map((res) => res.data),
+            tap((data) => {
+              localStorage.setItem('token', data.token);
+              localStorage.setItem('user', JSON.stringify(data.user));
+            })
+          ).toPromise();
+      }) as Promise<LoginResponse>;
   }
 
   logout(): void {

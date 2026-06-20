@@ -1,9 +1,12 @@
 import { Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { OAuth2Client } from 'google-auth-library';
 import { UserModel } from '../models/user.model';
 import { config } from '../config';
 import { AuthRequest } from '../middleware/auth.middleware';
+
+const googleClient = new OAuth2Client();
 
 export async function register(req: AuthRequest, res: Response): Promise<void> {
   try {
@@ -75,5 +78,52 @@ export async function getProfile(req: AuthRequest, res: Response): Promise<void>
     res.json({ success: true, data: user });
   } catch {
     res.status(500).json({ message: 'Error del servidor' });
+  }
+}
+
+export async function googleLogin(req: AuthRequest, res: Response): Promise<void> {
+  try {
+    const { idToken } = req.body;
+    if (!idToken) {
+      res.status(400).json({ message: 'Token de Google requerido' });
+      return;
+    }
+
+    const ticket = await googleClient.verifyIdToken({
+      idToken,
+      audience: config.googleClientId,
+    });
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.email) {
+      res.status(401).json({ message: 'Token de Google inválido' });
+      return;
+    }
+
+    const { email, name, sub: googleId } = payload;
+
+    let user = await UserModel.findOne({ email });
+
+    if (!user) {
+      const randomPassword = await bcrypt.hash(googleId, 12);
+      user = await UserModel.create({
+        name: name || email.split('@')[0],
+        email,
+        password: randomPassword,
+      });
+    }
+
+    const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
+
+    res.json({
+      success: true,
+      data: {
+        token,
+        user: { id: user.id, name: user.name, email: user.email, role: user.role },
+      },
+    });
+  } catch (error: any) {
+    console.error('[Google Auth Error]', error.message);
+    res.status(500).json({ message: 'Error al autenticar con Google' });
   }
 }

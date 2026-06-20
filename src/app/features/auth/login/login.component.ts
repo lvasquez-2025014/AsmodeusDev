@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   registerBtnText = 'CREAR CUENTA';
   loginBtnDisabled = false;
   registerBtnDisabled = false;
+  googleLoading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -53,6 +54,40 @@ export class LoginComponent implements OnInit {
     this.isLoginPanel = true;
     this.loginError = '';
     this.registerError = '';
+  }
+
+  onGoogleLogin(): void {
+    this.googleLoading = true;
+    this.loginError = '';
+    this.auth.googleLogin()
+      .then(() => {
+        this.router.navigate(['/']);
+      })
+      .catch((err: any) => {
+        if (err.code === 'auth/popup-closed-by-user') {
+          this.loginError = '';
+        } else {
+          this.loginError = 'Error al iniciar sesión con Google';
+        }
+        this.googleLoading = false;
+      });
+  }
+
+  onGoogleRegister(): void {
+    this.googleLoading = true;
+    this.registerError = '';
+    this.auth.googleLogin()
+      .then(() => {
+        this.router.navigate(['/']);
+      })
+      .catch((err: any) => {
+        if (err.code === 'auth/popup-closed-by-user') {
+          this.registerError = '';
+        } else {
+          this.registerError = 'Error al registrarse con Google';
+        }
+        this.googleLoading = false;
+      });
   }
 
   onLogin(): void {
