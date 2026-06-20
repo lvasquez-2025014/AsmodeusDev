@@ -1299,21 +1299,32 @@
       <!-- Imagen del producto -->
       <div class="form-group">
         <label>Imagen del producto</label>
-        <div class="product-image-upload">
+        <div class="product-image-upload"
+             [class.dragging]="isDragging"
+             (dragover)="onDragOver($event)"
+             (dragleave)="onDragLeave($event)"
+             (drop)="onDrop($event)">
           <div class="product-image-preview" *ngIf="productImagePreview">
             <img [src]="productImagePreview" alt="Preview">
             <button class="remove-image-btn" (click)="removeProductImage()"><i class="fas fa-times"></i></button>
           </div>
-          <div class="product-image-drop" *ngIf="!productImagePreview">
+          <div class="product-image-drop" *ngIf="!productImagePreview" (click)="fileInput.click()">
             <i class="fas fa-cloud-upload-alt"></i>
-            <span>Selecciona una imagen (máx 2MB)</span>
-            <label class="btn-outline btn-sm" style="cursor: pointer; margin-top: 8px;">
-              <i class="fas fa-folder-open"></i> Examinar
-              <input type="file" accept="image/*" (change)="onProductImageSelect($event)" style="display: none;">
-            </label>
+            <span class="drop-title">Arrastra tu imagen aqui</span>
+            <span class="drop-subtitle">o haz clic para seleccionar desde tu PC</span>
+            <div class="drop-formats">
+              <span class="format-badge">JPG</span>
+              <span class="format-badge">PNG</span>
+              <span class="format-badge">WEBP</span>
+              <span class="format-badge">GIF</span>
+              <span class="format-badge">SVG</span>
+              <span class="format-badge">AVIF</span>
+            </div>
+            <span class="drop-limit">Maximo 2MB</span>
+            <input #fileInput type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,image/avif" (change)="onProductImageSelect($event)" style="display: none;">
           </div>
         </div>
-        <div class="form-group" style="margin-top: 8px;" *ngIf="!productImageFile">
+        <div class="form-group" style="margin-top: 8px;" *ngIf="!productImageFile && !productImagePreview">
           <label style="font-size: 11px; color: var(--text-muted);">O pega una URL de imagen</label>
           <input type="text" [(ngModel)]="productForm.image" placeholder="https://ejemplo.com/imagen.jpg" class="form-input">
         </div>

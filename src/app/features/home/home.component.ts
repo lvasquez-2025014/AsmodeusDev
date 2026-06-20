@@ -124,6 +124,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   };
   productImageFile: File | null = null;
   productImagePreview = '';
+  isDragging = false;
   productError = '';
   productSuccess = '';
   productSaving = false;
@@ -667,8 +668,36 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   onProductImageSelect(event: any): void {
     const file = event.target.files[0];
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) { this.productError = 'Máximo 2MB por imagen'; return; }
+    this.processImageFile(file);
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragging = false;
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      this.processImageFile(files[0]);
+    }
+  }
+
+  private processImageFile(file: File): void {
+    if (!file.type.startsWith('image/')) { this.productError = 'Solo se permiten archivos de imagen'; return; }
+    if (file.size > 2 * 1024 * 1024) { this.productError = 'La imagen no puede superar 2MB'; return; }
     this.productImageFile = file;
+    this.productError = '';
     const reader = new FileReader();
     reader.onload = () => { this.productImagePreview = reader.result as string; };
     reader.readAsDataURL(file);
