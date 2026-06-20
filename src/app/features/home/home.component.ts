@@ -184,11 +184,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
   partnerError = '';
   partnerSuccess = '';
 
+  get isGuest(): boolean {
+    return !this.auth.isLoggedIn;
+  }
+
+  showPaymentModal = false;
+  selectedProduct: any = null;
+  selectedPlan: any = null;
+
   paymentMethods = [
-    { name: 'PayPal', icon: 'fab fa-paypal', color: '#003087' },
-    { name: 'Criptomonedas (BTC, ETH, USDT)', icon: 'fab fa-bitcoin', color: '#f7931a' },
-    { name: 'Binance Pay', icon: 'fas fa-coins', color: '#f0b90b' },
-    { name: 'Transferencia Bancaria', icon: 'fas fa-university', color: '#22d3ee' },
+    { id: 'paypal', name: 'PayPal', icon: 'fab fa-paypal', color: '#003087', description: 'Pago instantáneo con PayPal' },
+    { id: 'binance', name: 'Binance Pay', icon: 'fas fa-coins', color: '#f0b90b', description: 'Paga con BNB, BTC, USDT y más' },
+    { id: 'transferencia', name: 'Transferencia Bancaria', icon: 'fas fa-university', color: '#22d3ee', description: 'Transferencia o depósito directo' },
   ];
 
   constructor(
@@ -315,6 +322,49 @@ export class HomeComponent implements OnInit, AfterViewInit {
       next: () => this.loadPartners(),
       error: () => {}
     });
+  }
+
+  buyProduct(product: any): void {
+    if (this.isGuest) {
+      this.router.navigate(['/auth/login']);
+      return;
+    }
+    this.selectedProduct = product;
+    this.selectedPlan = null;
+    this.showPaymentModal = true;
+  }
+
+  selectPlan(plan: any): void {
+    this.selectedPlan = plan;
+  }
+
+  closePaymentModal(): void {
+    this.showPaymentModal = false;
+    this.selectedProduct = null;
+    this.selectedPlan = null;
+  }
+
+  processPayment(methodId: string): void {
+    if (!this.selectedProduct || !this.selectedPlan) return;
+
+    if (methodId === 'transferencia') {
+      window.open(this.discordUrl, '_blank');
+      this.closePaymentModal();
+      return;
+    }
+
+    if (methodId === 'paypal') {
+      const paypalUrl = `https://paypal.me/SupremoCheats/${this.selectedPlan.price}USD`;
+      window.open(paypalUrl, '_blank');
+      this.closePaymentModal();
+      return;
+    }
+
+    if (methodId === 'binance') {
+      window.open(this.discordUrl, '_blank');
+      this.closePaymentModal();
+      return;
+    }
   }
 
   private charts: Chart[] = [];

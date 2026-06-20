@@ -1,4 +1,87 @@
-<div class="dashboard-layout">
+<!-- ==================== GUEST STORE VIEW ==================== -->
+<div *ngIf="isGuest" class="guest-layout">
+
+  <!-- Guest Header -->
+  <header class="guest-header">
+    <div class="guest-header-inner">
+      <div class="guest-logo">
+        <div class="logo-icon"><i class="fas fa-gamepad"></i></div>
+        <div>
+          <span class="logo-text">SUPREMO CHEATS</span>
+          <span class="logo-subtitle">Tienda Oficial</span>
+        </div>
+      </div>
+      <div class="guest-header-actions">
+        <a [href]="discordUrl" target="_blank" class="topbar-discord-btn">
+          <i class="fab fa-discord"></i> <span class="discord-label">Discord</span>
+        </a>
+        <a routerLink="/auth/login" class="guest-login-btn">
+          <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="guest-hero">
+    <div class="guest-hero-inner">
+      <span class="hero-badge">PANEL FREE FIRE</span>
+      <h1 class="hero-title">Productos <span class="text-gradient-brand">Premium</span> para Free Fire</h1>
+      <p class="hero-subtitle">Herramientas de alto rendimiento con precios imbatibles. Precios desde $1.</p>
+      <div class="hero-badges">
+        <span class="hero-feature"><i class="fas fa-shield-alt"></i> Seguros</span>
+        <span class="hero-feature"><i class="fas fa-bolt"></i> Entrega Instantánea</span>
+        <span class="hero-feature"><i class="fas fa-headset"></i> Soporte 24/7</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Grid -->
+  <section class="guest-products">
+    <div class="guest-products-inner">
+      <h2 class="section-title">Nuestros Productos</h2>
+      <div class="guest-products-grid">
+        <div class="guest-product-card" *ngFor="let product of products">
+          <div class="guest-product-header">
+            <i [class]="product.icon" class="guest-product-icon"></i>
+            <span class="badge" [ngClass]="'badge-' + product.badgeType">{{ product.badge }}</span>
+          </div>
+          <h3 class="guest-product-name">{{ product.name }}</h3>
+          <p class="guest-product-desc">{{ product.description }}</p>
+          <div class="guest-product-prices" *ngIf="product.prices.length > 0">
+            <div class="guest-price-row" *ngFor="let p of product.prices">
+              <span class="guest-price-duration">{{ p.duration }}</span>
+              <span class="guest-price-value">${{ p.price }}</span>
+            </div>
+          </div>
+          <div class="guest-product-prices" *ngIf="product.prices.length === 0">
+            <span class="price-soon">Próximamente</span>
+          </div>
+          <button class="guest-buy-btn" *ngIf="product.prices.length > 0" (click)="buyProduct(product)">
+            <i class="fas fa-shopping-cart"></i> Comprar Ahora
+          </button>
+          <button class="guest-buy-btn disabled" *ngIf="product.prices.length === 0" disabled>
+            Próximamente
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="guest-footer">
+    <div class="guest-footer-inner">
+      <span>&copy; 2026 SUPREMO CHEATS &middot; Todos los derechos reservados</span>
+      <span class="footer-developer">Developer <strong>Asmodeus</strong></span>
+      <a [href]="discordUrl" target="_blank" class="footer-discord">
+        <i class="fab fa-discord"></i> Soporte en Discord
+      </a>
+    </div>
+  </footer>
+</div>
+
+<!-- ==================== DASHBOARD VIEW (logged in) ==================== -->
+<div *ngIf="!isGuest" class="dashboard-layout">
   <div class="mobile-overlay" [class.active]="mobileMenuOpen" (click)="toggleMobileMenu()"></div>
 
   <aside class="sidebar" [class.collapsed]="sidebarCollapsed" [class.mobile-open]="mobileMenuOpen">
@@ -640,6 +723,68 @@
       <button class="btn-outline" (click)="closePartnerModal()">Cancelar</button>
       <button class="btn-primary" (click)="savePartner()">
         <i class="fas fa-check"></i> {{ editingPartner ? 'Guardar Cambios' : 'Crear Socio' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Métodos de Pago -->
+<div class="modal-overlay" *ngIf="showPaymentModal" (click)="closePaymentModal()">
+  <div class="modal-content card payment-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div>
+        <h2>Selecciona Método de Pago</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 4px;" *ngIf="selectedProduct">
+          {{ selectedProduct.name }} — {{ selectedPlan?.duration || '' }}
+          <span *ngIf="selectedPlan" style="color: #22d3ee; font-weight: 700;">${{ selectedPlan?.price }}</span>
+        </p>
+      </div>
+      <button class="btn-icon" (click)="closePaymentModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <!-- Plan selection first -->
+      <div *ngIf="selectedProduct && !selectedPlan">
+        <p style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 12px;">Selecciona un plan</p>
+        <div class="plan-options">
+          <button class="plan-option" *ngFor="let p of selectedProduct.prices" (click)="selectPlan(p)">
+            <span class="plan-duration">{{ p.duration }}</span>
+            <span class="plan-price">${{ p.price }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Payment methods after plan selection -->
+      <div *ngIf="selectedPlan">
+        <p style="color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 12px;">Método de pago</p>
+        <div class="payment-options">
+          <button class="payment-option" *ngFor="let pm of paymentMethods" (click)="processPayment(pm.id)">
+            <div class="payment-option-icon" [style.color]="pm.color">
+              <i [class]="pm.icon"></i>
+            </div>
+            <div class="payment-option-info">
+              <span class="payment-option-name">{{ pm.name }}</span>
+              <span class="payment-option-desc">{{ pm.description }}</span>
+            </div>
+            <i class="fas fa-chevron-right payment-option-arrow"></i>
+          </button>
+        </div>
+
+        <div class="transfer-info" *ngIf="false">
+          <div class="transfer-steps">
+            <p class="transfer-title"><i class="fas fa-info-circle"></i> Instrucciones de Transferencia</p>
+            <ol>
+              <li>Únete a nuestro Discord</li>
+              <li>Abre un ticket en #soporte</li>
+              <li>Envía el comprobante de pago</li>
+              <li>Recibe tu producto en minutos</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" *ngIf="selectedPlan">
+      <button class="btn-outline" (click)="selectedPlan = null">
+        <i class="fas fa-arrow-left"></i> Volver
       </button>
     </div>
   </div>
