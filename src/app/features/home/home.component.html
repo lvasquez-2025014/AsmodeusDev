@@ -42,8 +42,11 @@
       <h2 class="section-title">Nuestros Productos</h2>
       <div class="guest-products-grid">
         <div class="guest-product-card" *ngFor="let product of products">
-          <div class="guest-product-header">
-            <i [class]="product.icon" class="guest-product-icon"></i>
+          <div class="guest-product-image">
+            <img *ngIf="product.image" [src]="product.image" [alt]="product.name" class="guest-product-img" />
+            <div *ngIf="!product.image" class="guest-product-img-placeholder">
+              <i [class]="product.icon" class="guest-product-icon"></i>
+            </div>
             <span class="badge" [ngClass]="'badge-' + product.badgeType">{{ product.badge }}</span>
           </div>
           <h3 class="guest-product-name">{{ product.name }}</h3>
@@ -257,7 +260,11 @@
         <div class="products-grid">
           <div class="product-card" *ngFor="let product of products">
             <div class="product-card-image">
-              <i [class]="product.icon" class="product-icon-display"></i>
+              <img *ngIf="product.image" [src]="product.image" [alt]="product.name" class="product-img" />
+              <div *ngIf="!product.image" class="product-img-placeholder">
+                <i [class]="product.icon" class="product-icon-display"></i>
+                <span class="product-img-label">Arrastra o pega tu imagen aqui</span>
+              </div>
               <span class="badge" [ngClass]="'badge-' + product.badgeType">{{ product.badge }}</span>
             </div>
             <div class="product-card-body">
@@ -271,7 +278,7 @@
                 </div>
               </div>
               <div class="product-card-prices" *ngIf="product.prices.length === 0">
-                <span class="price-soon">Precios próximamente</span>
+                <span class="price-soon">Precios proximamente</span>
               </div>
               <div class="product-card-footer">
                 <span class="product-stock" [ngClass]="product.stock > 0 ? 'in-stock' : 'out-of-stock'">
@@ -1095,7 +1102,11 @@
           <div class="products-grid">
             <div class="product-card" *ngFor="let product of products">
               <div class="product-card-image">
-                <i [class]="product.icon" class="product-icon-display"></i>
+                <img *ngIf="product.image" [src]="product.image" [alt]="product.name" class="product-img" />
+                <div *ngIf="!product.image" class="product-img-placeholder">
+                  <i [class]="product.icon" class="product-icon-display"></i>
+                  <span class="product-img-label">Arrastra o pega tu imagen aqui</span>
+                </div>
                 <span class="badge" [ngClass]="'badge-' + product.badgeType">{{ product.badge }}</span>
               </div>
               <div class="product-card-body">
@@ -1109,7 +1120,7 @@
                   </div>
                 </div>
                 <div class="product-card-prices" *ngIf="product.prices.length === 0">
-                  <span class="price-soon">Precios próximamente</span>
+                  <span class="price-soon">Precios proximamente</span>
                 </div>
                 <div class="product-card-footer">
                   <span class="product-stock" [ngClass]="product.stock > 0 ? 'in-stock' : 'out-of-stock'">
