@@ -170,6 +170,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private heartbeatInterval: any;
   private refreshInterval: any;
+  private msgPollInterval: any;
 
   constructor(
     private auth: AuthService,
@@ -204,15 +205,19 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     }, 30000);
 
-    // Refresh conversations every 15s
+    // Refresh conversations every 5s
     this.refreshInterval = setInterval(() => {
       if (this.activeSection === 'chat') {
         this.loadChat();
-        if (this.activeChat) {
-          this.refreshMessages();
-        }
       }
-    }, 15000);
+    }, 5000);
+
+    // Poll messages every 2s when a chat is active
+    this.msgPollInterval = setInterval(() => {
+      if (this.activeSection === 'chat' && this.activeChat) {
+        this.refreshMessages();
+      }
+    }, 2000);
   }
 
   ngAfterViewInit(): void {
@@ -222,6 +227,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
     if (this.refreshInterval) clearInterval(this.refreshInterval);
+    if (this.msgPollInterval) clearInterval(this.msgPollInterval);
     this.destroyCharts();
   }
 
