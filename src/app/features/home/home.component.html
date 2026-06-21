@@ -306,7 +306,7 @@
               <div class="product-card-prices" *ngIf="product.prices.length === 0">
                 <span class="price-soon">Precios proximamente</span>
               </div>
-              <button class="product-buy-btn">VER OPCIONES</button>
+              <button class="product-buy-btn" (click)="buyProduct(product)">VER OPCIONES</button>
             </div>
           </div>
         </div>
