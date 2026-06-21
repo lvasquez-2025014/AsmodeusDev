@@ -364,25 +364,31 @@
       </section>
 
       <!-- ==================== CHAT EN VIVO - DISCORD STYLE ==================== -->
-      <section *ngIf="activeSection === 'chat'" class="discord-chat-section">
+      <section *ngIf="activeSection === 'chat'" class="discord-chat-section" [class.focus-mode]="chatFocusMode">
+        <div class="cyber-grid-bg"></div>
+        <div class="cyber-aurora"><div class="cyber-aurora-1"></div><div class="cyber-aurora-2"></div><div class="cyber-aurora-3"></div></div>
 
         <!-- SERVER BAR -->
-        <div class="discord-server-bar">
+        <div class="discord-server-bar cyber-server-bar">
+          <div class="cyber-server-indicator"></div>
           <div class="discord-server-icon active" title="Mensajes Directos" (click)="switchChatView('dms')"
                [class.active]="chatView === 'dms'">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
           </div>
-          <div class="discord-server-divider"></div>
+          <div class="cyber-divider"></div>
           <div class="discord-server-icon" title="Supremo Cheats"
                [class.active]="chatView === 'channels'" (click)="switchChatView('channels')">
-            <span class="discord-server-text">SC</span>
+            <span class="discord-server-text cyber-server-icon">SC</span>
           </div>
           <div class="flex-1"></div>
-          <div class="discord-user-avatar" [title]="user?.name">
+          <button class="discord-icon-btn cyber-focus-btn" (click)="toggleChatFocusMode()" [title]="chatFocusMode ? 'Salir del modo enfoque' : 'Modo enfoque'">
+            <i class="fas" [ngClass]="chatFocusMode ? 'fa-expand' : 'fa-compress'"></i>
+          </button>
+          <div class="discord-user-avatar cyber-avatar-glow" [title]="user?.name">
             <div class="discord-avatar-circle" [style.background]="'linear-gradient(135deg, ' + (user?.role === 'admin' ? '#ef4444, #f472b6' : user?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
               {{ getInitials(user?.name) }}
             </div>
-            <div class="discord-status-dot online"></div>
+            <div class="discord-status-dot online cyber-status-pulse"></div>
           </div>
         </div>
 
@@ -537,7 +543,7 @@
             </div>
 
             <!-- Messages -->
-            <div *ngFor="let msg of chatMessages; let i = index" class="discord-msg-row"
+            <div *ngFor="let msg of chatMessages; let i = index" class="discord-msg-row cyber-msg-enter"
                  [class.deleted]="msg.isDeleted">
               <div *ngIf="msg.isDeleted" class="discord-msg-deleted">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity="0.4"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
@@ -618,13 +624,13 @@
               <textarea [(ngModel)]="chatInput" rows="1"
                 [placeholder]="chatView === 'dms' ? 'Enviar mensaje a @' + (getOtherMember(activeChat)?.name || '') : 'Enviar mensaje a #' + activeChat?.name"
                 (keydown)="handleChatKeyDown($event); autoResize($event)"
-                class="discord-textarea scrollbar"></textarea>
+                class="discord-textarea scrollbar cyber-input-glow"></textarea>
               <div class="discord-input-actions">
                 <button class="discord-icon-btn" (click)="toggleEmojiPickerFn()" title="Emoji">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
                 </button>
                 <div class="discord-input-divider"></div>
-                <button class="discord-send-btn" (click)="sendChatMessage()" [disabled]="!chatInput.trim()" title="Enviar">
+                <button class="discord-send-btn cyber-send-btn" (click)="sendChatMessage()" [disabled]="!chatInput.trim()" title="Enviar">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                 </button>
               </div>
@@ -644,13 +650,22 @@
         </div>
 
         <!-- MEMBERS PANEL -->
-        <div class="discord-members-panel scrollbar" *ngIf="membersVisible && activeChat">
-          <div class="discord-members-header" *ngIf="chatView === 'channels'">
-            <p class="discord-channel-label">MIEMBROS</p>
+        <div class="discord-members-panel scrollbar cyber-members-panel" *ngIf="membersVisible && activeChat && chatSmartPanelOpen">
+          <div class="cyber-panel-tabs">
+            <button class="cyber-panel-tab" [class.active]="chatPanelTab === 'members'" (click)="switchChatPanelTab('members')">
+              <i class="fas fa-users"></i> Miembros
+            </button>
+            <button class="cyber-panel-tab" [class.active]="chatPanelTab === 'threads'" (click)="switchChatPanelTab('threads')">
+              <i class="fas fa-comments"></i> Hilos
+            </button>
           </div>
-          <div class="discord-members-header" *ngIf="chatView === 'dms'">
-            <p class="discord-channel-label">INFO DEL USUARIO</p>
-          </div>
+          <div *ngIf="chatPanelTab === 'members'" class="cyber-panel-content">
+            <div class="discord-members-header" *ngIf="chatView === 'channels'">
+              <p class="discord-channel-label cyber-member-label">MIEMBROS</p>
+            </div>
+            <div class="discord-members-header" *ngIf="chatView === 'dms'">
+              <p class="discord-channel-label cyber-member-label">INFO DEL USUARIO</p>
+            </div>
 
           <!-- DM: Other user info -->
           <div *ngIf="chatView === 'dms' && getOtherMember(activeChat)" class="discord-member-info">
@@ -680,6 +695,41 @@
             </div>
             <div *ngIf="getChannelMembers().length === 0" class="discord-empty-state">
               <p>No hay miembros</p>
+            </div>
+          </div>
+          </div>
+          <div *ngIf="chatPanelTab === 'threads'" class="cyber-panel-content">
+            <div class="cyber-thread-list">
+              <ng-container *ngFor="let msg of chatMessages">
+                <div *ngIf="msg.replyTo" class="cyber-thread-card">
+                  <div class="cyber-thread-icon"><i class="fas fa-reply"></i></div>
+                  <div class="cyber-thread-info">
+                    <div class="cyber-thread-title">{{ msg.content | slice:0:40 }}...</div>
+                    <div class="cyber-thread-meta">{{ msg.sender?.name }} · {{ msg.createdAt | date:'HH:mm' }}</div>
+                  </div>
+                </div>
+              </ng-container>
+              <div *ngIf="threadMessages.length === 0" class="discord-empty-state">
+                <p>No hay hilos activos</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Smart Panel Toggle -->
+        <button *ngIf="activeChat && user" class="discord-icon-btn cyber-focus-btn" (click)="toggleChatSmartPanel()"
+                [title]="chatSmartPanelOpen ? 'Ocultar panel lateral' : 'Mostrar panel lateral'"
+                style="position: absolute; right: 8px; top: 56px; z-index: 10;">
+          <i class="fas" [ngClass]="chatSmartPanelOpen ? 'fa-angle-right' : 'fa-angle-left'"></i>
+        </button>
+
+        <!-- Toast Notifications -->
+        <div class="cyber-toast-container">
+          <div *ngFor="let toast of toasts" [ngClass]="'cyber-toast cyber-toast-' + toast.type">
+            <i class="cyber-toast-icon fas" [ngClass]="toast.type === 'success' ? 'fa-check-circle' : toast.type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'"></i>
+            <div>
+              <div class="cyber-toast-title">{{ toast.title }}</div>
+              <div class="cyber-toast-msg">{{ toast.message }}</div>
             </div>
           </div>
         </div>

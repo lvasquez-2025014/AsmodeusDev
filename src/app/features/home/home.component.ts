@@ -248,12 +248,25 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   bankDetails: Record<string, any> = {
     MX: { bank: 'Spin by OXXO', account: '4217470121417873', holder: 'Haide Ayala Zavala', clabe: '', note: 'Depósito en efectivo en cualquier OXXO' },
-    AR: { bank: 'Mercado Pago / Transferencia', account: 'CBU pendiente', holder: 'Pending', clabe: '', note: 'Transferencia CVU/CBU' },
-    CO: { bank: 'Nequi / Daviplata', account: 'Pendiente', holder: 'Pendiente', clabe: '', note: 'Transferencia Nequi o Daviplata' },
-    PE: { bank: 'Yape / Plin', account: 'Pendiente', holder: 'Pendiente', clabe: '', note: 'Transferencia Yape o Plin' },
-    CL: { bank: 'Transferencia', account: 'Pendiente', holder: 'Pendiente', clabe: '', note: 'Transferencia bancaria' },
-    VE: { bank: 'Transferencia / Pago Móvil', account: 'Pendiente', holder: 'Pendiente', clabe: '', note: 'Pago móvil o transferencia' },
-    default: { bank: 'Transferencia Bancaria', account: 'Pendiente', holder: 'Pendiente', clabe: '', note: 'Contacta en Discord para datos exactos' },
+    AR: { bank: 'Mercado Pago', account: 'CBU/CVU en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Envía el comprobante por Discord' },
+    BO: { bank: 'Tigo Money / Unifacial', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia Tigo Money o depósito' },
+    BR: { bank: 'PIX', account: 'Chave PIX en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Pago instantáneo por PIX' },
+    CL: { bank: 'Transferencia / Webpay', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia bancaria o pago online' },
+    CO: { bank: 'Nequi / Daviplata', account: 'Enviar al número de Discord', holder: 'Contactar en Discord', clabe: '', note: 'Envía el comprobante por Discord' },
+    CR: { bank: 'SINPE Móvil', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia SINPE Móvil' },
+    CU: { bank: 'Transferencia MLC', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia en MLC o USD' },
+    EC: { bank: 'Pago Móvil / Transferencia', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia bancaria' },
+    SV: { bank: 'Tigo Money / Banco', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia o Tigo Money' },
+    GT: { bank: 'Tigo Money / Banca en Línea', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia o Tigo Money' },
+    HN: { bank: 'Tigo Money / Banpaís', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia o Tigo Money' },
+    NI: { bank: 'Banpro / Pago Móvil', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia Banpro' },
+    PA: { bank: 'Yappy / Nequi', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia Yappy o Nequi' },
+    PY: { bank: 'Tigo Money / Bancard', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia Tigo Money' },
+    PE: { bank: 'Yape / Plin', account: 'Enviar al número de Discord', holder: 'Contactar en Discord', clabe: '', note: 'Envía el comprobante por Discord' },
+    DO: { bank: 'BanReservas / Link', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia bancaria o Link' },
+    UY: { bank: 'Banco República / Abitab', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Transferencia o Abitab' },
+    VE: { bank: 'Pago Móvil / Zelle', account: 'Contactar en Discord', holder: 'Contactar en Discord', clabe: '', note: 'Pago móvil o Zelle' },
+    default: { bank: 'Transferencia Bancaria', account: 'Contactar en Discord para datos exactos', holder: 'Contactar en Discord', clabe: '', note: 'Escríbenos en Discord para recibir los datos de pago' },
   };
 
   getCountryBankDetails(): any {
@@ -322,6 +335,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.viewUserProfile = null;
     this.activeSection = this.isAdmin ? 'socios' : 'clientes';
   }
+
+  // ============ CHAT CYBERPUNK ============
+  chatFocusMode = false;
+  chatSmartPanelOpen = true;
+  chatPanelTab: 'members' | 'threads' = 'members';
+  toasts: { id: number; title: string; message: string; type: string }[] = [];
+  private toastCounter = 0;
+
+  get threadMessages() { return this.chatMessages.filter(m => m.replyTo); }
 
   private heartbeatInterval: any;
   private refreshInterval: any;
@@ -703,6 +725,27 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleChatChannels(): void {
     this.chatChannelsOpen = !this.chatChannelsOpen;
+  }
+
+  toggleChatFocusMode(): void {
+    this.chatFocusMode = !this.chatFocusMode;
+    this.showToast(this.chatFocusMode ? 'Modo Enfoque' : 'Modo Normal', this.chatFocusMode ? 'Paneles laterales ocultos' : 'Paneles restaurados', 'info');
+  }
+
+  toggleChatSmartPanel(): void {
+    this.chatSmartPanelOpen = !this.chatSmartPanelOpen;
+  }
+
+  switchChatPanelTab(tab: 'members' | 'threads'): void {
+    this.chatPanelTab = tab;
+  }
+
+  showToast(title: string, message: string, type: string = 'info'): void {
+    const id = ++this.toastCounter;
+    this.toasts.push({ id, title, message, type });
+    setTimeout(() => {
+      this.toasts = this.toasts.filter(t => t.id !== id);
+    }, 3000);
   }
 
   filterConversations(): void {
