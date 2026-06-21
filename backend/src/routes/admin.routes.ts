@@ -160,11 +160,25 @@ router.put('/users/:id', authenticate, authorize('admin'), async (req: AuthReque
 });
 
 router.delete('/users/:id', authenticate, authorize('admin'), async (req: AuthRequest, res: Response) => {
-  const user = await UserModel.findByIdAndDelete(req.params.id);
-  if (!user) {
+  const { id } = req.params as { id: string };
+
+  if (id === req.userId) {
+    res.status(400).json({ message: 'No puedes eliminar tu propia cuenta' });
+    return;
+  }
+
+  const target = await UserModel.findById(id).select('role');
+  if (!target) {
     res.status(404).json({ message: 'Usuario no encontrado' });
     return;
   }
+
+  if (target.role === 'admin') {
+    res.status(403).json({ message: 'No puedes eliminar a otro administrador' });
+    return;
+  }
+
+  await UserModel.findByIdAndDelete(id);
   res.json({ success: true, message: 'Usuario eliminado' });
 });
 
