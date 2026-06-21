@@ -32,6 +32,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   user: any = null;
   discordUrl = 'https://discord.gg/HazXhwWMS';
   todayDate = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  currentTime = '';
+  private clockInterval: any;
 
   get isClient(): boolean { return this.user?.role === 'cliente'; }
   get isAdmin(): boolean { return this.user?.role === 'admin'; }
@@ -307,15 +309,24 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  uploadAvatar(event: any): void {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const formData = new FormData();
-    formData.append('avatar', file);
-    this.api.post<any>('profile/avatar', formData).subscribe({
+  avatarUrlInput = '';
+  showAvatarInput = false;
+
+  toggleAvatarInput(): void {
+    this.showAvatarInput = !this.showAvatarInput;
+    if (!this.showAvatarInput) this.avatarUrlInput = '';
+  }
+
+  saveAvatarUrl(): void {
+    const url = this.avatarUrlInput.trim();
+    if (!url) return;
+    this.api.put<any>('profile', { avatar: url }).subscribe({
       next: (res) => {
-        this.user = { ...this.user, avatar: res.data.avatar };
+        this.user = { ...this.user, avatar: url };
         localStorage.setItem('user', JSON.stringify(this.user));
+        this.showAvatarInput = false;
+        this.avatarUrlInput = '';
+        this.showToast('Avatar actualizado', 'Tu foto de perfil se ha cambiado', 'success');
       },
       error: () => {}
     });
@@ -368,6 +379,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadProducts();
     this.loadChat();
     this.loadNotifications();
+    this.updateClock();
+    this.clockInterval = setInterval(() => this.updateClock(), 1000);
     if (!this.isClient) {
       this.loadPartners();
       this.loadClientes();
@@ -414,7 +427,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
     if (this.refreshInterval) clearInterval(this.refreshInterval);
     if (this.msgPollInterval) clearInterval(this.msgPollInterval);
+    if (this.clockInterval) clearInterval(this.clockInterval);
     this.destroyCharts();
+  }
+
+  updateClock(): void {
+    const now = new Date();
+    this.currentTime = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   }
 
   showSection(section: string): void {
@@ -830,10 +849,30 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     return then.toLocaleDateString('es-ES');
   }
 
+  private userColors: Record<string, string> = {};
+  private colorPalette = [
+    '#e74c3c', '#e67e22', '#f1c40f', '#2ecc71', '#1abc9c',
+    '#3498db', '#9b59b6', '#e84393', '#00b894', '#6c5ce7',
+    '#fd79a8', '#00cec9', '#a29bfe', '#ffeaa7', '#fab1a0',
+    '#74b9ff', '#55efc4', '#ff7675', '#fdcb6e', '#a29bfe'
+  ];
+
+  getUserColor(name: string): string {
+    if (!name) return this.colorPalette[0];
+    if (this.userColors[name]) return this.userColors[name];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const idx = Math.abs(hash) % this.colorPalette.length;
+    this.userColors[name] = this.colorPalette[idx];
+    return this.userColors[name];
+  }
+
   getGradient(role: string, senderName?: string): string {
-    if (senderName === 'Admin Root' || role === 'admin') return 'from-red-500 via-pink-500 to-purple-500';
-    if (role === 'vendedor') return 'from-cyan-500 to-blue-500';
-    return 'from-lime-500 to-green-500';
+    const name = senderName || role;
+    const color = this.getUserColor(name);
+    return color;
   }
 
   getRoleBadgeClass(role: string): string {
@@ -849,9 +888,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getTextColor(role: string, senderName?: string): string {
-    if (senderName === 'Admin Root' || role === 'admin') return 'text-pink-400';
-    if (role === 'vendedor') return 'text-cyan-400';
-    return 'text-lime-400';
+    return 'text-custom-name';
   }
 
   getOtherMember(conv: any): any {

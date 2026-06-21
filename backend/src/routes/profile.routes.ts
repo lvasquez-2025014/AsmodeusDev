@@ -32,7 +32,7 @@ router.get('/:id', authenticate, async (req: AuthRequest, res: Response) => {
 // PUT update own profile
 router.put('/', authenticate, async (req: AuthRequest, res: Response) => {
   try {
-    const { name, bio, discord, country, phone } = req.body;
+    const { name, bio, discord, country, phone, avatar } = req.body;
     const update: any = {};
 
     if (name !== undefined) update.name = name.trim();
@@ -40,6 +40,7 @@ router.put('/', authenticate, async (req: AuthRequest, res: Response) => {
     if (discord !== undefined) update.discord = discord.trim();
     if (country !== undefined) update.country = country.trim();
     if (phone !== undefined) update.phone = phone.trim();
+    if (avatar !== undefined) update.avatar = avatar.trim();
 
     const user = await UserModel.findByIdAndUpdate(req.userId, update, { new: true }).select('-password');
     if (!user) { res.status(404).json({ message: 'Usuario no encontrado' }); return; }

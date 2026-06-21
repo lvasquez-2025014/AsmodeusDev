@@ -162,8 +162,11 @@
 
     <div class="sidebar-user">
       <div class="user-avatar-wrap">
-        <div class="user-avatar">
+        <div class="user-avatar" *ngIf="!user?.avatar" [style.background]="getUserColor(user?.name || 'U')">
           {{ user?.name?.charAt(0) || 'U' }}
+        </div>
+        <div class="user-avatar" *ngIf="user?.avatar">
+          <img [src]="user.avatar" alt="Avatar" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" />
         </div>
         <span class="user-status-dot"></span>
       </div>
@@ -189,7 +192,14 @@
       </div>
       <div class="topbar-center">
         <div class="topbar-info-bar">
-          <span class="topbar-date">{{ todayDate }}</span>
+          <div class="topbar-datetime">
+            <div class="topbar-clock">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span class="topbar-time">{{ currentTime }}</span>
+            </div>
+            <span class="topbar-datetime-divider"></span>
+            <span class="topbar-date">{{ todayDate }}</span>
+          </div>
         </div>
       </div>
       <div class="topbar-right">
@@ -296,7 +306,7 @@
             </div>
             <div class="dash-activity-list">
               <div class="dash-activity-row" *ngFor="let activity of recentActivity">
-                <div class="dash-activity-avatar" [style.background]="activity.type === 'user' ? 'linear-gradient(135deg, #10b981, #059669)' : activity.type === 'product' ? 'linear-gradient(135deg, #22d3ee, #3b82f6)' : 'linear-gradient(135deg, #a855f7, #7c3aed)'">
+                <div class="dash-activity-avatar" [style.background]="getUserColor(activity.user || 'S')">
                   {{ activity.user?.charAt(0) || 'S' }}
                 </div>
                 <div class="dash-activity-info">
@@ -435,8 +445,8 @@
             <i class="fas" [ngClass]="chatFocusMode ? 'fa-expand' : 'fa-compress'"></i>
           </button>
           <div class="discord-user-avatar cyber-avatar-glow" [title]="user?.name">
-            <div class="discord-avatar-circle" [style.background]="'linear-gradient(135deg, ' + (user?.role === 'admin' ? '#ef4444, #f472b6' : user?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
-              {{ getInitials(user?.name) }}
+            <div class="discord-avatar-circle" [style.background]="getUserColor(user?.name)">
+              {{ user?.name?.charAt(0) || 'U' }}
             </div>
             <div class="discord-status-dot online cyber-status-pulse"></div>
           </div>
@@ -465,7 +475,7 @@
                  [class.active]="activeChat?._id === conv._id"
                  (click)="selectConversation(conv); chatChannelsOpen = false">
               <div class="discord-dm-avatar">
-                <div class="discord-avatar-sm" [style.background]="'linear-gradient(135deg, ' + (getOtherMember(conv)?.role === 'admin' ? '#ef4444, #f472b6' : getOtherMember(conv)?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                <div class="discord-avatar-sm" [style.background]="getUserColor(getOtherMember(conv)?.name || 'U')">
                   {{ getInitials(getOtherMember(conv)?.name || conv.name) }}
                 </div>
                 <div class="discord-status-dot-sm" [class.online]="isOnline(getOtherMember(conv)?._id)"></div>
@@ -506,7 +516,7 @@
           <div class="discord-user-bar">
             <div class="discord-user-bar-inner">
               <div class="discord-avatar-container">
-                <div class="discord-avatar-xs" [style.background]="'linear-gradient(135deg, ' + (user?.role === 'admin' ? '#ef4444, #f472b6' : user?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                <div class="discord-avatar-xs" [style.background]="getUserColor(user?.name || 'U')">
                   {{ getInitials(user?.name) }}
                 </div>
                 <div class="discord-status-dot-xs online"></div>
@@ -528,7 +538,7 @@
                 <i class="fas fa-bars"></i>
               </button>
               <div class="discord-avatar-container" *ngIf="chatView === 'dms'">
-                <div class="discord-avatar-sm" [style.background]="'linear-gradient(135deg, ' + (getOtherMember(activeChat)?.role === 'admin' ? '#ef4444, #f472b6' : getOtherMember(activeChat)?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                <div class="discord-avatar-sm" [style.background]="getUserColor(getOtherMember(activeChat)?.name || 'U')">
                   {{ getInitials(getOtherMember(activeChat)?.name || activeChat.name) }}
                 </div>
                 <div class="discord-status-dot-sm" [class.online]="isOnline(getOtherMember(activeChat)?._id)"></div>
@@ -567,7 +577,7 @@
           <div class="discord-messages-area scrollbar" id="chatMessagesContainer" *ngIf="activeChat">
             <!-- Welcome -->
             <div class="discord-welcome" *ngIf="chatView === 'dms'">
-              <div class="discord-avatar-lg" [style.background]="'linear-gradient(135deg, ' + (getOtherMember(activeChat)?.role === 'admin' ? '#ef4444, #f472b6' : getOtherMember(activeChat)?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+              <div class="discord-avatar-lg" [style.background]="getUserColor(getOtherMember(activeChat)?.name || 'U')">
                 {{ getInitials(getOtherMember(activeChat)?.name || activeChat.name) }}
               </div>
               <h2>{{ getOtherMember(activeChat)?.name || activeChat.name }}</h2>
@@ -608,7 +618,7 @@
                 </div>
                 <div class="discord-msg-content">
                   <div class="discord-msg-header">
-                    <span class="discord-msg-author" [ngClass]="getTextColor(msg.sender?.role, msg.sender?.name)">{{ msg.sender?.name || 'Usuario' }}</span>
+                    <span class="discord-msg-author" [style.color]="getUserColor(msg.sender?.name || 'Usuario')">{{ msg.sender?.name || 'Usuario' }}</span>
                     <span class="discord-role-badge sm" [ngClass]="getRoleBadgeClass(msg.sender?.role)">{{ getRoleLabel(msg.sender?.role) }}</span>
                     <span class="discord-msg-time">{{ msg.createdAt | date:'HH:mm' }}</span>
                   </div>
@@ -721,7 +731,7 @@
           <!-- DM: Other user info -->
           <div *ngIf="chatView === 'dms' && getOtherMember(activeChat)" class="discord-member-info">
             <div class="discord-member-avatar">
-              <div class="discord-avatar-lg" [style.background]="'linear-gradient(135deg, ' + (getOtherMember(activeChat)?.role === 'admin' ? '#ef4444, #f472b6' : getOtherMember(activeChat)?.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+              <div class="discord-avatar-lg" [style.background]="getUserColor(getOtherMember(activeChat)?.name || 'U')">
                 {{ getInitials(getOtherMember(activeChat)?.name) }}
               </div>
             </div>
@@ -734,7 +744,7 @@
           <div *ngIf="chatView === 'channels'">
             <div *ngFor="let member of getChannelMembers()" class="discord-member-item">
               <div class="discord-avatar-container">
-                <div class="discord-avatar-sm" [style.background]="'linear-gradient(135deg, ' + (member.role === 'admin' ? '#ef4444, #f472b6' : member.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                <div class="discord-avatar-sm" [style.background]="getUserColor(member?.name || 'U')">
                   {{ getInitials(member.name) }}
                 </div>
                 <div class="discord-status-dot-sm" [class.online]="isOnline(member._id)"></div>
@@ -797,7 +807,7 @@
             <div class="discord-modal-body">
               <div *ngFor="let u of chatUsers" class="discord-user-option" (click)="startDirectChat(u._id)">
                 <div class="discord-avatar-container">
-                  <div class="discord-avatar-sm" [style.background]="'linear-gradient(135deg, ' + (u.role === 'admin' ? '#ef4444, #f472b6' : u.role === 'vendedor' ? '#22d3ee, #3b82f6' : '#84cc16, #22c55e') + ')'">
+                  <div class="discord-avatar-sm" [style.background]="getUserColor(u?.name || 'U')">
                     {{ getInitials(u.name) }}
                   </div>
                   <div class="discord-status-dot-sm" [class.online]="isOnline(u._id)"></div>
@@ -1300,17 +1310,23 @@
               <div class="cyber-avatar-glow"></div>
               <div class="cyber-avatar-ring"></div>
               <div class="cyber-avatar-img">
-                <img *ngIf="user?.avatar" [src]="imageUrl + user?.avatar" alt="Avatar" />
-                <div *ngIf="!user?.avatar" class="profile-avatar-placeholder">
-                  <i class="fas fa-user"></i>
+                <img *ngIf="user?.avatar" [src]="user?.avatar" alt="Avatar" />
+                <div *ngIf="!user?.avatar" class="profile-avatar-placeholder" [style.background]="getUserColor(user?.name || 'U')">
+                  {{ user?.name?.charAt(0) || 'U' }}
                 </div>
               </div>
             </div>
 
-            <label class="cyber-change-photo-btn">
-              <i class="fas fa-camera"></i> Cambiar Foto
-              <input type="file" accept="image/*" (change)="uploadAvatar($event)" hidden />
-            </label>
+            <button class="cyber-change-photo-btn" (click)="toggleAvatarInput()">
+              <i class="fas fa-link"></i> {{ showAvatarInput ? 'Cancelar' : 'Cambiar Foto' }}
+            </button>
+
+            <div class="avatar-url-input-wrap" *ngIf="showAvatarInput">
+              <input type="url" class="avatar-url-input" placeholder="Pega la URL de tu imagen..." [(ngModel)]="avatarUrlInput" (keyup.enter)="saveAvatarUrl()" />
+              <button class="avatar-url-save-btn" (click)="saveAvatarUrl()" [disabled]="!avatarUrlInput.trim()">
+                <i class="fas fa-check"></i>
+              </button>
+            </div>
 
             <span class="cyber-role-badge" [ngClass]="'role-' + user?.role">{{ user?.role }}</span>
 

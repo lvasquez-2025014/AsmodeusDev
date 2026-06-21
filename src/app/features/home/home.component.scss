@@ -399,12 +399,49 @@ $topbar-height: 64px;
   padding: 5px 16px 5px 5px;
 }
 
+.topbar-info-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+  padding: 6px 18px;
+}
+
+.topbar-datetime {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-clock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: $cyan;
+}
+
+.topbar-time {
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+
+.topbar-datetime-divider {
+  width: 1px;
+  height: 18px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
 .topbar-date {
-  font-size: 11px;
-  color: $text-muted;
+  font-size: 12px;
+  color: #94a3b8;
   font-weight: 500;
   white-space: nowrap;
-  padding-left: 10px;
+  text-transform: capitalize;
 }
 
 .search-box {
@@ -2661,6 +2698,10 @@ $topbar-height: 64px;
   justify-content: center;
   margin-bottom: 20px;
   color: #475569;
+}
+
+.text-custom-name {
+  font-weight: 600;
 }
 
 // ==================== MOBILE ====================
@@ -5971,6 +6012,49 @@ $topbar-height: 64px;
     transform: translateY(-3px) scale(1.05);
     box-shadow: 0 8px 24px rgba(6, 182, 212, 0.3);
   }
+}
+
+.avatar-url-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.avatar-url-input {
+  flex: 1;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: white;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease;
+
+  &::placeholder { color: #64748b; }
+  &:focus { border-color: rgba(6, 182, 212, 0.5); }
+}
+
+.avatar-url-save-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+
+  &:hover { transform: scale(1.05); }
+  &:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 }
 
 .cyber-role-badge {
