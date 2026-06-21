@@ -3182,3 +3182,268 @@ $topbar-height: 64px;
   &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
   &::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 }
+
+// ==================== RESPONSIVE ====================
+
+// Tablet (≤ 1024px) - additional fixes
+@media (max-width: 1024px) {
+  .topbar { padding: 0 16px; }
+  .page-content { padding: 20px; }
+  .section-header { margin-bottom: 16px; }
+  .stat-value { font-size: 22px; }
+  .stat-card { padding: 16px; }
+  .chart-container { height: 200px; padding: 16px; }
+  .product-modal { max-width: 95vw !important; }
+  .modal-content { max-width: 95vw; }
+  .guest-hero { padding: 50px 20px 40px; }
+  .guest-products { padding: 30px 20px 60px; }
+  .section-title { font-size: 24px; margin-bottom: 28px; }
+
+  // Chat responsive
+  .discord-chat-section { height: calc(100vh - 56px); }
+  .discord-server-bar { width: 56px; padding: 8px 0; }
+  .discord-server-icon { width: 40px; height: 40px; }
+  .discord-channels-panel { width: 200px; }
+  .discord-members-panel { width: 200px; }
+  .discord-msg-text { font-size: 13px; }
+}
+
+// Small tablet / large phone (≤ 768px)
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 12px;
+    height: 56px;
+  }
+
+  .page-content { padding: 16px; }
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    h1 { font-size: 20px; }
+  }
+
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .stat-card { padding: 14px; }
+  .stat-value { font-size: 20px; }
+  .stat-title { font-size: 12px; }
+  .stat-icon { width: 34px; height: 34px; font-size: 14px; }
+
+  .charts-row { grid-template-columns: 1fr; gap: 12px; }
+  .chart-container { height: 180px; }
+  .chart-card, .chart-card-sm { min-height: 260px; }
+
+  .bottom-row { grid-template-columns: 1fr; gap: 12px; }
+
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .product-card-image { height: 140px; }
+  .product-card-body { padding: 12px; }
+  .product-card-name { font-size: 14px; }
+  .product-card-desc { font-size: 11px; }
+
+  .partners-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .partner-card { padding: 16px; }
+  .partner-avatar { width: 40px; height: 40px; font-size: 14px; }
+
+  .earnings-summary { grid-template-columns: 1fr; gap: 12px; }
+  .earnings-card { padding: 16px; }
+  .earnings-value { font-size: 20px; }
+
+  .settings-grid { grid-template-columns: 1fr; }
+
+  // Modals responsive
+  .product-modal { max-width: 100% !important; max-height: 95vh; }
+  .payment-modal { max-width: 100% !important; }
+  .modal-content { max-width: 100%; border-radius: 12px; }
+  .modal-body { padding: 16px; }
+  .modal-header { padding: 16px; h2 { font-size: 16px; } }
+  .modal-footer { padding: 12px 16px; }
+
+  // Product image upload responsive
+  .product-image-preview img { height: 160px; }
+  .product-image-drop { padding: 24px 16px; }
+  .price-row-edit {
+    flex-wrap: wrap;
+    .form-input { min-width: 0; }
+    .form-input:first-child { flex: 1 1 100%; }
+    .form-input:nth-child(2) { flex: 1; }
+    .btn-sm { flex-shrink: 0; }
+  }
+
+  // Guest store responsive
+  .guest-header-inner { padding: 12px 16px; }
+  .guest-hero { padding: 40px 16px 32px; }
+  .hero-title { font-size: 28px; }
+  .hero-subtitle { font-size: 14px; margin-bottom: 20px; }
+  .hero-badges { gap: 10px; }
+  .hero-feature { font-size: 12px; padding: 6px 12px; }
+  .guest-products { padding: 24px 16px 48px; }
+  .section-title { font-size: 22px; margin-bottom: 24px; }
+  .guest-products-grid { grid-template-columns: 1fr; gap: 16px; }
+  .guest-product-card { padding: 16px; }
+  .guest-product-image { height: 140px; }
+  .guest-footer-inner { padding: 16px; }
+
+  // Chat responsive
+  .discord-channels-panel { width: 180px; }
+  .discord-members-panel { display: none; }
+  .discord-chat-header { padding: 0 12px; height: 44px; }
+  .discord-messages-area { padding: 12px; }
+  .discord-input-area { padding: 0 12px 10px; }
+  .discord-reply-bar { padding: 6px 12px; }
+  .discord-reply-preview-text { max-width: 200px; }
+  .discord-emoji-picker { width: 240px; right: 12px; bottom: 70px; }
+  .discord-emoji-grid { grid-template-columns: repeat(7, 1fr); }
+  .discord-msg-row { padding: 4px 8px; }
+  .discord-welcome h2 { font-size: 18px; }
+}
+
+// Mobile (≤ 640px)
+@media (max-width: 640px) {
+  .topbar {
+    height: 52px;
+    padding: 0 10px;
+    gap: 6px;
+  }
+
+  .topbar-left { gap: 8px; }
+  .topbar-right { gap: 4px; }
+  .topbar-user { display: none; }
+
+  .page-content { padding: 12px; }
+  .section-header {
+    margin-bottom: 12px;
+    h1 { font-size: 18px; }
+    p { font-size: 12px; }
+  }
+
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-card { padding: 12px; }
+  .stat-value { font-size: 18px; }
+  .stat-icon { width: 30px; height: 30px; font-size: 13px; border-radius: 8px; }
+  .stat-change { font-size: 10px; }
+
+  .charts-row { grid-template-columns: 1fr; gap: 10px; }
+  .chart-container { height: 160px; padding: 12px; }
+  .chart-card, .chart-card-sm { min-height: 220px; }
+
+  .products-grid { grid-template-columns: 1fr; gap: 12px; }
+  .product-card-image { height: 160px; }
+  .product-card-body { padding: 14px; }
+  .product-card-name { font-size: 15px; }
+
+  .partners-grid { grid-template-columns: 1fr; }
+
+  .settings-grid { grid-template-columns: 1fr; }
+  .settings-card { padding: 16px; }
+
+  .danger-actions { flex-direction: column; }
+
+  // Guest store
+  .guest-header-inner { padding: 10px 12px; }
+  .guest-header-actions { gap: 8px; }
+  .guest-login-btn { padding: 8px 14px; font-size: 12px; }
+  .guest-hero { padding: 32px 12px 24px; }
+  .hero-title { font-size: 24px; }
+  .hero-badge { font-size: 10px; padding: 4px 12px; }
+  .hero-feature { font-size: 11px; padding: 5px 10px; }
+  .guest-products { padding: 20px 12px 40px; }
+  .section-title { font-size: 20px; }
+  .guest-product-name { font-size: 16px; }
+  .guest-product-desc { font-size: 12px; }
+  .guest-footer { padding: 16px 12px; }
+
+  // Modals mobile
+  .modal-overlay { padding: 8px; align-items: flex-end; }
+  .modal-content {
+    border-radius: 16px 16px 0 0;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .product-modal {
+    max-width: 100% !important;
+    max-height: 85vh;
+    border-radius: 16px 16px 0 0;
+  }
+  .modal-header { padding: 14px 16px; }
+  .modal-body { padding: 14px 16px; }
+  .modal-footer { padding: 12px 16px; }
+  .form-group label { font-size: 11px; }
+
+  // Chat mobile
+  .discord-server-bar { width: 48px; padding: 6px 0; }
+  .discord-server-icon { width: 36px; height: 36px; font-size: 14px; }
+  .discord-server-divider { width: 24px; }
+  .discord-server-text { font-size: 12px; }
+
+  .discord-channels-panel {
+    position: fixed;
+    left: 48px;
+    top: 0;
+    bottom: 0;
+    width: 220px;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+
+    &.mobile-open { transform: translateX(0); }
+  }
+
+  .discord-chat-main { margin-left: 0; }
+  .discord-chat-header { padding: 0 10px; height: 42px; }
+  .discord-header-name { font-size: 13px; }
+  .discord-header-desc { display: none; }
+  .discord-messages-area { padding: 10px 8px; }
+  .discord-msg-row { gap: 8px; padding: 4px 6px; }
+  .discord-msg-author { font-size: 12px; }
+  .discord-msg-text { font-size: 12px; }
+  .discord-msg-time { font-size: 9px; }
+  .discord-msg-actions { opacity: 1; position: static; background: none; border: none; padding: 0; box-shadow: none; }
+  .discord-input-area { padding: 0 8px 8px; }
+  .discord-textarea { font-size: 14px; padding: 10px 4px; }
+  .discord-send-btn { width: 32px; height: 32px; border-radius: 8px; }
+  .discord-input-actions { padding: 6px; }
+  .discord-reply-bar { padding: 6px 8px; }
+  .discord-reply-preview-text { max-width: 140px; }
+  .discord-welcome { padding-bottom: 16px; margin-bottom: 16px; h2 { font-size: 16px; } p { font-size: 12px; } }
+  .discord-emoji-picker { width: calc(100vw - 32px); right: 8px; left: 8px; bottom: 60px; }
+  .discord-emoji-grid { grid-template-columns: repeat(8, 1fr); }
+  .discord-members-panel { display: none; }
+
+  // Tables
+  .table-container { font-size: 12px; }
+  .data-table th, .data-table td { padding: 10px 12px; font-size: 12px; }
+
+  // Buttons
+  .btn-primary { padding: 8px 16px; font-size: 12px; }
+  .btn-outline { padding: 8px 14px; font-size: 12px; }
+  .btn-discord-full { font-size: 13px; padding: 10px 16px; }
+
+  // Footer
+  .dashboard-footer { padding: 12px 16px; }
+  .footer-content { font-size: 11px; }
+
+  // Notifications
+  .notif-item { padding: 12px; gap: 10px; }
+  .notif-icon { width: 34px; height: 34px; font-size: 14px; }
+  .notif-title { font-size: 12px; }
+  .notif-message { font-size: 12px; }
+
+  // Price rows in modal
+  .price-rows { gap: 6px; }
+  .price-row-edit { gap: 6px; }
+  .product-image-drop { padding: 20px 12px; }
+  .product-image-drop .drop-title { font-size: 13px; }
+  .product-image-drop .drop-subtitle { font-size: 11px; }
+}
+
+// Very small screens (≤ 400px)
+@media (max-width: 400px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .hero-title { font-size: 22px; }
+  .hero-badges { flex-direction: column; align-items: center; }
+  .guest-header-inner { flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .guest-header-actions { width: 100%; justify-content: center; }
+  .discord-server-bar { display: none; }
+  .discord-channels-panel { left: 0; width: 260px; }
+}
