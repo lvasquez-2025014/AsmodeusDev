@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       items: [
         { name: 'Tienda', icon: 'fas fa-store', section: 'tienda' },
         { name: 'Mis Pedidos', icon: 'fas fa-shopping-cart', section: 'mis-pedidos' },
-        { name: 'Soporte', icon: 'fas fa-headset', section: 'soporte' },
+        { name: 'Chat', icon: 'fas fa-comments', section: 'chat' },
       ]
     },
     {
@@ -363,6 +363,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.user = this.auth.user;
     if (this.isClient) {
       this.activeSection = 'tienda';
+      this.loadClientOrders();
     }
     this.loadProducts();
     this.loadChat();
@@ -793,6 +794,21 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   trackByMsgId(_index: number, msg: any): string {
     return msg._id;
+  }
+
+  getTotalSpent(): number {
+    return this.orders.reduce((sum: number, o: any) => sum + (o.amount || 0), 0);
+  }
+
+  getActiveOrders(): number {
+    return this.orders.filter((o: any) => o.status === 'pending' || o.status === 'completed').length;
+  }
+
+  loadClientOrders(): void {
+    this.api.get<any>('cliente/orders').subscribe({
+      next: (res) => { this.orders = res.data || []; },
+      error: () => {}
+    });
   }
 
   // ============ CHAT HELPERS ============
