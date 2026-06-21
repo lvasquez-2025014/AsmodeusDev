@@ -263,7 +263,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   loadPartners(): void {
     this.api.get<any>('admin/users').subscribe({
-      next: (res) => { this.partners = (res.data || []).filter((u: any) => u.role === 'vendedor'); },
+      next: (res) => { this.partners = (res.data || []).filter((u: any) => u._id !== this.user?.id); },
       error: () => {}
     });
   }
@@ -640,6 +640,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!confirm(`¿Eliminar a ${partner.name}?`)) return;
     this.api.delete<any>(`admin/users/${partner._id}`).subscribe({
       next: () => this.loadPartners(),
+      error: () => {}
+    });
+  }
+
+  changeRole(partner: any, newRole: string): void {
+    this.api.put<any>(`admin/users/${partner._id}/role`, { role: newRole }).subscribe({
+      next: () => { partner.role = newRole; },
       error: () => {}
     });
   }
