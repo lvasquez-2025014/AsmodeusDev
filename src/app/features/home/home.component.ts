@@ -1202,10 +1202,72 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.revenueChartRef) return;
     const ctx = this.revenueChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
+
+    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, 'rgba(34, 211, 238, 0.15)');
+    gradient.addColorStop(1, 'rgba(34, 211, 238, 0)');
+
     this.charts.push(new Chart(ctx, {
       type: 'line',
-      data: { labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'], datasets: [{ label: 'Ingresos', data: [0, 0, 0, 0, 0, 0], borderColor: '#22d3ee', backgroundColor: 'rgba(34, 211, 238, 0.1)', fill: true, tension: 0.4, pointBackgroundColor: '#22d3ee', pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 5 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(26, 26, 31, 0.9)', titleColor: '#22d3ee', bodyColor: '#fff', borderColor: '#22d3ee', borderWidth: 1 } }, scales: { x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af', callback: (v: any) => '$' + v.toLocaleString() } } } }
+      data: {
+        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Ingresos',
+          data: [0, 0, 0, 0, 0, 0],
+          borderColor: '#22d3ee',
+          backgroundColor: gradient,
+          borderWidth: 2.5,
+          tension: 0,
+          fill: true,
+          pointBackgroundColor: '#0a0c14',
+          pointBorderColor: '#22d3ee',
+          pointBorderWidth: 2.5,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          pointHoverBackgroundColor: '#22d3ee',
+          pointHoverBorderColor: '#ffffff',
+          pointHoverBorderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(18, 20, 30, 0.95)',
+            titleColor: '#e2e8f0',
+            bodyColor: '#94a3b8',
+            borderColor: 'rgba(255, 255, 255, 0.08)',
+            borderWidth: 1,
+            padding: 10,
+            cornerRadius: 8,
+            titleFont: { size: 12, weight: 600, family: 'Inter' },
+            bodyFont: { size: 12, family: 'Inter' },
+            callbacks: { label: (c: any) => ' Ingresos: $' + c.parsed.y.toFixed(2) }
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: 'rgba(255, 255, 255, 0.03)' },
+            ticks: { color: '#64748b', font: { size: 11, family: 'Inter', weight: 500 }, padding: 8 },
+            border: { display: false }
+          },
+          y: {
+            min: -1, max: 1,
+            ticks: {
+              color: '#64748b',
+              font: { size: 11, family: 'Inter', weight: 500 },
+              padding: 12, stepSize: 0.2,
+              callback: (v: any) => '$' + v.toFixed(1).replace('.', ',')
+            },
+            grid: { color: 'rgba(255, 255, 255, 0.03)' },
+            border: { display: false }
+          }
+        },
+        animation: { duration: 1200, easing: 'easeOutQuart' }
+      }
     }));
   }
 
@@ -1215,8 +1277,25 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!ctx) return;
     this.charts.push(new Chart(ctx, {
       type: 'doughnut',
-      data: { labels: ['Panel VIP PC', 'Bypass APK', 'Panel Proxy Android', 'Panel Proxy iOS', 'Diamantes'], datasets: [{ data: [0, 0, 0, 0, 0], backgroundColor: ['#22d3ee', '#f472b6', '#84cc16', '#a78bfa', '#fbbf24'], borderColor: '#1a1a1f', borderWidth: 3 }] },
-      options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af', padding: 20, usePointStyle: true } } } }
+      data: {
+        labels: ['Panel VIP PC', 'Bypass APK', 'Panel Proxy Android', 'Panel Proxy iOS', 'Diamantes'],
+        datasets: [{
+          data: [1, 1, 1, 1, 1],
+          backgroundColor: ['rgba(34, 211, 238, 0.8)', 'rgba(236, 72, 153, 0.8)', 'rgba(132, 204, 22, 0.8)', 'rgba(168, 85, 247, 0.8)', 'rgba(234, 179, 8, 0.8)'],
+          borderColor: '#0d0f17',
+          borderWidth: 3,
+          hoverBorderColor: '#ffffff',
+          hoverBorderWidth: 2,
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        cutout: '65%',
+        plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(18, 20, 30, 0.95)', titleColor: '#e2e8f0', bodyColor: '#94a3b8', borderColor: 'rgba(255, 255, 255, 0.08)', borderWidth: 1, padding: 10, cornerRadius: 8 } },
+        animation: { duration: 1000, easing: 'easeOutQuart' }
+      }
     }));
   }
 
