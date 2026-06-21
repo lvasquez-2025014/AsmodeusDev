@@ -484,6 +484,9 @@
 
           <!-- Empty State -->
           <div class="discord-chat-empty" *ngIf="!activeChat">
+            <button class="discord-icon-btn chat-channels-toggle" (click)="toggleChatChannels()" style="position: absolute; top: 12px; left: 12px; z-index: 10;">
+              <i class="fas fa-bars"></i>
+            </button>
             <div class="discord-empty-icon">
               <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
             </div>
