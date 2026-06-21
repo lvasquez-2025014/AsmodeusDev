@@ -18,6 +18,7 @@ import chatRoutes from './routes/chat.routes';
 import configRoutes from './routes/config.routes';
 import vendedorRoutes from './routes/vendedor.routes';
 import clienteRoutes from './routes/cliente.routes';
+import orderRoutes from './routes/order.routes';
 
 const app = express();
 
@@ -64,6 +65,7 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/config', configRoutes);
 app.use('/api/vendedor', vendedorRoutes);
 app.use('/api/cliente', clienteRoutes);
+app.use('/api/orders', orderRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

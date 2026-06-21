@@ -4,6 +4,7 @@ import { AuthRequest } from '../middleware/auth.middleware';
 import { UserModel, UserRole } from '../models/user.model';
 import { ProductModel } from '../models/product.model';
 import { MessageModel, ConversationModel } from '../models/message.model';
+import { OrderModel, OrderStatus } from '../models/order.model';
 
 const router = Router();
 
@@ -17,11 +18,18 @@ router.get('/stats', authenticate, authorize('admin'), async (_req: AuthRequest,
   const totalProducts = products.length;
   const totalSales = products.reduce((sum, p) => sum + (p.sales || 0), 0);
 
-  let totalRevenue = 0;
+  // Use actual order revenue when available
+  const completedOrders = await OrderModel.find({ status: OrderStatus.COMPLETED }).lean();
+  const orderRevenue = completedOrders.reduce((sum, o) => sum + (o.amount || 0), 0);
+
+  // Fallback to estimated revenue from product sales
+  let estimatedRevenue = 0;
   for (const p of products) {
     const minPrice = p.prices?.length ? Math.min(...p.prices.map(pr => pr.price)) : 0;
-    totalRevenue += (p.sales || 0) * minPrice;
+    estimatedRevenue += (p.sales || 0) * minPrice;
   }
+
+  const totalRevenue = orderRevenue > 0 ? orderRevenue : estimatedRevenue;
 
   res.json({
     success: true,

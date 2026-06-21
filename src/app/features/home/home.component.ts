@@ -134,6 +134,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   orders: any[] = [];
   transactions: any[] = [];
+  earningsData: any = { weekly: [], totalRevenue: 0, totalOrders: 0, transactions: [] };
   partners: any[] = [];
   clientes: any[] = [];
 
@@ -235,6 +236,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       this.loadActivity();
       this.loadTopProducts();
       this.loadStats();
+      this.loadEarnings();
     }
 
     // Heartbeat every 30s - refreshes token to keep session alive
@@ -281,6 +283,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.activeSection = section;
     this.mobileMenuOpen = false;
     if (section === 'dashboard' || section === 'analytics' || section === 'ganancias') {
+      if (section === 'ganancias') { this.loadEarnings(); }
       setTimeout(() => this.initCharts(), 50);
     }
   }
@@ -366,6 +369,19 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
           { title: 'Usuarios', value: `${d.totalUsers || 0}`, change: `${d.clientes || 0} clientes`, changeType: 'positive', icon: 'fas fa-users', color: 'lime' },
           { title: 'Productos', value: `${d.totalProducts || 0}`, change: `${d.vendedores || 0} vendedores`, changeType: 'positive', icon: 'fas fa-box', color: 'violet' },
         ];
+      },
+      error: () => {}
+    });
+  }
+
+  loadEarnings(): void {
+    this.api.get<any>('orders/earnings').subscribe({
+      next: (res) => {
+        this.earningsData = res.data || { weekly: [], totalRevenue: 0, totalOrders: 0, transactions: [] };
+        this.transactions = this.earningsData.transactions || [];
+        if (this.activeSection === 'ganancias') {
+          setTimeout(() => this.initEarningsChart(), 50);
+        }
       },
       error: () => {}
     });
@@ -921,9 +937,30 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   processPayment(methodId: string): void {
     if (!this.selectedProduct || !this.selectedPlan) return;
-    if (methodId === 'transferencia') { window.open(this.discordUrl, '_blank'); this.closePaymentModal(); return; }
-    if (methodId === 'paypal') { window.open(`https://paypal.me/SupremoCheats/${this.selectedPlan.price}USD`, '_blank'); this.closePaymentModal(); return; }
-    if (methodId === 'binance') { window.open(this.discordUrl, '_blank'); this.closePaymentModal(); return; }
+
+    const orderData = {
+      productId: this.selectedProduct._id || this.selectedProduct.id,
+      planDuration: this.selectedPlan.duration,
+      amount: this.selectedPlan.price,
+      method: methodId,
+    };
+
+    this.api.post<any>('orders', orderData).subscribe({
+      next: () => {
+        if (methodId === 'transferencia') { window.open(this.discordUrl, '_blank'); }
+        else if (methodId === 'paypal') { window.open(`https://paypal.me/SupremoCheats/${this.selectedPlan.price}USD`, '_blank'); }
+        else if (methodId === 'binance') { window.open(this.discordUrl, '_blank'); }
+        this.closePaymentModal();
+        this.loadEarnings();
+        this.loadStats();
+      },
+      error: () => {
+        if (methodId === 'transferencia') { window.open(this.discordUrl, '_blank'); }
+        else if (methodId === 'paypal') { window.open(`https://paypal.me/SupremoCheats/${this.selectedPlan.price}USD`, '_blank'); }
+        else if (methodId === 'binance') { window.open(this.discordUrl, '_blank'); }
+        this.closePaymentModal();
+      }
+    });
   }
 
   // ============ CHARTS ============
@@ -965,10 +1002,33 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!this.earningsChartRef) return;
     const ctx = this.earningsChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
+
+    const weeklyData = this.earningsData.weekly || [];
+    const labels = weeklyData.map((d: any) => d.label);
+    const data = weeklyData.map((d: any) => d.amount);
+
     this.charts.push(new Chart(ctx, {
       type: 'bar',
-      data: { labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'], datasets: [{ label: 'Ganancias', data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(34, 211, 238, 0.6)', borderColor: '#22d3ee', borderWidth: 1, borderRadius: 6 }] },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } }, y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af', callback: (v: any) => '$' + v.toLocaleString() } } } }
+      data: {
+        labels: labels.length ? labels : ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+        datasets: [{
+          label: 'Ganancias',
+          data: data.length ? data : [0, 0, 0, 0, 0, 0, 0],
+          backgroundColor: 'rgba(34, 211, 238, 0.6)',
+          borderColor: '#22d3ee',
+          borderWidth: 1,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } },
+          y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af', callback: (v: any) => '$' + v.toLocaleString() } }
+        }
+      }
     }));
   }
 
