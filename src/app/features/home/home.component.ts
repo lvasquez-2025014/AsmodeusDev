@@ -38,34 +38,83 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   get isVendor(): boolean { return this.user?.role === 'vendedor'; }
   get isGuest(): boolean { return !this.auth.isLoggedIn; }
 
-  navItems = [
-    { name: 'Tienda', icon: 'fas fa-store', section: 'tienda', badge: 0 },
-    { name: 'Chat en vivo', icon: 'fas fa-comments', section: 'chat', badge: 0 },
-    { name: 'Mis Pedidos', icon: 'fas fa-shopping-cart', section: 'mis-pedidos', badge: 0 },
-    { name: 'Notificaciones', icon: 'fas fa-bell', section: 'notificaciones', badge: 0 },
-    { name: 'Soporte', icon: 'fas fa-headset', section: 'soporte', badge: 0 },
+  clientNavSections = [
+    {
+      title: 'NAVEGACIÓN',
+      items: [
+        { name: 'Tienda', icon: 'fas fa-store', section: 'tienda' },
+        { name: 'Mis Pedidos', icon: 'fas fa-shopping-cart', section: 'mis-pedidos' },
+        { name: 'Soporte', icon: 'fas fa-headset', section: 'soporte' },
+      ]
+    },
+    {
+      title: 'MI CUENTA',
+      items: [
+        { name: 'Dashboard', icon: 'fas fa-th-large', section: 'dashboard' },
+        { name: 'Mi Rango', icon: 'fas fa-crown', section: 'mi-rango' },
+        { name: 'Mis Compras', icon: 'fas fa-shopping-bag', section: 'mis-compras' },
+      ]
+    },
+    {
+      title: 'SISTEMA',
+      items: [
+        { name: 'Cerrar Sesión', icon: 'fas fa-sign-out-alt', section: 'logout' },
+      ]
+    }
   ];
 
-  vendorNavItems = [
-    { name: 'Dashboard', icon: 'fas fa-th-large', section: 'dashboard' },
-    { name: 'Productos', icon: 'fas fa-box', section: 'productos' },
-    { name: 'Pedidos', icon: 'fas fa-shopping-cart', section: 'pedidos' },
-    { name: 'Chat en vivo', icon: 'fas fa-comments', section: 'chat' },
-    { name: 'Notificaciones', icon: 'fas fa-bell', section: 'notificaciones', badge: 0 },
-    { name: 'Configuración', icon: 'fas fa-cog', section: 'config' },
+  vendorNavSections = [
+    {
+      title: 'NAVEGACIÓN',
+      items: [
+        { name: 'Inicio', icon: 'fas fa-home', section: 'dashboard' },
+        { name: 'Productos', icon: 'fas fa-box', section: 'productos' },
+        { name: 'Pedidos', icon: 'fas fa-shopping-cart', section: 'pedidos' },
+        { name: 'Ganancias', icon: 'fas fa-wallet', section: 'ganancias' },
+      ]
+    },
+    {
+      title: 'MI CUENTA',
+      items: [
+        { name: 'Dashboard', icon: 'fas fa-th-large', section: 'dashboard' },
+        { name: 'Mi Perfil', icon: 'fas fa-user', section: 'mi-perfil' },
+      ]
+    },
+    {
+      title: 'SISTEMA',
+      items: [
+        { name: 'Cerrar Sesión', icon: 'fas fa-sign-out-alt', section: 'logout' },
+      ]
+    }
   ];
 
-  adminNavItems = [
-    { name: 'Dashboard', icon: 'fas fa-th-large', section: 'dashboard' },
-    { name: 'Productos', icon: 'fas fa-box', section: 'productos' },
-    { name: 'Pedidos', icon: 'fas fa-shopping-cart', section: 'pedidos' },
-    { name: 'Ganancias', icon: 'fas fa-wallet', section: 'ganancias' },
-    { name: 'Socios', icon: 'fas fa-handshake', section: 'socios' },
-    { name: 'Clientes', icon: 'fas fa-users', section: 'clientes' },
-    { name: 'Analíticas', icon: 'fas fa-chart-line', section: 'analytics' },
-    { name: 'Chat en vivo', icon: 'fas fa-comments', section: 'chat' },
-    { name: 'Notificaciones', icon: 'fas fa-bell', section: 'notificaciones', badge: 0 },
-    { name: 'Configuración', icon: 'fas fa-cog', section: 'config' },
+  adminNavSections = [
+    {
+      title: 'NAVEGACIÓN',
+      items: [
+        { name: 'Inicio', icon: 'fas fa-home', section: 'dashboard' },
+        { name: 'Productos', icon: 'fas fa-box', section: 'productos' },
+        { name: 'Pedidos', icon: 'fas fa-shopping-cart', section: 'pedidos' },
+        { name: 'Ganancias', icon: 'fas fa-wallet', section: 'ganancias' },
+      ]
+    },
+    {
+      title: 'ADMINISTRACIÓN',
+      items: [
+        { name: 'Socios', icon: 'fas fa-handshake', section: 'socios' },
+        { name: 'Clientes', icon: 'fas fa-users', section: 'clientes' },
+        { name: 'Analíticas', icon: 'fas fa-chart-line', section: 'analytics' },
+        { name: 'Chat', icon: 'fas fa-comments', section: 'chat' },
+        { name: 'Notificaciones', icon: 'fas fa-bell', section: 'notificaciones' },
+      ]
+    },
+    {
+      title: 'SISTEMA',
+      items: [
+        { name: 'Configuración', icon: 'fas fa-cog', section: 'config' },
+        { name: 'Cerrar Sesión', icon: 'fas fa-sign-out-alt', section: 'logout' },
+      ]
+    }
   ];
 
   statsCards = [
@@ -236,10 +285,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  get activeNavItems() {
-    if (this.isClient) return this.navItems;
-    if (this.isVendor) return this.vendorNavItems;
-    return this.adminNavItems;
+  get activeNavSections() {
+    if (this.isClient) return this.clientNavSections;
+    if (this.isVendor) return this.vendorNavSections;
+    return this.adminNavSections;
+  }
+
+  get activeNavItems(): any[] {
+    return this.activeNavSections.flatMap((s: any) => s.items);
   }
 
   toggleSidebar(): void { this.sidebarCollapsed = !this.sidebarCollapsed; }
