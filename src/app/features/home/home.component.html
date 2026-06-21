@@ -1309,50 +1309,60 @@
 
       <!-- ==================== VER PERFIL (Admin) ==================== -->
       <section *ngIf="isAdmin && activeSection === 'ver-perfil' && viewUserProfile" class="section-content">
-        <div class="section-header">
-          <div>
-            <h1>Perfil de {{ viewUserProfile.name }}</h1>
-            <p>Información del usuario</p>
+        <div class="cyber-section-header">
+          <div class="cyber-header-icon pulse">
+            <i class="fas fa-user"></i>
           </div>
-          <button class="btn-outline" (click)="closeUserProfile()">
+          <div>
+            <h1 class="cyber-neon-text">Perfil de {{ viewUserProfile.name }}</h1>
+            <p class="cyber-subtitle">Información del usuario</p>
+          </div>
+          <div style="flex:1"></div>
+          <button class="cyber-back-btn" (click)="closeUserProfile()">
             <i class="fas fa-arrow-left"></i> Volver
           </button>
         </div>
 
-        <div class="profile-grid">
-          <div class="card profile-card">
-            <div class="profile-avatar-section">
-              <div class="profile-avatar-large">
+        <div class="cyber-profile-grid">
+          <div class="cyber-profile-card cyber-avatar-card">
+            <div class="cyber-corner cyber-corner-tl"></div>
+            <div class="cyber-corner cyber-corner-br"></div>
+
+            <div class="cyber-avatar-wrapper">
+              <div class="cyber-avatar-glow"></div>
+              <div class="cyber-avatar-ring"></div>
+              <div class="cyber-avatar-img">
                 <img *ngIf="viewUserProfile.avatar" [src]="imageUrl + viewUserProfile.avatar" alt="Avatar" />
                 <div *ngIf="!viewUserProfile.avatar" class="profile-avatar-placeholder">
                   <i class="fas fa-user"></i>
                 </div>
               </div>
-              <span class="profile-role-badge" [ngClass]="'role-' + viewUserProfile.role">{{ viewUserProfile.role }}</span>
             </div>
 
-            <div class="profile-info-list">
-              <div class="profile-info-item">
+            <span class="cyber-role-badge" [ngClass]="'role-' + viewUserProfile.role">{{ viewUserProfile.role }}</span>
+
+            <div class="cyber-info-list">
+              <div class="cyber-info-item">
                 <i class="fas fa-envelope"></i>
                 <span>{{ viewUserProfile.email }}</span>
               </div>
-              <div class="profile-info-item" *ngIf="viewUserProfile.discord">
+              <div class="cyber-info-item" *ngIf="viewUserProfile.discord">
                 <i class="fab fa-discord"></i>
                 <span>{{ viewUserProfile.discord }}</span>
               </div>
-              <div class="profile-info-item" *ngIf="viewUserProfile.country">
+              <div class="cyber-info-item" *ngIf="viewUserProfile.country">
                 <i class="fas fa-globe"></i>
                 <span>{{ viewUserProfile.country }}</span>
               </div>
-              <div class="profile-info-item" *ngIf="viewUserProfile.phone">
+              <div class="cyber-info-item" *ngIf="viewUserProfile.phone">
                 <i class="fas fa-phone"></i>
                 <span>{{ viewUserProfile.phone }}</span>
               </div>
-              <div class="profile-info-item" *ngIf="viewUserProfile.bio">
+              <div class="cyber-info-item" *ngIf="viewUserProfile.bio">
                 <i class="fas fa-quote-left"></i>
                 <span>{{ viewUserProfile.bio }}</span>
               </div>
-              <div class="profile-info-item">
+              <div class="cyber-info-item">
                 <i class="fas fa-calendar"></i>
                 <span>Miembro desde {{ viewUserProfile.createdAt | date:'dd/MM/yyyy' }}</span>
               </div>

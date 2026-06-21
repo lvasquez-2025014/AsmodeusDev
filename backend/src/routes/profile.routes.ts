@@ -21,7 +21,7 @@ router.get('/', authenticate, async (req: AuthRequest, res: Response) => {
 // GET public profile by id
 router.get('/:id', authenticate, async (req: AuthRequest, res: Response) => {
   try {
-    const user = await UserModel.findById(req.params.id).select('-password -email');
+    const user = await UserModel.findById(req.params.id).select('-password');
     if (!user) { res.status(404).json({ message: 'Usuario no encontrado' }); return; }
     res.json({ success: true, data: user });
   } catch {

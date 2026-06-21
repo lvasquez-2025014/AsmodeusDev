@@ -327,7 +327,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.viewUserProfile = res.data;
         this.activeSection = 'ver-perfil';
       },
-      error: () => {}
+      error: (err) => {
+        console.error('Error loading profile:', err);
+        this.showToast('Error', 'No se pudo cargar el perfil del usuario', 'error');
+      }
     });
   }
 
