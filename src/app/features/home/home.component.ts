@@ -655,9 +655,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   changeRole(partner: any, newRole: string): void {
+    const prevRole = partner.role;
     this.api.put<any>(`admin/users/${partner._id}/role`, { role: newRole }).subscribe({
-      next: () => { partner.role = newRole; },
-      error: () => {}
+      next: (res) => { partner.role = newRole; },
+      error: (err) => {
+        console.error('[changeRole] Error:', err);
+        partner.role = prevRole;
+      }
     });
   }
 
