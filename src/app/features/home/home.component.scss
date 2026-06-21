@@ -1587,6 +1587,10 @@ $topbar-height: 64px;
   border-top: 1px solid $border-color;
   padding: 16px 24px;
   margin-top: auto;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background: #0d0d10;
 }
 
 .footer-content {
@@ -2207,6 +2211,9 @@ $topbar-height: 64px;
   background: rgba(255, 255, 255, 0.02);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding: 20px 24px;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 .guest-footer-inner {
