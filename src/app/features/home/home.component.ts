@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { ApiService } from '@core/services/api.service';
 import { ChatService } from '@core/services/chat.service';
+import { timer } from 'rxjs';
 import { Chart, registerables } from 'chart.js';
 
 import { environment } from '@env/environment';
@@ -25,6 +26,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   imageUrl = environment.apiUrl.replace(/\/api\/?$/, '');
 
   activeSection = 'dashboard';
+  loading = true;
   sidebarCollapsed = false;
   searchQuery = '';
   mobileMenuOpen = false;
@@ -450,6 +452,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.refreshMessages();
       }
     }, 2000);
+
+    // Hide loading screen after minimum display time
+    setTimeout(() => {
+      this.loading = false;
+    }, 1500);
   }
 
   ngAfterViewInit(): void {
