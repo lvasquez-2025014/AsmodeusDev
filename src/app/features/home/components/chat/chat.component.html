@@ -15,15 +15,6 @@
       <span class="discord-server-text cyber-server-icon">SC</span>
     </div>
     <div class="flex-1"></div>
-    <button class="discord-icon-btn cyber-focus-btn" (click)="toggleChatFocusMode()" [title]="chatFocusMode ? 'Salir del modo enfoque' : 'Modo enfoque'">
-      <i class="fas" [ngClass]="chatFocusMode ? 'fa-expand' : 'fa-compress'"></i>
-    </button>
-    <div class="discord-user-avatar cyber-avatar-glow" [title]="user?.name">
-      <div class="discord-avatar-circle" [style.background]="getUserColor(user?.name || 'U')">
-        {{ user?.name?.charAt(0) || 'U' }}
-      </div>
-      <div class="discord-status-dot online cyber-status-pulse"></div>
-    </div>
   </div>
 
   <!-- CHANNELS / DMs PANEL -->
@@ -83,22 +74,6 @@
       </div>
       <div *ngIf="chatChannels.length === 0" class="discord-empty-state">
         <p>No hay canales disponibles</p>
-      </div>
-    </div>
-
-    <!-- User Bar -->
-    <div class="discord-user-bar">
-      <div class="discord-user-bar-inner">
-        <div class="discord-avatar-container">
-          <div class="discord-avatar-xs" [style.background]="getUserColor(user?.name || 'U')">
-            {{ getInitials(user?.name || 'U') }}
-          </div>
-          <div class="discord-status-dot-xs online"></div>
-        </div>
-        <div class="discord-user-bar-info">
-          <p class="discord-user-bar-name">{{ user?.name }}</p>
-          <p class="discord-user-bar-role">{{ user?.role }}</p>
-        </div>
       </div>
     </div>
   </div>
