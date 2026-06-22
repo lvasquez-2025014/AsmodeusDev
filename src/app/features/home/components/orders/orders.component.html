@@ -1,0 +1,49 @@
+<section class="section-content">
+  <div class="section-header">
+    <div>
+      <h1>Pedidos</h1>
+      <p>Historial de pedidos y transacciones</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="empty-state" *ngIf="orders.length === 0">
+      <i class="fas fa-shopping-cart empty-icon"></i>
+      <h3>Sin pedidos aún</h3>
+      <p>Los pedidos aparecerán aquí cuando se realicen compras</p>
+    </div>
+    <div class="table-container" *ngIf="orders.length > 0">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Producto</th>
+            <th>Monto</th>
+            <th>Fecha</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders">
+            <td class="order-id">{{ order.id }}</td>
+            <td>{{ order.customer }}</td>
+            <td>{{ order.product }}</td>
+            <td class="order-amount">${{ order.amount.toFixed(2) }}</td>
+            <td>{{ order.date }}</td>
+            <td>
+              <span class="badge" [ngClass]="{
+                'badge-success': order.status === 'completed',
+                'badge-warning': order.status === 'pending',
+                'badge-info': order.status === 'processing',
+                'badge-danger': order.status === 'cancelled'
+              }">
+                {{ order.status === 'completed' ? 'Completado' : order.status === 'pending' ? 'Pendiente' : order.status === 'processing' ? 'Procesando' : 'Cancelado' }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

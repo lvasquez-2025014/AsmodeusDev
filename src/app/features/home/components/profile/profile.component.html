@@ -1,0 +1,176 @@
+<section class="section-content">
+  <!-- MI PERFIL -->
+  <div class="cyber-section-header">
+    <div class="cyber-header-icon pulse">
+      <i class="fas fa-user"></i>
+    </div>
+    <div>
+      <h1 class="cyber-neon-text">Mi Perfil</h1>
+      <p class="cyber-subtitle">Gestiona tu información personal y avatar</p>
+    </div>
+  </div>
+
+  <div class="cyber-profile-grid">
+    <!-- Avatar card -->
+    <div class="cyber-profile-card cyber-avatar-card">
+      <div class="cyber-corner cyber-corner-tl"></div>
+      <div class="cyber-corner cyber-corner-br"></div>
+      <div class="cyber-particle" style="top: 20%; left: 15%; animation-delay: 0s;"></div>
+      <div class="cyber-particle" style="top: 60%; right: 20%; animation-delay: 2s;"></div>
+      <div class="cyber-particle" style="bottom: 30%; left: 25%; animation-delay: 4s;"></div>
+
+      <div class="cyber-avatar-wrapper">
+        <div class="cyber-avatar-glow"></div>
+        <div class="cyber-avatar-ring"></div>
+        <div class="cyber-avatar-img">
+          <img *ngIf="user?.avatar" [src]="user?.avatar" alt="Avatar" />
+          <div *ngIf="!user?.avatar" class="profile-avatar-placeholder" [style.background]="getUserColor(user?.name || 'U')">
+            {{ user?.name?.charAt(0) || 'U' }}
+          </div>
+        </div>
+      </div>
+
+      <button class="cyber-change-photo-btn" (click)="toggleAvatarInput()">
+        <i class="fas fa-link"></i> {{ showAvatarInput ? 'Cancelar' : 'Cambiar Foto' }}
+      </button>
+
+      <div class="avatar-url-input-wrap" *ngIf="showAvatarInput">
+        <input type="url" class="avatar-url-input" placeholder="Pega la URL de tu imagen..." [(ngModel)]="avatarUrlInput" (keyup.enter)="saveAvatarUrl()" />
+        <button class="avatar-url-save-btn" (click)="saveAvatarUrl()" [disabled]="!avatarUrlInput.trim()">
+          <i class="fas fa-check"></i>
+        </button>
+      </div>
+
+      <span class="cyber-role-badge" [ngClass]="'role-' + user?.role">{{ user?.role }}</span>
+
+      <div class="cyber-email-display">
+        <i class="fas fa-envelope"></i>
+        <span>{{ user?.email }}</span>
+      </div>
+    </div>
+
+    <!-- Edit form -->
+    <div class="cyber-profile-card cyber-edit-card">
+      <div class="cyber-corner cyber-corner-tl"></div>
+      <div class="cyber-corner cyber-corner-br"></div>
+
+      <div class="cyber-card-header cyber-edit-header">
+        <h2 class="cyber-neon-text">
+          <i class="fas fa-pen"></i> Editar Perfil
+        </h2>
+      </div>
+
+      <div class="cyber-card-body">
+        <div class="cyber-form-group">
+          <label class="cyber-form-label">NOMBRE</label>
+          <div class="cyber-input-wrapper">
+            <i class="fas fa-user cyber-input-icon"></i>
+            <input type="text" class="cyber-input cyber-input-icon-field" [(ngModel)]="profileForm.name" placeholder="Tu nombre" />
+          </div>
+        </div>
+        <div class="cyber-form-group">
+          <label class="cyber-form-label">BIO</label>
+          <div class="cyber-input-wrapper">
+            <i class="fas fa-quote-left cyber-input-icon textarea-icon"></i>
+            <textarea class="cyber-input cyber-input-icon-field cyber-textarea" [(ngModel)]="profileForm.bio" placeholder="Cuéntanos sobre ti..." rows="3"></textarea>
+          </div>
+        </div>
+        <div class="cyber-form-group">
+          <label class="cyber-form-label">DISCORD</label>
+          <div class="cyber-input-wrapper">
+            <i class="fab fa-discord cyber-input-icon"></i>
+            <input type="text" class="cyber-input cyber-input-icon-field" [(ngModel)]="profileForm.discord" placeholder="usuario#0000" />
+          </div>
+        </div>
+        <div class="cyber-form-row">
+          <div class="cyber-form-group">
+            <label class="cyber-form-label">PAÍS</label>
+            <div class="cyber-input-wrapper">
+              <i class="fas fa-globe cyber-input-icon"></i>
+              <input type="text" class="cyber-input cyber-input-icon-field" [(ngModel)]="profileForm.country" placeholder="Cuba" />
+            </div>
+          </div>
+          <div class="cyber-form-group">
+            <label class="cyber-form-label">TELÉFONO</label>
+            <div class="cyber-input-wrapper">
+              <i class="fas fa-phone cyber-input-icon"></i>
+              <input type="text" class="cyber-input cyber-input-icon-field" [(ngModel)]="profileForm.phone" placeholder="+53 ..." />
+            </div>
+          </div>
+        </div>
+        <div class="cyber-profile-actions">
+          <span class="cyber-success-msg" *ngIf="profileSuccess">{{ profileSuccess }}</span>
+          <span class="cyber-error-msg" *ngIf="profileError">{{ profileError }}</span>
+          <button class="cyber-save-btn" (click)="saveProfile()" [disabled]="profileSaving">
+            <i class="fas" [ngClass]="profileSaving ? 'fa-spinner fa-spin' : 'fa-save'"></i>
+            {{ profileSaving ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VER PERFIL (Admin) -->
+<section class="section-content" *ngIf="viewUserProfile">
+  <div class="cyber-section-header">
+    <div class="cyber-header-icon pulse">
+      <i class="fas fa-user"></i>
+    </div>
+    <div>
+      <h1 class="cyber-neon-text">Perfil de {{ viewUserProfile.name }}</h1>
+      <p class="cyber-subtitle">Información del usuario</p>
+    </div>
+    <div style="flex:1"></div>
+    <button class="cyber-back-btn" (click)="closeUserProfile()">
+      <i class="fas fa-arrow-left"></i> Volver
+    </button>
+  </div>
+
+  <div class="cyber-profile-grid">
+    <div class="cyber-profile-card cyber-avatar-card">
+      <div class="cyber-corner cyber-corner-tl"></div>
+      <div class="cyber-corner cyber-corner-br"></div>
+
+      <div class="cyber-avatar-wrapper">
+        <div class="cyber-avatar-glow"></div>
+        <div class="cyber-avatar-ring"></div>
+        <div class="cyber-avatar-img">
+          <img *ngIf="viewUserProfile.avatar" [src]="imageUrl + viewUserProfile.avatar" alt="Avatar" />
+          <div *ngIf="!viewUserProfile.avatar" class="profile-avatar-placeholder">
+            <i class="fas fa-user"></i>
+          </div>
+        </div>
+      </div>
+
+      <span class="cyber-role-badge" [ngClass]="'role-' + viewUserProfile.role">{{ viewUserProfile.role }}</span>
+
+      <div class="cyber-info-list">
+        <div class="cyber-info-item">
+          <i class="fas fa-envelope"></i>
+          <span>{{ viewUserProfile.email }}</span>
+        </div>
+        <div class="cyber-info-item" *ngIf="viewUserProfile.discord">
+          <i class="fab fa-discord"></i>
+          <span>{{ viewUserProfile.discord }}</span>
+        </div>
+        <div class="cyber-info-item" *ngIf="viewUserProfile.country">
+          <i class="fas fa-globe"></i>
+          <span>{{ viewUserProfile.country }}</span>
+        </div>
+        <div class="cyber-info-item" *ngIf="viewUserProfile.phone">
+          <i class="fas fa-phone"></i>
+          <span>{{ viewUserProfile.phone }}</span>
+        </div>
+        <div class="cyber-info-item" *ngIf="viewUserProfile.bio">
+          <i class="fas fa-quote-left"></i>
+          <span>{{ viewUserProfile.bio }}</span>
+        </div>
+        <div class="cyber-info-item">
+          <i class="fas fa-calendar"></i>
+          <span>Miembro desde {{ viewUserProfile.createdAt | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

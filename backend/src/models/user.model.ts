@@ -3,6 +3,7 @@ import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import bcrypt from 'bcryptjs';
 
 export enum UserRole {
+  SUPERADMIN = 'superadmin',
   ADMIN = 'admin',
   VENDEDOR = 'vendedor',
   CLIENTE = 'cliente',

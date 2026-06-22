@@ -1,0 +1,126 @@
+$bg-main: #0a0a0c;
+$bg-card: rgba(26, 26, 31, 0.8);
+$border-color: rgba(255, 255, 255, 0.06);
+$cyan: #22d3ee;
+$pink: #f472b6;
+$lime: #84cc16;
+$violet: #a78bfa;
+$orange: #f97316;
+$red: #ef4444;
+$green: #22c55e;
+$yellow: #fbbf24;
+$text-primary: #f1f5f9;
+$text-secondary: #94a3b8;
+$text-muted: #64748b;
+
+:host { display: block; }
+
+.section-content {
+  padding: 24px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: $text-primary;
+    margin: 0 0 4px;
+  }
+
+  p {
+    font-size: 13px;
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+.card {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: 14px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+
+  .empty-icon {
+    font-size: 48px;
+    color: $text-muted;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: $text-primary;
+    margin: 0 0 8px;
+  }
+
+  p {
+    font-size: 13px;
+    color: $text-secondary;
+    margin: 0;
+  }
+}
+
+.table-container { overflow-x: auto; }
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th {
+    padding: 12px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid $border-color;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 12px 20px;
+    font-size: 13px;
+    color: $text-secondary;
+    border-bottom: 1px solid $border-color;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    transition: background 0.2s ease;
+    &:hover { background: rgba(255,255,255,0.02); }
+  }
+}
+
+.order-id { color: $cyan; font-weight: 600; }
+.order-amount { color: $lime; font-weight: 600; }
+
+.badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+
+  &.badge-success { color: $green; background: rgba($green, 0.1); }
+  &.badge-warning { color: $yellow; background: rgba($yellow, 0.1); }
+  &.badge-danger { color: $red; background: rgba($red, 0.1); }
+  &.badge-info { color: $cyan; background: rgba($cyan, 0.1); }
+  &.badge-purple { color: $violet; background: rgba($violet, 0.1); }
+}

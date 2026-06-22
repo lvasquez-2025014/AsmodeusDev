@@ -1,0 +1,155 @@
+<section class="section-content">
+  <div class="cyber-section-header">
+    <div class="cyber-header-icon">
+      <i class="fas fa-cog"></i>
+    </div>
+    <div>
+      <h1 class="cyber-neon-text">Configuración</h1>
+      <p class="cyber-subtitle">Gestiona las preferencias de tu panel</p>
+    </div>
+  </div>
+
+  <div class="cyber-config-grid">
+    <!-- Información del Panel -->
+    <div class="cyber-config-card">
+      <div class="cyber-card-header">
+        <div class="cyber-header-icon-wrap cyan">
+          <i class="fas fa-info-circle"></i>
+        </div>
+        <div>
+          <h2 class="cyber-card-title">Información del Panel</h2>
+          <p class="cyber-card-subtitle">Datos básicos de tu panel</p>
+        </div>
+      </div>
+      <div class="cyber-card-body">
+        <div class="cyber-form-group">
+          <label class="cyber-form-label">NOMBRE DEL PANEL</label>
+          <input type="text" class="cyber-input" [(ngModel)]="settings.storeName" />
+        </div>
+        <div class="cyber-form-group">
+          <label class="cyber-form-label">EMAIL DE CONTACTO</label>
+          <input type="email" class="cyber-input" [(ngModel)]="settings.storeEmail" />
+        </div>
+        <button class="cyber-save-btn" (click)="showToast('Configuración guardada', 'Los cambios han sido aplicados', 'success')">
+          <i class="fas fa-check"></i> Guardar Cambios
+        </button>
+      </div>
+    </div>
+
+    <!-- Preferencias -->
+    <div class="cyber-config-card">
+      <div class="cyber-card-header">
+        <div class="cyber-header-icon-wrap purple">
+          <i class="fas fa-sliders-h"></i>
+        </div>
+        <div>
+          <h2 class="cyber-card-title">Preferencias</h2>
+          <p class="cyber-card-subtitle">Personaliza tu experiencia</p>
+        </div>
+      </div>
+      <div class="cyber-card-body">
+        <div class="cyber-toggle-row">
+          <div class="cyber-toggle-info">
+            <h3 class="cyber-toggle-label">Notificaciones Push</h3>
+            <p class="cyber-toggle-desc">Recibe alertas en tiempo real</p>
+          </div>
+          <div class="cyber-toggle" [class.active]="settings.notifications" (click)="settings.notifications = !settings.notifications"></div>
+        </div>
+        <div class="cyber-toggle-row">
+          <div class="cyber-toggle-info">
+            <h3 class="cyber-toggle-label">Alertas por Email</h3>
+            <p class="cyber-toggle-desc">Resumen diario de actividad</p>
+          </div>
+          <div class="cyber-toggle" [class.active]="settings.emailAlerts" (click)="settings.emailAlerts = !settings.emailAlerts"></div>
+        </div>
+        <div class="cyber-toggle-row">
+          <div class="cyber-toggle-info">
+            <h3 class="cyber-toggle-label">Modo Oscuro</h3>
+            <p class="cyber-toggle-desc">Tema oscuro de la interfaz</p>
+          </div>
+          <div class="cyber-toggle active"></div>
+        </div>
+        <div class="cyber-toggle-row">
+          <div class="cyber-toggle-info">
+            <h3 class="cyber-toggle-label">Autenticación en 2 Pasos</h3>
+            <p class="cyber-toggle-desc">Seguridad adicional para tu cuenta</p>
+          </div>
+          <div class="cyber-toggle" [class.active]="settings.twoFactor" (click)="settings.twoFactor = !settings.twoFactor"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Métodos de Pago -->
+    <div class="cyber-config-card">
+      <div class="cyber-card-header">
+        <div class="cyber-header-icon-wrap green">
+          <i class="fas fa-credit-card"></i>
+        </div>
+        <div>
+          <h2 class="cyber-card-title">Métodos de Pago</h2>
+          <p class="cyber-card-subtitle">Opciones disponibles</p>
+        </div>
+      </div>
+      <div class="cyber-card-body">
+        <div class="cyber-payment-card paypal" *ngFor="let pm of paymentMethods">
+          <div class="cyber-payment-icon" [style.background]="pm.color + '20'" [style.color]="pm.color">
+            <i [class]="pm.icon"></i>
+          </div>
+          <div class="cyber-payment-info">
+            <h3 class="cyber-payment-name">{{ pm.name }}</h3>
+            <p class="cyber-payment-desc">{{ pm.description }}</p>
+          </div>
+          <i class="fas fa-chevron-right cyber-payment-arrow"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Soporte Discord -->
+    <div class="cyber-config-card">
+      <div class="cyber-card-header">
+        <div class="cyber-header-icon-wrap pink">
+          <i class="fab fa-discord"></i>
+        </div>
+        <div>
+          <h2 class="cyber-card-title">Soporte</h2>
+          <p class="cyber-card-subtitle">Comunidad y ayuda</p>
+        </div>
+      </div>
+      <div class="cyber-card-body">
+        <div class="cyber-discord-box">
+          <div class="cyber-discord-icon-wrap">
+            <i class="fab fa-discord"></i>
+          </div>
+          <h3 class="cyber-discord-title">Únete a nuestra comunidad</h3>
+          <p class="cyber-discord-text">Obtén ayuda, comparte ideas y conecta con otros usuarios en nuestro servidor oficial de Discord.</p>
+          <a [href]="discordUrl" target="_blank" class="cyber-discord-btn">
+            <i class="fab fa-discord"></i> Unirse al Discord
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zona de Peligro -->
+    <div class="cyber-config-card cyber-danger-card">
+      <div class="cyber-card-header cyber-danger-header">
+        <div class="cyber-header-icon-wrap red">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div>
+          <h2 class="cyber-card-title text-red">Zona de Peligro</h2>
+          <p class="cyber-card-subtitle">Estas acciones son irreversibles</p>
+        </div>
+      </div>
+      <div class="cyber-card-body">
+        <div class="cyber-danger-actions">
+          <button class="cyber-delete-btn">
+            <i class="fas fa-trash-alt"></i> Eliminar Cuenta
+          </button>
+          <button class="cyber-export-btn">
+            <i class="fas fa-download"></i> Exportar Datos
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

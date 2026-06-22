@@ -35,11 +35,26 @@ const upload = multer({
 
 const router = Router();
 
-router.get('/', async (_req, res: Response) => {
+router.get('/', async (req, res: Response) => {
   try {
     await ProductModel.updateMany({ image: { $regex: /^data:image/ } }, { $set: { image: '' } });
-    const products = await ProductModel.find({ isActive: true }).sort({ createdAt: -1 });
-    res.json({ success: true, data: products });
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 20));
+    const skip = (page - 1) * limit;
+
+    const [products, total] = await Promise.all([
+      ProductModel.find({ isActive: true }).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      ProductModel.countDocuments({ isActive: true }),
+    ]);
+
+    res.json({
+      success: true,
+      data: products,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch {
     res.status(500).json({ message: 'Error al cargar productos' });
   }
@@ -48,8 +63,23 @@ router.get('/', async (_req, res: Response) => {
 router.get('/all', authenticate, authorize('admin', 'vendedor'), async (req: AuthRequest, res: Response) => {
   try {
     await ProductModel.updateMany({ image: { $regex: /^data:image/ } }, { $set: { image: '' } });
-    const products = await ProductModel.find().sort({ createdAt: -1 });
-    res.json({ success: true, data: products });
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit as string) || 20));
+    const skip = (page - 1) * limit;
+
+    const [products, total] = await Promise.all([
+      ProductModel.find().sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      ProductModel.countDocuments(),
+    ]);
+
+    res.json({
+      success: true,
+      data: products,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch {
     res.status(500).json({ message: 'Error al cargar productos' });
   }

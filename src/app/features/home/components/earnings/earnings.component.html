@@ -1,0 +1,97 @@
+<section class="section-content">
+  <!-- CABECERA -->
+  <div class="ganancias-header">
+    <h1>Ganancias</h1>
+    <p>Resumen de ingresos y gastos</p>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid">
+    <!-- Ingresos -->
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-box green">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
+        </div>
+        <span class="kpi-badge green">+0.00%</span>
+      </div>
+      <p class="kpi-label">Ingresos</p>
+      <p class="kpi-value green">${{ totalRevenue.toFixed(2) }}</p>
+    </div>
+
+    <!-- Gastos -->
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-box red">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+        </div>
+        <span class="kpi-badge red">+0.00%</span>
+      </div>
+      <p class="kpi-label">Gastos</p>
+      <p class="kpi-value red">${{ totalExpenses.toFixed(2) }}</p>
+    </div>
+
+    <!-- Neto -->
+    <div class="kpi-card">
+      <div class="kpi-top">
+        <div class="kpi-icon-box blue">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l4-4 4 4 4-6 4 4"/><path d="M3 17h18"/></svg>
+        </div>
+        <span class="kpi-badge blue">Estable</span>
+      </div>
+      <p class="kpi-label">Neto</p>
+      <p class="kpi-value cyan">${{ (totalRevenue - totalExpenses).toFixed(2) }}</p>
+    </div>
+  </div>
+
+  <!-- BOTTOM SECTION 70/30 -->
+  <div class="earnings-bottom">
+    <!-- Chart -->
+    <div class="earnings-chart-card">
+      <div class="chart-card-header">
+        <div>
+          <h2>Ganancias Semanales</h2>
+          <p>Evolución de ingresos · Últimos 7 días</p>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-dot cyan"></span>Ingresos</span>
+          <span class="legend-item"><span class="legend-dot purple"></span>Gastos</span>
+        </div>
+      </div>
+      <div class="chart-wrapper">
+        <canvas #earningsChart></canvas>
+      </div>
+    </div>
+
+    <!-- Transacciones -->
+    <div class="earnings-tx-card">
+      <div class="tx-card-header">
+        <h2>Transacciones Recientes</h2>
+        <p>Historial de movimientos</p>
+      </div>
+
+      <div class="tx-empty" *ngIf="transactions.length === 0">
+        <div class="tx-empty-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <p class="tx-empty-title">Sin transacciones</p>
+        <p class="tx-empty-desc">Las transacciones aparecerán aquí</p>
+      </div>
+
+      <div class="transactions-list" *ngIf="transactions.length > 0">
+        <div class="transaction-item" *ngFor="let tx of transactions">
+          <div class="transaction-icon" [ngClass]="'transaction-' + tx.color">
+            <i [class]="tx.icon"></i>
+          </div>
+          <div class="transaction-details">
+            <span class="transaction-desc">{{ tx.description }}</span>
+            <span class="transaction-date">{{ tx.date }}</span>
+          </div>
+          <span class="transaction-amount" [ngClass]="tx.amount > 0 ? 'positive' : 'negative'">
+            {{ tx.amount > 0 ? '+' : '' }}${{ tx.amount.toFixed(2) }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

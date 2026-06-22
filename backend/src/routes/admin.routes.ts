@@ -8,7 +8,7 @@ import { OrderModel, OrderStatus } from '../models/order.model';
 
 const router = Router();
 
-router.get('/stats', authenticate, authorize('admin'), async (_req: AuthRequest, res: Response) => {
+router.get('/stats', authenticate, authorize('admin', 'superadmin'), async (_req: AuthRequest, res: Response) => {
   const totalUsers = await UserModel.countDocuments();
   const admins = await UserModel.countDocuments({ role: UserRole.ADMIN });
   const vendedores = await UserModel.countDocuments({ role: UserRole.VENDEDOR });
@@ -40,7 +40,7 @@ router.get('/stats', authenticate, authorize('admin'), async (_req: AuthRequest,
   });
 });
 
-router.get('/activity', authenticate, authorize('admin'), async (_req: AuthRequest, res: Response) => {
+router.get('/activity', authenticate, authorize('admin', 'superadmin'), async (_req: AuthRequest, res: Response) => {
   try {
     const recentUsers = await UserModel.find()
       .select('name email role createdAt')
@@ -101,7 +101,7 @@ router.get('/activity', authenticate, authorize('admin'), async (_req: AuthReque
   }
 });
 
-router.post('/users', authenticate, authorize('admin'), async (req: AuthRequest, res: Response) => {
+router.post('/users', authenticate, authorize('admin', 'superadmin'), async (req: AuthRequest, res: Response) => {
   const { name, email, password, role } = req.body;
 
   if (!name || !email || !password) {
@@ -124,12 +124,27 @@ router.post('/users', authenticate, authorize('admin'), async (req: AuthRequest,
   });
 });
 
-router.get('/users', authenticate, authorize('admin'), async (_req: AuthRequest, res: Response) => {
-  const users = await UserModel.find().select('-password').sort({ createdAt: -1 });
-  res.json({ success: true, data: users });
+router.get('/users', authenticate, authorize('admin', 'superadmin'), async (req: AuthRequest, res: Response) => {
+  const page = Math.max(1, parseInt(req.query.page as string) || 1);
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 50));
+  const skip = (page - 1) * limit;
+
+  const [users, total] = await Promise.all([
+    UserModel.find().select('-password').sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+    UserModel.countDocuments(),
+  ]);
+
+  res.json({
+    success: true,
+    data: users,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+  });
 });
 
-router.put('/users/:id/role', authenticate, authorize('admin'), async (req: AuthRequest, res: Response) => {
+router.put('/users/:id/role', authenticate, authorize('admin', 'superadmin'), async (req: AuthRequest, res: Response) => {
   const { role } = req.body;
 
   if (!Object.values(UserRole).includes(role)) {
@@ -146,7 +161,7 @@ router.put('/users/:id/role', authenticate, authorize('admin'), async (req: Auth
   res.json({ success: true, data: user });
 });
 
-router.put('/users/:id', authenticate, authorize('admin'), async (req: AuthRequest, res: Response) => {
+router.put('/users/:id', authenticate, authorize('admin', 'superadmin'), async (req: AuthRequest, res: Response) => {
   const { name, email, password, role } = req.body;
   const update: any = {};
 
@@ -167,7 +182,7 @@ router.put('/users/:id', authenticate, authorize('admin'), async (req: AuthReque
   res.json({ success: true, data: updated });
 });
 
-router.delete('/users/:id', authenticate, authorize('admin'), async (req: AuthRequest, res: Response) => {
+router.delete('/users/:id', authenticate, authorize('admin', 'superadmin'), async (req: AuthRequest, res: Response) => {
   const { id } = req.params as { id: string };
 
   if (id === req.userId) {
