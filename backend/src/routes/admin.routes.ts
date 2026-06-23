@@ -9,35 +9,38 @@ import { OrderModel, OrderStatus } from '../models/order.model';
 const router = Router();
 
 router.get('/stats', authenticate, authorize('admin', 'superadmin'), async (_req: AuthRequest, res: Response) => {
-  const totalUsers = await UserModel.countDocuments();
-  const admins = await UserModel.countDocuments({ role: UserRole.ADMIN });
-  const vendedores = await UserModel.countDocuments({ role: UserRole.VENDEDOR });
-  const clientes = await UserModel.countDocuments({ role: UserRole.CLIENTE });
+  try {
+    const totalUsers = await UserModel.countDocuments();
+    const admins = await UserModel.countDocuments({ role: UserRole.ADMIN });
+    const vendedores = await UserModel.countDocuments({ role: UserRole.VENDEDOR });
+    const clientes = await UserModel.countDocuments({ role: UserRole.CLIENTE });
 
-  const products = await ProductModel.find().select('name sales prices').lean();
-  const totalProducts = products.length;
-  const totalSales = products.reduce((sum, p) => sum + (p.sales || 0), 0);
+    const products = await ProductModel.find().select('name sales prices').lean();
+    const totalProducts = products.length;
+    const totalSales = products.reduce((sum, p) => sum + (p.sales || 0), 0);
 
-  // Use actual order revenue when available
-  const completedOrders = await OrderModel.find({ status: OrderStatus.COMPLETED }).lean();
-  const orderRevenue = completedOrders.reduce((sum, o) => sum + (o.amount || 0), 0);
+    const completedOrders = await OrderModel.find({ status: OrderStatus.COMPLETED }).lean();
+    const orderRevenue = completedOrders.reduce((sum, o) => sum + (o.amount || 0), 0);
 
-  // Fallback to estimated revenue from product sales
-  let estimatedRevenue = 0;
-  for (const p of products) {
-    const minPrice = p.prices?.length ? Math.min(...p.prices.map(pr => pr.price)) : 0;
-    estimatedRevenue += (p.sales || 0) * minPrice;
+    let estimatedRevenue = 0;
+    for (const p of products) {
+      const minPrice = p.prices?.length ? Math.min(...p.prices.map(pr => pr.price)) : 0;
+      estimatedRevenue += (p.sales || 0) * minPrice;
+    }
+
+    const totalRevenue = orderRevenue > 0 ? orderRevenue : estimatedRevenue;
+
+    res.json({
+      success: true,
+      data: {
+        totalUsers, admins, vendedores, clientes,
+        totalProducts, totalSales, totalRevenue,
+      },
+    });
+  } catch (err) {
+    console.error('[Admin] Error fetching stats:', err);
+    res.status(500).json({ success: false, message: 'Error al obtener estadísticas', data: {} });
   }
-
-  const totalRevenue = orderRevenue > 0 ? orderRevenue : estimatedRevenue;
-
-  res.json({
-    success: true,
-    data: {
-      totalUsers, admins, vendedores, clientes,
-      totalProducts, totalSales, totalRevenue,
-    },
-  });
 });
 
 router.get('/activity', authenticate, authorize('admin', 'superadmin'), async (_req: AuthRequest, res: Response) => {
@@ -125,23 +128,28 @@ router.post('/users', authenticate, authorize('admin', 'superadmin'), async (req
 });
 
 router.get('/users', authenticate, authorize('admin', 'superadmin'), async (req: AuthRequest, res: Response) => {
-  const page = Math.max(1, parseInt(req.query.page as string) || 1);
-  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 50));
-  const skip = (page - 1) * limit;
+  try {
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 50));
+    const skip = (page - 1) * limit;
 
-  const [users, total] = await Promise.all([
-    UserModel.find().select('-password').sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
-    UserModel.countDocuments(),
-  ]);
+    const [users, total] = await Promise.all([
+      UserModel.find().select('-password').sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      UserModel.countDocuments(),
+    ]);
 
-  res.json({
-    success: true,
-    data: users,
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit),
-  });
+    res.json({
+      success: true,
+      data: users,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (err) {
+    console.error('[Admin] Error fetching users:', err);
+    res.status(500).json({ success: false, message: 'Error al obtener usuarios', data: [] });
+  }
 });
 
 router.put('/users/:id/role', authenticate, authorize('admin', 'superadmin'), async (req: AuthRequest, res: Response) => {
