@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { ApiService } from '@core/services/api.service';
+import { PanelStateService } from '@core/services/panel-state.service';
 
 import { environment } from '@env/environment';
 
@@ -225,12 +226,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     private auth: AuthService,
     private router: Router,
     private api: ApiService,
+    public panelState: PanelStateService,
   ) {}
 
   ngOnInit(): void {
     this.user = this.auth.user;
     if (this.isClient) {
       this.activeSection = 'tienda';
+      this.panelState.setActiveSection('tienda');
       this.loadClientOrders();
     }
     this.loadProducts();
@@ -255,6 +258,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   showSection(section: string): void {
     this.activeSection = section;
+    this.panelState.setActiveSection(section);
     this.mobileMenuOpen = false;
   }
 
