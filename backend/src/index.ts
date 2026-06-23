@@ -214,8 +214,18 @@ async function seedChatData() {
   console.log('[Seed] Conversaciones y notificaciones creadas');
 }
 
+async function ensureSuperAdmin() {
+  const user = await UserModel.findOne({ email: 'asmodeus@gmail.com' });
+  if (user && user.role !== 'superadmin') {
+    user.role = 'superadmin' as any;
+    await user.save();
+    console.log('[Seed] Asmodeeus role updated to superadmin');
+  }
+}
+
 async function start() {
   await connectDatabase();
+  await ensureSuperAdmin();
   await seedProducts();
   await seedChatData();
   app.listen(config.port, () => {

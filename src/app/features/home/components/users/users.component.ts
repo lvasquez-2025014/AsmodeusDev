@@ -209,6 +209,12 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   changeUserRole(user: any, newRole: string): void {
     if (user.role === newRole) { this.usDropdownOpen = null; return; }
+    const isSelf = String(user._id || user.id) === String(this.user?.id || this.user?._id);
+    if (isSelf) {
+      this.usDropdownOpen = null;
+      this.showUsToast('No puedes cambiar tu propio rol', 'error');
+      return;
+    }
     this.api.put<any>(`admin/users/${user._id}/role`, { role: newRole }).subscribe({
       next: () => {
         user.role = newRole;
@@ -239,6 +245,12 @@ export class UsersComponent implements OnInit, OnDestroy {
   executeDeleteUser(): void {
     if (!this.usUserToDelete) return;
     const user = this.usUserToDelete;
+    const isSelf = String(user._id || user.id) === String(this.user?.id || this.user?._id);
+    if (isSelf) {
+      this.showUsToast('No puedes eliminar tu propia cuenta', 'error');
+      this.cancelDelete();
+      return;
+    }
     const name = user.name;
     this.api.delete<any>(`admin/users/${user._id}`).subscribe({
       next: () => {
@@ -383,6 +395,11 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   deletePartner(partner: any): void {
+    const isSelf = String(partner._id || partner.id) === String(this.user?.id || this.user?._id);
+    if (isSelf) {
+      this.showUsToast('No puedes eliminar tu propia cuenta', 'error');
+      return;
+    }
     if (!confirm(`¿Eliminar a ${partner.name}?`)) return;
     this.api.delete<any>(`admin/users/${partner._id}`).subscribe({
       next: () => this.loadPartners(),
@@ -391,6 +408,11 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   changeRole(partner: any, newRole: string): void {
+    const isSelf = String(partner._id || partner.id) === String(this.user?.id || this.user?._id);
+    if (isSelf) {
+      this.showUsToast('No puedes cambiar tu propio rol', 'error');
+      return;
+    }
     const prevRole = partner.role;
     this.api.put<any>(`admin/users/${partner._id}/role`, { role: newRole }).subscribe({
       next: (res) => { partner.role = newRole; },
