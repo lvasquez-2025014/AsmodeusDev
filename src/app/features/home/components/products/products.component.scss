@@ -12,6 +12,140 @@ $text-primary: #f1f5f9;
 $text-secondary: #94a3b8;
 $text-muted: #64748b;
 
+// ==================== SHARED STYLES ====================
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  h1 { font-size: 24px; font-weight: 700; color: #fff; margin: 0; }
+  p { font-size: 13px; color: $text-secondary; margin: 4px 0 0; }
+}
+
+.card {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+
+  &:hover { border-color: rgba(255,255,255,0.1); }
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, $cyan, $lime);
+  color: $bg-main;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba($cyan, 0.3); }
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: transparent;
+  color: $text-secondary;
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover { border-color: $text-secondary; color: $text-primary; }
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.btn-danger {
+  color: $red;
+  border-color: rgba($red, 0.3);
+  background: rgba($red, 0.08);
+
+  &:hover { background: rgba($red, 0.15); border-color: $red; }
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  color: $text-secondary;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+
+  &:hover { color: $text-primary; background: rgba(255,255,255,0.06); }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 12px;
+    font-weight: 600;
+    color: $text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+.form-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $border-color;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #fff;
+  font-size: 14px;
+  transition: border-color 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: $cyan;
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+.alert {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+
+  &.alert-error {
+    background: rgba($red, 0.1);
+    color: $red;
+    border: 1px solid rgba($red, 0.2);
+  }
+
+  &.alert-success {
+    background: rgba($green, 0.1);
+    color: $green;
+    border: 1px solid rgba($green, 0.2);
+  }
+}
+
 // ==================== PRODUCTS GRID ====================
 .products-grid {
   display: grid;
