@@ -197,7 +197,31 @@ export class ProductsComponent implements OnInit {
     });
   }
 
+  showProductDetail = false;
+  selectedProduct: any = null;
+
   buyProduct(product: any): void {
     if (this.isGuest) { this.router.navigate(['/auth/login']); return; }
+    if (this.isAdmin) {
+      this.selectedProduct = product;
+      this.showProductDetail = true;
+    }
+  }
+
+  closeProductDetail(): void {
+    this.showProductDetail = false;
+    this.selectedProduct = null;
+  }
+
+  editFromDetail(): void {
+    const p = this.selectedProduct;
+    this.closeProductDetail();
+    this.openProductModal(p);
+  }
+
+  deleteFromDetail(): void {
+    const p = this.selectedProduct;
+    this.closeProductDetail();
+    this.deleteProduct(p);
   }
 }

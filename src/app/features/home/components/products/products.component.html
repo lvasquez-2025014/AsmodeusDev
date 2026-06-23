@@ -125,8 +125,61 @@
             </div>
             <span class="drop-limit">Maximo 2MB</span>
             <input #fileInput type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,image/avif" (change)="onProductImageSelect($event)" style="display: none;">
-          </div>
+  </div>
+</div>
+
+<!-- Product Detail Modal (Admin) -->
+<div class="modal-overlay" *ngIf="showProductDetail && selectedProduct" (click)="closeProductDetail()">
+  <div class="modal-content card product-modal" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ selectedProduct.name }}</h2>
+      <button class="btn-icon" (click)="closeProductDetail()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-image" *ngIf="selectedProduct.image">
+        <img [src]="selectedProduct.image" [alt]="selectedProduct.name">
+      </div>
+      <div class="detail-placeholder" *ngIf="!selectedProduct.image">
+        <i [class]="selectedProduct.icon" class="detail-icon"></i>
+        <span>Sin imagen</span>
+      </div>
+      <div class="detail-info">
+        <span class="detail-badge" [ngClass]="'badge-' + selectedProduct.badgeType">{{ selectedProduct.badge }}</span>
+        <span class="detail-category">{{ selectedProduct.category }}</span>
+      </div>
+      <p class="detail-desc">{{ selectedProduct.description }}</p>
+      <div class="detail-plans" *ngIf="selectedProduct.prices?.length > 0">
+        <div class="detail-plan" *ngFor="let p of selectedProduct.prices">
+          <span class="plan-duration">{{ p.duration }}</span>
+          <span class="plan-price">${{ p.price }}</span>
         </div>
+      </div>
+      <div class="detail-stats">
+        <div class="detail-stat">
+          <span class="detail-stat-label">Stock</span>
+          <span class="detail-stat-value">{{ selectedProduct.stock }}</span>
+        </div>
+        <div class="detail-stat">
+          <span class="detail-stat-label">Ventas</span>
+          <span class="detail-stat-value">{{ selectedProduct.sales || 0 }}</span>
+        </div>
+        <div class="detail-stat">
+          <span class="detail-stat-label">Desde</span>
+          <span class="detail-stat-value detail-price">${{ selectedProduct.priceFrom }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" (click)="closeProductDetail()">Cerrar</button>
+      <button class="btn-outline" style="border-color: rgba(239,68,68,0.3); color: #ef4444;" (click)="deleteFromDetail()">
+        <i class="fas fa-trash"></i> Eliminar
+      </button>
+      <button class="btn-primary" (click)="editFromDetail()">
+        <i class="fas fa-edit"></i> Editar
+      </button>
+    </div>
+  </div>
+</div>
         <div class="form-group" style="margin-top: 8px;" *ngIf="!productImageFile && !productImagePreview">
           <label style="font-size: 11px; color: var(--text-muted);">O pega una URL de imagen</label>
           <input type="text" [(ngModel)]="productForm.image" placeholder="https://ejemplo.com/imagen.jpg" class="form-input">
