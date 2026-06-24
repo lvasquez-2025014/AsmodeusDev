@@ -1088,3 +1088,36 @@ $text-muted: #64748b;
     box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
   }
 }
+
+.us-role-filter {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.us-filter-btn {
+  padding: 6px 16px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: #e2e8f0;
+    border-color: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  &.us-filter-active {
+    color: #22d3ee;
+    background: rgba(34, 211, 238, 0.1);
+    border-color: rgba(34, 211, 238, 0.3);
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.15);
+  }
+}

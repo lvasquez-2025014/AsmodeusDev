@@ -72,6 +72,14 @@
           </div>
         </div>
 
+        <!-- Role Filter -->
+        <div class="us-role-filter">
+          <button class="us-filter-btn" [class.us-filter-active]="roleFilter === 'all'" (click)="setRoleFilter('all')">Todos</button>
+          <button class="us-filter-btn" [class.us-filter-active]="roleFilter === 'superadmin'" (click)="setRoleFilter('superadmin')">Super Admin</button>
+          <button class="us-filter-btn" [class.us-filter-active]="roleFilter === 'admin'" (click)="setRoleFilter('admin')">Admins</button>
+          <button class="us-filter-btn" [class.us-filter-active]="roleFilter === 'cliente'" (click)="setRoleFilter('cliente')">Clientes</button>
+        </div>
+
         <!-- Search -->
         <div class="us-search-wrap">
           <div class="us-search">

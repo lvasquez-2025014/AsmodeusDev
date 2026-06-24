@@ -16,6 +16,7 @@ export class UsersComponent implements OnInit, OnDestroy {
   allUsers: any[] = [];
 
   usSearchQuery = '';
+  roleFilter = 'all';
   filteredUsersList: any[] = [];
 
   showAddUserModal = false;
@@ -60,9 +61,13 @@ export class UsersComponent implements OnInit, OnDestroy {
   get usClientCount(): number { return this.allUsers.filter(u => u.role === 'cliente').length; }
 
   get filteredUsers(): any[] {
+    let list = this.allUsers;
+    if (this.roleFilter !== 'all') {
+      list = list.filter(u => u.role === this.roleFilter);
+    }
     const q = this.usSearchQuery.toLowerCase().trim();
-    if (!q) return this.allUsers;
-    return this.allUsers.filter(u => u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q));
+    if (!q) return list;
+    return list.filter(u => u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q));
   }
 
   constructor(
@@ -222,6 +227,10 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   onUsSearch(): void { }
+
+  setRoleFilter(role: string): void {
+    this.roleFilter = role;
+  }
 
   trackByUserId(_index: number, user: any): string { return user._id; }
 
