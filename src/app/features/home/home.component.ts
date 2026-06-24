@@ -89,6 +89,41 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   ];
 
+  superAdminNavSections = [
+    {
+      title: 'NAVEGACIÓN',
+      items: [
+        { name: 'Inicio', icon: 'fas fa-home', section: 'dashboard' },
+        { name: 'Productos', icon: 'fas fa-box', section: 'productos' },
+        { name: 'Pedidos', icon: 'fas fa-shopping-cart', section: 'pedidos' },
+        { name: 'Ganancias', icon: 'fas fa-wallet', section: 'ganancias' },
+      ]
+    },
+    {
+      title: 'ADMINISTRACIÓN',
+      items: [
+        { name: 'Usuarios', icon: 'fas fa-users', section: 'usuarios' },
+        { name: 'Analíticas', icon: 'fas fa-chart-line', section: 'analytics' },
+        { name: 'Chat', icon: 'fas fa-comments', section: 'chat' },
+        { name: 'Notificaciones', icon: 'fas fa-bell', section: 'notificaciones' },
+        { name: 'Logs', icon: 'fas fa-terminal', section: 'logs' },
+      ]
+    },
+    {
+      title: 'MI CUENTA',
+      items: [
+        { name: 'Mi Perfil', icon: 'fas fa-user', section: 'mi-perfil' },
+      ]
+    },
+    {
+      title: 'SISTEMA',
+      items: [
+        { name: 'Configuración', icon: 'fas fa-cog', section: 'config' },
+        { name: 'Cerrar Sesión', icon: 'fas fa-sign-out-alt', section: 'logout' },
+      ]
+    }
+  ];
+
   products = [
     { id: 1, name: 'Panel VIP PC', description: 'Panel completo para Free Fire en PC con ESP, Aimbot, Radar y más', category: 'Free Fire PC', prices: [{ duration: '1 Día', price: 1 }, { duration: '7 Días', price: 5 }, { duration: '14 Días', price: 10 }, { duration: '30 Días', price: 20 }, { duration: '90 Días', price: 30 }, { duration: '365 Días', price: 40 }], priceFrom: 1, priceTo: 40, stock: 999, status: 'active', badge: 'HOT', badgeType: 'danger', sales: 0, icon: 'fas fa-desktop', image: '' },
     { id: 2, name: 'Bypass APK', description: 'Bypass para detección APK en Free Fire', category: 'Free Fire Bypass', prices: [{ duration: '1 Día', price: 1 }, { duration: '7 Días', price: 4 }, { duration: '14 Días', price: 9 }, { duration: '30 Días', price: 12 }], priceFrom: 1, priceTo: 12, stock: 999, status: 'active', badge: 'VIP', badgeType: 'info', sales: 0, icon: 'fas fa-shield-alt', image: '' },
@@ -239,17 +274,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   get activeNavSections() {
     if (this.isClient) return this.clientNavSections;
-    if (this.isSuperAdmin) {
-      return this.adminNavSections.map(group => {
-        if (group.title === 'ADMINISTRACIÓN') {
-          return {
-            ...group,
-            items: [...group.items, { name: 'Logs', icon: 'fas fa-terminal', section: 'logs' }]
-          };
-        }
-        return group;
-      });
-    }
+    if (this.isSuperAdmin) return this.superAdminNavSections;
     return this.adminNavSections;
   }
 
