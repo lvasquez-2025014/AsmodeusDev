@@ -213,4 +213,77 @@ router.delete('/users/:id', authenticate, authorize('admin', 'superadmin'), asyn
   res.json({ success: true, message: 'Usuario eliminado' });
 });
 
+router.get('/analytics', authenticate, authorize('admin', 'superadmin'), async (_req: AuthRequest, res: Response) => {
+  try {
+    const now = new Date();
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const prevThirtyDays = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+    const totalUsers = await UserModel.countDocuments();
+    const totalProducts = await ProductModel.countDocuments();
+    const totalOrders = await OrderModel.countDocuments();
+    const completedOrders = await OrderModel.countDocuments({ status: OrderStatus.COMPLETED });
+    const pendingOrders = await OrderModel.countDocuments({ status: OrderStatus.PENDING });
+    const cancelledOrders = await OrderModel.countDocuments({ status: OrderStatus.CANCELLED });
+
+    const orders = await OrderModel.find().select('amount status createdAt').lean();
+    const totalRevenue = orders.filter(o => o.status === OrderStatus.COMPLETED).reduce((sum, o) => sum + (o.amount || 0), 0);
+
+    const usersThisMonth = await UserModel.countDocuments({ createdAt: { $gte: thirtyDaysAgo } });
+    const usersPrevMonth = await UserModel.countDocuments({ createdAt: { $gte: prevThirtyDays, $lt: thirtyDaysAgo } });
+    const userGrowth = usersPrevMonth > 0 ? Math.round(((usersThisMonth - usersPrevMonth) / usersPrevMonth) * 1000) / 10 : 0;
+
+    const ordersThisMonth = await OrderModel.countDocuments({ createdAt: { $gte: thirtyDaysAgo } });
+    const ordersPrevMonth = await OrderModel.countDocuments({ createdAt: { $gte: prevThirtyDays, $lt: thirtyDaysAgo } });
+    const salesGrowth = ordersPrevMonth > 0 ? Math.round(((ordersThisMonth - ordersPrevMonth) / ordersPrevMonth) * 1000) / 10 : 0;
+
+    const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+    const visitsPerDay: number[] = [];
+    const ordersPerDay: number[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const dayStart = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      dayStart.setHours(0, 0, 0, 0);
+      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
+      const dayUsers = await UserModel.countDocuments({ createdAt: { $gte: dayStart, $lt: dayEnd } });
+      const dayOrders = await OrderModel.countDocuments({ createdAt: { $gte: dayStart, $lt: dayEnd } });
+      visitsPerDay.push(dayUsers + dayOrders);
+      ordersPerDay.push(dayOrders);
+    }
+
+    const conversionRate = totalOrders > 0 ? Math.round((completedOrders / totalOrders) * 1000) / 10 : 0;
+
+    res.json({
+      success: true,
+      data: {
+        kpi: {
+          totalUsers,
+          totalProducts,
+          totalOrders,
+          totalRevenue,
+          completedOrders,
+          conversionRate,
+        },
+        growth: {
+          users: userGrowth,
+          sales: salesGrowth,
+        },
+        charts: {
+          labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+          visits: visitsPerDay,
+          orders: ordersPerDay,
+        },
+        conversion: {
+          completed: completedOrders,
+          pending: pendingOrders,
+          cancelled: cancelledOrders,
+        },
+      },
+    });
+  } catch (err) {
+    console.error('[Admin] Error fetching analytics:', err);
+    res.status(500).json({ success: false, message: 'Error al obtener analíticas' });
+  }
+});
+
 export default router;
