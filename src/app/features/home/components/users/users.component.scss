@@ -970,6 +970,12 @@ $text-muted: #64748b;
   appearance: none;
   cursor: pointer;
   padding-right: 36px;
+
+  option {
+    background: #1a1a1f;
+    color: #e2e8f0;
+    padding: 8px;
+  }
 }
 
 .us-select-arrow {
