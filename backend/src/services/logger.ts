@@ -3,8 +3,18 @@ import { LogModel, LogEventType } from '../models/log.model';
 
 function getClientIp(req: Request): string {
   const forwarded = req.headers['x-forwarded-for'];
-  if (typeof forwarded === 'string') return forwarded.split(',')[0].trim();
-  return req.ip || req.socket.remoteAddress || 'unknown';
+  let ip = '';
+  if (typeof forwarded === 'string') {
+    ip = forwarded.split(',')[0].trim();
+  } else {
+    ip = req.ip || req.socket.remoteAddress || '';
+  }
+  // Strip IPv6 prefix ::ffff:
+  if (ip.startsWith('::ffff:')) {
+    ip = ip.substring(7);
+  }
+  if (ip === '::1' || ip === '127.0.0.1') return 'localhost';
+  return ip || 'unknown';
 }
 
 export async function logEvent(
