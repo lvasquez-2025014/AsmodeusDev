@@ -6,6 +6,8 @@ import { OAuth2Client } from 'google-auth-library';
 import { UserModel } from '../models/user.model';
 import { config } from '../config';
 import { AuthRequest } from '../middleware/auth.middleware';
+import { logEvent } from '../services/logger';
+import { LogEventType } from '../models/log.model';
 
 const googleClient = new OAuth2Client(config.googleClientId);
 
@@ -40,6 +42,8 @@ export async function register(req: AuthRequest, res: Response): Promise<void> {
     const user = await UserModel.create({ name, email: email.toLowerCase(), password });
     const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
 
+    await logEvent(LogEventType.REGISTER, req, { userName: user.name, email: user.email, success: true });
+
     res.status(201).json({
       success: true,
       data: {
@@ -66,6 +70,7 @@ export async function login(req: AuthRequest, res: Response): Promise<void> {
       ? await UserModel.findOne({ email: email.toLowerCase().trim() })
       : await UserModel.findOne({ name: { $regex: new RegExp(`^${escapeRegex(email.trim())}$`, 'i') } });
     if (!user) {
+      await logEvent(LogEventType.LOGIN_FAILED, req, { email, success: false });
       if ((req as any).trackLoginAttempt) (req as any).trackLoginAttempt(false);
       res.status(401).json({ message: 'Credenciales inválidas' });
       return;
@@ -78,6 +83,7 @@ export async function login(req: AuthRequest, res: Response): Promise<void> {
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
+      await logEvent(LogEventType.LOGIN_FAILED, req, { userName: user.name, email: user.email, success: false });
       if ((req as any).trackLoginAttempt) (req as any).trackLoginAttempt(false);
       res.status(401).json({ message: 'Credenciales inválidas' });
       return;
@@ -86,6 +92,8 @@ export async function login(req: AuthRequest, res: Response): Promise<void> {
     if ((req as any).trackLoginAttempt) (req as any).trackLoginAttempt(true);
 
     const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
+
+    await logEvent(LogEventType.LOGIN, req, { userName: user.name, email: user.email, success: true });
 
     res.json({
       success: true,
@@ -141,6 +149,8 @@ export async function googleLogin(req: AuthRequest, res: Response): Promise<void
     }
 
     const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
+
+    await logEvent(LogEventType.GOOGLE_LOGIN, req, { userName: user.name, email: user.email, success: true });
 
     res.json({
       success: true,

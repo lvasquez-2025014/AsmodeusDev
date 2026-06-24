@@ -239,6 +239,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   get activeNavSections() {
     if (this.isClient) return this.clientNavSections;
+    if (this.isSuperAdmin) {
+      return this.adminNavSections.map(group => {
+        if (group.title === 'ADMINISTRACIÓN') {
+          return {
+            ...group,
+            items: [...group.items, { name: 'Logs', icon: 'fas fa-terminal', section: 'logs' }]
+          };
+        }
+        return group;
+      });
+    }
     return this.adminNavSections;
   }
 

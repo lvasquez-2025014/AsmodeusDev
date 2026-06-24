@@ -5,6 +5,7 @@ import { UserModel, UserRole } from '../models/user.model';
 import { ProductModel } from '../models/product.model';
 import { MessageModel, ConversationModel } from '../models/message.model';
 import { OrderModel, OrderStatus } from '../models/order.model';
+import { LogModel } from '../models/log.model';
 
 const router = Router();
 
@@ -283,6 +284,37 @@ router.get('/analytics', authenticate, authorize('admin', 'superadmin'), async (
   } catch (err) {
     console.error('[Admin] Error fetching analytics:', err);
     res.status(500).json({ success: false, message: 'Error al obtener analíticas' });
+  }
+});
+
+router.get('/logs', authenticate, authorize('superadmin'), async (req: AuthRequest, res: Response) => {
+  try {
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 50));
+    const skip = (page - 1) * limit;
+    const since = req.query.since as string;
+
+    const filter: any = {};
+    if (since) {
+      filter.createdAt = { $gt: new Date(since) };
+    }
+
+    const [logs, total] = await Promise.all([
+      LogModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      LogModel.countDocuments(filter),
+    ]);
+
+    res.json({
+      success: true,
+      data: logs,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (err) {
+    console.error('[Admin] Error fetching logs:', err);
+    res.status(500).json({ success: false, message: 'Error al obtener logs', data: [] });
   }
 });
 

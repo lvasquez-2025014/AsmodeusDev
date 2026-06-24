@@ -12,6 +12,7 @@ import { AnalyticsComponent } from './components/analytics/analytics.component';
 import { NotificationsComponent } from './components/notifications/notifications.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { LogsComponent } from './components/logs/logs.component';
 
 const routes: Routes = [{ path: '', component: HomeComponent }];
 
@@ -28,6 +29,7 @@ const routes: Routes = [{ path: '', component: HomeComponent }];
     NotificationsComponent,
     SettingsComponent,
     ProfileComponent,
+    LogsComponent,
   ],
   imports: [SharedModule, RouterModule.forChild(routes)],
 })

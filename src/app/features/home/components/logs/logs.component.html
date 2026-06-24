@@ -1,0 +1,48 @@
+<div class="logs-container">
+  <div class="logs-header">
+    <div class="header-left">
+      <div class="terminal-dots">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+      </div>
+      <span class="terminal-title">system_logs@supremocheats:~</span>
+    </div>
+    <div class="header-right">
+      <span class="status-badge">
+        <span class="pulse-dot"></span>
+        EN VIVO
+      </span>
+    </div>
+  </div>
+
+  <div class="logs-terminal">
+    <div class="terminal-line system-msg">
+      <span class="text-green-400">bash: system logger initialized successfully. Monitoring auth events...</span>
+    </div>
+
+    <div *ngIf="loading && logs.length === 0" class="terminal-line">
+      <span class="text-gray-500">Cargando logs...</span>
+    </div>
+
+    <div *ngFor="let log of logs; trackBy: trackById" class="terminal-line log-entry">
+      <span class="timestamp">[{{ getTimestamp(log.createdAt) }}]</span>
+      <span [class]="getEventColor(log.event)" class="event-tag">[{{ getEventLabel(log.event) }}]</span>
+      <span class="text-purple-400">{{ log.event === 'REGISTER' ? 'New user registered' : log.event.includes('LOGIN') ? 'Auth event' : log.event }}</span>
+      <span class="text-white"> {{ log.userName || log.email || 'unknown' }}</span>
+      <span class="text-gray-600"> |</span>
+      <span class="text-orange-400"> IP: {{ log.ip || 'N/A' }}</span>
+      <span class="text-gray-600"> |</span>
+      <span class="text-blue-400"> {{ getShortUA(log.userAgent) }}</span>
+    </div>
+
+    <div *ngIf="!loading && logs.length === 0" class="terminal-line">
+      <span class="text-gray-500">No hay eventos registrados aún. Esperando actividad...</span>
+    </div>
+
+    <div class="terminal-line cursor-blink">
+      <span class="text-green-400">$</span>
+      <span class="cursor">_</span>
+    </div>
+  </div>
+</div>
