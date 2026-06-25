@@ -1,12 +1,7 @@
 <section *ngIf="isSuperAdmin && panelState.activeSection === 'cmd'" class="section-content cmd-section">
   <div class="cmd-header">
     <div class="cmd-header-left">
-      <div class="cmd-dots">
-        <span class="cmd-dot cmd-dot-red"></span>
-        <span class="cmd-dot cmd-dot-yellow"></span>
-        <span class="cmd-dot cmd-dot-green"></span>
-      </div>
-      <span class="cmd-title">asmodeus-developer ~ terminal</span>
+      <span class="cmd-title">C:\Windows\System32\cmd.exe</span>
     </div>
     <div class="cmd-header-right">
       <span class="cmd-badge">SUPERADMIN</span>
@@ -25,8 +20,7 @@
     </div>
 
     <div class="cmd-input-line" (click)="focusInput()">
-      <span class="cmd-time">{{ currentTimeStr }}</span>
-      <span class="cmd-prompt">C:\_</span>
+      <span class="cmd-prompt">C:\Users\dev&gt;</span>
       <input #cmdInput
              type="text"
              [(ngModel)]="currentInput"
@@ -35,7 +29,7 @@
              [disabled]="isExecuting"
              autocomplete="off"
              spellcheck="false">
-      <span class="cmd-cursor" [class.cmd-cursor-hidden]="!showCursor && !isExecuting">|</span>
+      <span class="cmd-cursor" [class.cmd-cursor-hidden]="!showCursor && !isExecuting">&block;</span>
     </div>
   </div>
 </section>

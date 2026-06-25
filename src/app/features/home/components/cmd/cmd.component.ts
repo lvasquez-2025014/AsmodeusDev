@@ -39,10 +39,8 @@ export class CmdComponent implements OnInit, AfterViewChecked {
   ngOnInit(): void {
     const user = this.auth.user;
     this.isSuperAdmin = user?.role === 'superadmin';
-    this.pushLine('╔══════════════════════════════════════════╗', 'system');
-    this.pushLine('║   Asmodeus Developer - Terminal v1.0.0   ║', 'system');
-    this.pushLine('║   Escribe "help" para ver comandos       ║', 'system');
-    this.pushLine('╚══════════════════════════════════════════╝\n', 'system');
+    this.pushLine('Microsoft Windows [Version 10.0.19045.6466]', 'system');
+    this.pushLine('(c) Microsoft Corporation. Todos los derechos reservados.\n', 'system');
     this.cursorInterval = setInterval(() => {
       this.showCursor = !this.showCursor;
       this.updateTime();
