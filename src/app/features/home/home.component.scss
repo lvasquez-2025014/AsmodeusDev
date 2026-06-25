@@ -899,6 +899,42 @@ $topbar-height: 64px;
 
 .product-card-prices {
   margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  transition: all 0.25s ease;
+
+  &:hover {
+    background: rgba(34, 211, 238, 0.04);
+    border-color: rgba(34, 211, 238, 0.12);
+    transform: translateX(3px);
+  }
+}
+
+.price-duration {
+  font-size: 13px;
+  font-weight: 600;
+  color: #bbb;
+  letter-spacing: 0.3px;
+}
+
+.price-value {
+  font-size: 16px;
+  font-weight: 900;
+  background: linear-gradient(135deg, $cyan, $lime);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .price-from-section {
@@ -2239,27 +2275,45 @@ $topbar-height: 64px;
 
 .guest-product-prices {
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .guest-price-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  transition: all 0.25s ease;
 
   &:last-child { border-bottom: none; }
+
+  &:hover {
+    background: rgba(34, 211, 238, 0.04);
+    border-color: rgba(34, 211, 238, 0.12);
+    transform: translateX(3px);
+  }
 }
 
 .guest-price-duration {
   font-size: 13px;
-  color: #aaa;
+  font-weight: 600;
+  color: #bbb;
+  letter-spacing: 0.3px;
 }
 
 .guest-price-value {
-  font-size: 15px;
-  font-weight: 700;
-  color: $lime;
+  font-size: 16px;
+  font-weight: 900;
+  background: linear-gradient(135deg, $cyan, $lime);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
 }
 
 .guest-buy-btn {
@@ -2309,24 +2363,29 @@ $topbar-height: 64px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
   color: #fff;
 
   &:hover {
     border-color: $cyan;
-    background: rgba(34, 211, 238, 0.05);
+    background: rgba(34, 211, 238, 0.06);
+    transform: translateX(4px);
   }
 }
 
 .plan-duration {
   font-size: 14px;
   font-weight: 600;
+  color: #ccc;
 }
 
 .plan-price {
-  font-size: 18px;
-  font-weight: 800;
-  color: $lime;
+  font-size: 20px;
+  font-weight: 900;
+  background: linear-gradient(135deg, $cyan, $lime);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .payment-options {

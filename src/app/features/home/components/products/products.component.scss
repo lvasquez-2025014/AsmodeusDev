@@ -609,14 +609,28 @@ $text-muted: #64748b;
 .detail-plan {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  background: rgba(255,255,255,0.04);
+  gap: 10px;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.03);
   border: 1px solid $border-color;
-  border-radius: 8px;
+  border-radius: 10px;
+  transition: all 0.25s ease;
 
-  .plan-duration { font-size: 12px; font-weight: 600; color: $text-secondary; }
-  .plan-price { font-size: 14px; font-weight: 800; color: $cyan; }
+  &:hover {
+    border-color: rgba($cyan, 0.3);
+    background: rgba($cyan, 0.04);
+    transform: translateY(-1px);
+  }
+
+  .plan-duration { font-size: 12px; font-weight: 600; color: $text-secondary; letter-spacing: 0.3px; }
+  .plan-price {
+    font-size: 15px;
+    font-weight: 900;
+    background: linear-gradient(135deg, $cyan, $lime);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
 .detail-stats {
