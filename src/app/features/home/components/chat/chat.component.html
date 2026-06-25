@@ -11,7 +11,7 @@
       <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
     </div>
     <div class="cyber-divider"></div>
-    <div class="discord-server-icon" title="Supremo Cheats"
+    <div class="discord-server-icon" title="Asmodeus Developer"
          [class.active]="chatView === 'channels'" (click)="switchChatView('channels')">
       <span class="discord-server-text">SC</span>
     </div>
@@ -26,7 +26,7 @@
         <button class="discord-icon-btn chat-channels-back" (click)="chatChannelsOpen = false" title="Cerrar">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
-        <h2 class="discord-channels-title">{{ chatView === 'dms' ? 'Mensajes Directos' : 'Supremo Cheats' }}</h2>
+        <h2 class="discord-channels-title">{{ chatView === 'dms' ? 'Mensajes Directos' : 'Asmodeus Developer' }}</h2>
       </div>
       <button *ngIf="chatView === 'dms'" class="discord-icon-btn" (click)="openNewChatModal()" title="Nueva conversacion">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>

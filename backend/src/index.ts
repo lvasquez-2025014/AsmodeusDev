@@ -195,10 +195,10 @@ async function seedChatData() {
   }
 
   const notifTemplates = [
-    { title: 'Bienvenido a Supremo Cheats', message: 'Tu panel de control está listo para usar. Explora las funciones disponibles.', type: 'info', icon: 'fas fa-info-circle', targetRole: '' },
+    { title: 'Bienvenido a Asmodeus Developer', message: 'Tu panel de control está listo para usar. Explora las funciones disponibles.', type: 'info', icon: 'fas fa-info-circle', targetRole: '' },
     { title: 'Revisa las novedades', message: 'Hay nuevas funciones agregadas al panel. ¡No te las pierdas!', type: 'info', icon: 'fas fa-star', targetRole: 'cliente' },
     { title: 'Productos actualizados', message: 'Se han agregado nuevos productos al catálogo. Revisa la tienda.', type: 'success', icon: 'fas fa-box', targetRole: 'cliente' },
-    { title: 'Soporte disponible', message: '¿Necesitas ayuda? Usa el canal de soporte o contacta por Discord.', type: 'info', icon: 'fas fa-headset', targetRole: 'cliente' },
+    { title: 'Soporte disponible', message: '¿Necesitas ayuda? Contacta al equipo de soporte.', type: 'info', icon: 'fas fa-headset', targetRole: 'cliente' },
     { title: 'Sistema actualizado', message: 'El panel ha sido actualizado con mejoras de rendimiento y seguridad.', type: 'success', icon: 'fas fa-shield-alt', targetRole: 'admin' },
     { title: 'Gestión de usuarios', message: 'Recuerda revisar los nuevos registros de usuarios en el panel.', type: 'info', icon: 'fas fa-users', targetRole: 'admin' },
   ];

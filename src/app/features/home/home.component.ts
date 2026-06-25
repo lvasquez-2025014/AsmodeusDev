@@ -20,7 +20,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   mobileMenuOpen = false;
 
   user: any = null;
-  discordUrl = 'https://discord.gg/KdZVK4jnuZ';
   todayDate = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   currentTime = '';
   private clockInterval: any;
@@ -141,7 +140,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   orders: any[] = [];
 
   notifications = [
-    { id: 1, title: 'Bienvenido a Supremo Cheats', message: 'Tu panel de control está listo para usar', time: 'Ahora', read: false, icon: 'fas fa-info-circle', color: 'cyan' }
+    { id: 1, title: 'Bienvenido a Asmodeus Developer', message: 'Tu panel de control está listo para usar', time: 'Ahora', read: false, icon: 'fas fa-info-circle', color: 'cyan' }
   ];
 
   get unreadNotifications(): number {
@@ -386,15 +385,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     this.api.post<any>('orders', orderData).subscribe({
       next: () => {
-        if (methodId === 'transferencia') { window.open(this.discordUrl, '_blank'); }
-        else if (methodId === 'paypal') { window.open(`https://paypal.me/SupremoCheats/${this.selectedPlan.price}USD`, '_blank'); }
-        else if (methodId === 'binance') { window.open(this.discordUrl, '_blank'); }
         this.closePaymentModal();
       },
       error: () => {
-        if (methodId === 'transferencia') { window.open(this.discordUrl, '_blank'); }
-        else if (methodId === 'paypal') { window.open(`https://paypal.me/SupremoCheats/${this.selectedPlan.price}USD`, '_blank'); }
-        else if (methodId === 'binance') { window.open(this.discordUrl, '_blank'); }
         this.closePaymentModal();
       }
     });

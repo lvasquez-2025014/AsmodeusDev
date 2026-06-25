@@ -40,7 +40,7 @@ export class CmdComponent implements OnInit, AfterViewChecked {
     const user = this.auth.user;
     this.isSuperAdmin = user?.role === 'superadmin';
     this.pushLine('╔══════════════════════════════════════════╗', 'system');
-    this.pushLine('║   Supremo Cheats - Terminal v1.0.0       ║', 'system');
+    this.pushLine('║   Asmodeus Developer - Terminal v1.0.0   ║', 'system');
     this.pushLine('║   Escribe "help" para ver comandos       ║', 'system');
     this.pushLine('╚══════════════════════════════════════════╝\n', 'system');
     this.cursorInterval = setInterval(() => {
@@ -208,7 +208,7 @@ export class CmdComponent implements OnInit, AfterViewChecked {
 
   private cmdVersion(): void {
     this.pushLine('┌─ SISTEMA ─────────────────────────────────┐', 'output');
-    this.pushLine('│  Supremo Cheats Panel    v1.0.0            │', 'output');
+    this.pushLine('│  Asmodeus Developer Panel    v1.0.0            │', 'output');
     this.pushLine('│  Frontend                Angular 15        │', 'output');
     this.pushLine('│  Backend                 Express + Mongoose│', 'output');
     this.pushLine('│  Base de datos           MongoDB Atlas     │', 'output');
@@ -426,7 +426,7 @@ export class CmdComponent implements OnInit, AfterViewChecked {
 
   private cmdBanner(): void {
     this.pushLine('╔══════════════════════════════════════════╗', 'system');
-    this.pushLine('║   Supremo Cheats - Terminal v1.0.0       ║', 'system');
+    this.pushLine('║   Asmodeus Developer - Terminal v1.0.0       ║', 'system');
     this.pushLine('║   Escribe "help" para ver comandos       ║', 'system');
     this.pushLine('╚══════════════════════════════════════════╝', 'system');
   }
