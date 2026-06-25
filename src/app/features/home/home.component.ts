@@ -106,7 +106,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         { name: 'Analíticas', icon: 'fas fa-chart-line', section: 'analytics' },
         { name: 'Chat', icon: 'fas fa-comments', section: 'chat' },
         { name: 'Notificaciones', icon: 'fas fa-bell', section: 'notificaciones' },
+      ]
+    },
+    {
+      title: 'TOOLS',
+      items: [
         { name: 'Logs', icon: 'fas fa-terminal', section: 'logs' },
+        { name: 'CMD', icon: 'fas fa-code', section: 'cmd' },
       ]
     },
     {

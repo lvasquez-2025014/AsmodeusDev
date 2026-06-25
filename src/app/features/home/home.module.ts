@@ -13,6 +13,7 @@ import { NotificationsComponent } from './components/notifications/notifications
 import { SettingsComponent } from './components/settings/settings.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { LogsComponent } from './components/logs/logs.component';
+import { CmdComponent } from './components/cmd/cmd.component';
 
 const routes: Routes = [{ path: '', component: HomeComponent }];
 
@@ -30,6 +31,7 @@ const routes: Routes = [{ path: '', component: HomeComponent }];
     SettingsComponent,
     ProfileComponent,
     LogsComponent,
+    CmdComponent,
   ],
   imports: [SharedModule, RouterModule.forChild(routes)],
 })
