@@ -118,6 +118,7 @@ async function seedProducts() {
       badge: 'VIP',
       badgeType: 'info',
       icon: 'fas fa-shield-alt',
+      image: '/images/bypass-uid.png',
     },
     {
       name: 'Panel Proxy Android',
@@ -243,10 +244,20 @@ async function ensureSuperAdmin() {
   }
 }
 
+async function patchProductImages() {
+  const bypass = await ProductModel.findOne({ name: 'Bypass APK' });
+  if (bypass && !bypass.image) {
+    bypass.image = '/images/bypass-uid.png';
+    await bypass.save();
+    console.log('[Seed] Patched Bypass APK image');
+  }
+}
+
 async function start() {
   await connectDatabase();
   await ensureSuperAdmin();
   await seedProducts();
+  await patchProductImages();
   await seedChatData();
   app.listen(config.port, () => {
     console.log(`[Server] Corriendo en http://localhost:${config.port}`);
