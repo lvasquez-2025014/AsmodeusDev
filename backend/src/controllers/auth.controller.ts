@@ -2,43 +2,102 @@ import { Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { OAuth2Client } from 'google-auth-library';
+import https from 'https';
 import { UserModel } from '../models/user.model';
 import { config } from '../config';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { logEvent } from '../services/logger';
 import { LogEventType } from '../models/log.model';
 
+function base64UrlDecode(str: string): Buffer {
+  let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+  while (base64.length % 4) base64 += '=';
+  return Buffer.from(base64, 'base64');
+}
+
+function fetchJson(url: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    https.get(url, { timeout: 10000 }, (res) => {
+      let data = '';
+      res.on('data', (chunk: string) => { data += chunk; });
+      res.on('end', () => {
+        try { resolve(JSON.parse(data)); } catch { reject(new Error('Invalid JSON')); }
+      });
+    }).on('error', reject);
+  });
+}
+
+let cachedKeys: { keys: any[]; at: number } | null = null;
+
+async function getGooglePublicKeys(): Promise<any[]> {
+  if (cachedKeys && Date.now() - cachedKeys.at < 3600000) return cachedKeys.keys;
+  const data = await fetchJson('https://www.googleapis.com/oauth2/v3/certs');
+  cachedKeys = { keys: data.keys, at: Date.now() };
+  return data.keys;
+}
+
 async function verifyGoogleToken(idToken: string): Promise<{ email: string; name: string; sub: string } | null> {
-  const audiences: string[] = [];
-  if (config.firebase.projectId) audiences.push(config.firebase.projectId);
-  if (config.googleClientId) audiences.push(config.googleClientId);
-
-  for (const audience of audiences) {
-    try {
-      const client = new OAuth2Client();
-      const ticket = await client.verifyIdToken({ idToken, audience });
-      const payload = ticket.getPayload();
-      if (payload && payload.email && payload.sub) {
-        return { email: payload.email, name: payload.name || '', sub: payload.sub };
-      }
-    } catch (err: any) {
-      console.log(`[GoogleAuth] verifyIdToken failed (audience=${audience}):`, err.message);
-    }
-  }
-
   try {
-    const resp = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
-    if (!resp.ok) {
-      const body = await resp.text();
-      console.log('[GoogleAuth] Tokeninfo failed:', resp.status, body);
+    const parts = idToken.split('.');
+    if (parts.length !== 3) {
+      console.log('[GoogleAuth] Invalid token format');
       return null;
     }
-    const payload = await resp.json() as any;
+
+    const header = JSON.parse(base64UrlDecode(parts[0]).toString());
+    const payload = JSON.parse(base64UrlDecode(parts[1]).toString());
+
+    console.log('[GoogleAuth] alg:', header.alg, 'kid:', header.kid, 'iss:', payload.iss, 'aud:', payload.aud, 'exp:', payload.exp);
+
+    if (header.alg !== 'RS256') return null;
+
+    const now = Math.floor(Date.now() / 1000);
+    if (payload.exp && payload.exp < now) {
+      console.log('[GoogleAuth] Token expired');
+      return null;
+    }
+
+    const validIssuers = [
+      'https://securetoken.google.com/' + config.firebase.projectId,
+      'accounts.google.com',
+      'https://accounts.google.com',
+    ];
+    if (!validIssuers.includes(payload.iss)) {
+      console.log('[GoogleAuth] Invalid issuer:', payload.iss);
+      return null;
+    }
+
+    const validAudiences = [config.firebase.projectId, config.googleClientId].filter(Boolean);
+    const aud = Array.isArray(payload.aud) ? payload.aud[0] : payload.aud;
+    if (!validAudiences.includes(aud)) {
+      console.log('[GoogleAuth] Invalid audience:', aud, 'expected:', validAudiences);
+      return null;
+    }
+
+    const keys = await getGooglePublicKeys();
+    const key = keys.find((k: any) => k.kid === header.kid);
+    if (!key) {
+      console.log('[GoogleAuth] No matching key for kid:', header.kid);
+      return null;
+    }
+
+    const publicKey = crypto.createPublicKey({ format: 'jwk', key: { kty: 'RSA', n: key.n, e: key.e } });
+
+    const verifier = crypto.createVerify('RSA-SHA256');
+    verifier.update(parts[0] + '.' + parts[1]);
+    const valid = verifier.verify(publicKey, base64UrlDecode(parts[2]));
+
+    if (!valid) {
+      console.log('[GoogleAuth] Signature verification failed');
+      return null;
+    }
+
+    console.log('[GoogleAuth] Verified OK for:', payload.email);
+
     if (!payload.email || !payload.sub) return null;
     return { email: payload.email, name: payload.name || '', sub: payload.sub };
-  } catch (e2: any) {
-    console.log('[GoogleAuth] Tokeninfo fallback error:', e2.message);
+  } catch (err: any) {
+    console.log('[GoogleAuth] Error:', err.message);
     return null;
   }
 }
