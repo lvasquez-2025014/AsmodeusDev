@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('categoryChart') categoryChartRef!: ElementRef<HTMLCanvasElement>;
 
   user: any = null;
-  discordUrl = 'https://discord.gg/HazXhwWMS';
+  discordUrl = 'https://discord.gg/KdZVK4jnuZ';
   todayDate = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
   statsCards: StatsCard[] = [

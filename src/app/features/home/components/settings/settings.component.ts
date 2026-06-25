@@ -8,7 +8,7 @@ import { PaymentMethodOption } from '@models/index';
   styleUrls: ['./settings.component.scss']
 })
 export class SettingsComponent {
-  discordUrl = 'https://discord.gg/HazXhwWMS';
+  discordUrl = 'https://discord.gg/KdZVK4jnuZ';
 
   settings = {
     storeName: 'Supremo Cheats',

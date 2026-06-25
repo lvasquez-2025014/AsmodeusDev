@@ -20,7 +20,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   mobileMenuOpen = false;
 
   user: any = null;
-  discordUrl = 'https://discord.gg/HazXhwWMS';
+  discordUrl = 'https://discord.gg/KdZVK4jnuZ';
   todayDate = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   currentTime = '';
   private clockInterval: any;
