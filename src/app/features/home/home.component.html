@@ -325,7 +325,6 @@
               <img *ngIf="product.image" [src]="imageUrl + product.image" [alt]="product.name" class="product-img" />
                 <div *ngIf="!product.image" class="product-img-placeholder">
                   <i [class]="product.icon" class="product-icon-display"></i>
-                  <span class="product-img-label">Arrastra o pega tu imagen aqui</span>
                 </div>
                 <span class="badge" [ngClass]="'badge-' + product.badgeType">{{ product.badge }}</span>
               </div>
