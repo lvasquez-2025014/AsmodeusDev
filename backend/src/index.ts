@@ -37,7 +37,7 @@ if (process.env.FRONTEND_URL) {
 }
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin) || /vercel\.app$/.test(origin)) {
       callback(null, true);
     } else {
       console.log(`[SECURITY] CORS blocked from: ${origin}`);
