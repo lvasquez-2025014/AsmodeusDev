@@ -44,6 +44,11 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoginPanel = !this.router.url.includes('/register');
+    this.auth.handleRedirectLogin().then((data) => {
+      if (data) {
+        this.router.navigate(['/']);
+      }
+    });
   }
 
   switchToRegister(): void {
