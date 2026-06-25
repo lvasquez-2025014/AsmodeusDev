@@ -2,7 +2,6 @@ import { Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import https from 'https';
 import { UserModel } from '../models/user.model';
 import { config } from '../config';
 import { AuthRequest } from '../middleware/auth.middleware';
@@ -15,25 +14,29 @@ function base64UrlDecode(str: string): Buffer {
   return Buffer.from(base64, 'base64');
 }
 
-function fetchJson(url: string): Promise<any> {
-  return new Promise((resolve, reject) => {
-    https.get(url, { timeout: 10000 }, (res) => {
-      let data = '';
-      res.on('data', (chunk: string) => { data += chunk; });
-      res.on('end', () => {
-        try { resolve(JSON.parse(data)); } catch { reject(new Error('Invalid JSON')); }
-      });
-    }).on('error', reject);
-  });
-}
-
 let cachedKeys: { keys: any[]; at: number } | null = null;
 
 async function getGooglePublicKeys(): Promise<any[]> {
   if (cachedKeys && Date.now() - cachedKeys.at < 3600000) return cachedKeys.keys;
-  const data = await fetchJson('https://www.googleapis.com/oauth2/v3/certs');
-  cachedKeys = { keys: data.keys, at: Date.now() };
-  return data.keys;
+
+  try {
+    const resp = await fetch('https://www.googleapis.com/oauth2/v3/certs');
+    if (!resp.ok) {
+      console.log('[GoogleAuth] Certs fetch failed:', resp.status);
+      return cachedKeys?.keys || [];
+    }
+    const data = await resp.json() as any;
+    if (data.keys && Array.isArray(data.keys)) {
+      console.log('[GoogleAuth] Fetched', data.keys.length, 'keys. Kids:', data.keys.map((k: any) => k.kid).join(', '));
+      cachedKeys = { keys: data.keys, at: Date.now() };
+      return data.keys;
+    }
+    console.log('[GoogleAuth] Unexpected certs response:', JSON.stringify(data).slice(0, 200));
+  } catch (err: any) {
+    console.log('[GoogleAuth] Certs fetch error:', err.message);
+  }
+
+  return cachedKeys?.keys || [];
 }
 
 async function verifyGoogleToken(idToken: string): Promise<{ email: string; name: string; sub: string } | null> {
@@ -74,22 +77,41 @@ async function verifyGoogleToken(idToken: string): Promise<{ email: string; name
       return null;
     }
 
+    cachedKeys = null;
     const keys = await getGooglePublicKeys();
-    const key = keys.find((k: any) => k.kid === header.kid);
+
+    let key = keys.find((k: any) => k.kid === header.kid);
     if (!key) {
-      console.log('[GoogleAuth] No matching key for kid:', header.kid);
+      console.log('[GoogleAuth] No kid match. Trying all', keys.length, 'keys...');
+      const sigBuffer = base64UrlDecode(parts[2]);
+      const dataToVerify = parts[0] + '.' + parts[1];
+      for (const k of keys) {
+        try {
+          const publicKey = crypto.createPublicKey({ format: 'jwk', key: { kty: 'RSA', n: k.n, e: k.e } });
+          const verifier = crypto.createVerify('RSA-SHA256');
+          verifier.update(dataToVerify);
+          if (verifier.verify(publicKey, sigBuffer)) {
+            console.log('[GoogleAuth] Verified with key kid:', k.kid);
+            key = k;
+            break;
+          }
+        } catch {}
+      }
+    }
+
+    if (!key) {
+      console.log('[GoogleAuth] Signature verification failed with all keys');
       return null;
     }
 
-    const publicKey = crypto.createPublicKey({ format: 'jwk', key: { kty: 'RSA', n: key.n, e: key.e } });
-
-    const verifier = crypto.createVerify('RSA-SHA256');
-    verifier.update(parts[0] + '.' + parts[1]);
-    const valid = verifier.verify(publicKey, base64UrlDecode(parts[2]));
-
-    if (!valid) {
-      console.log('[GoogleAuth] Signature verification failed');
-      return null;
+    if (key.kid === header.kid) {
+      const publicKey = crypto.createPublicKey({ format: 'jwk', key: { kty: 'RSA', n: key.n, e: key.e } });
+      const verifier = crypto.createVerify('RSA-SHA256');
+      verifier.update(parts[0] + '.' + parts[1]);
+      if (!verifier.verify(publicKey, base64UrlDecode(parts[2]))) {
+        console.log('[GoogleAuth] Signature verification failed');
+        return null;
+      }
     }
 
     console.log('[GoogleAuth] Verified OK for:', payload.email);
