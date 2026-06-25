@@ -1,1 +1,99 @@
-// Auth styles handled by _auth.scss
+.banned-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.95), rgba(185, 28, 28, 0.95));
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid rgba(248, 113, 113, 0.5);
+  padding: 14px 20px;
+  animation: bannedSlideIn 0.4s ease-out;
+}
+
+.banned-banner-content {
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.banned-icon {
+  width: 28px;
+  height: 28px;
+  color: #fca5a5;
+  flex-shrink: 0;
+  animation: bannedPulse 2s ease-in-out infinite;
+}
+
+.banned-text {
+  flex: 1;
+}
+
+.banned-title {
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+.banned-sub {
+  color: rgba(254, 202, 202, 0.8);
+  font-size: 11px;
+  margin: 2px 0 0;
+}
+
+.banned-discord-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #5865F2;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    background: #4752C4;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
+  }
+}
+
+.banned-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+
+  &:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+@keyframes bannedSlideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bannedPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

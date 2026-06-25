@@ -171,12 +171,13 @@ router.put('/users/:id/role', authenticate, authorize('superadmin'), async (req:
 });
 
 router.put('/users/:id', authenticate, authorize('admin', 'superadmin'), async (req: AuthRequest, res: Response) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, isActive } = req.body;
   const update: any = {};
 
   if (name) update.name = name;
   if (email) update.email = email.toLowerCase();
   if (role && Object.values(UserRole).includes(role)) update.role = role;
+  if (typeof isActive === 'boolean') update.isActive = isActive;
   if (password) {
     const user = await UserModel.findById(req.params.id);
     if (!user) {

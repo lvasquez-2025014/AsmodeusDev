@@ -20,6 +20,8 @@ export class LoginComponent implements OnInit {
   loginBtnDisabled = false;
   registerBtnDisabled = false;
   googleLoading = false;
+  showBannedBanner = false;
+  bannedMessage = '';
 
   constructor(
     private fb: FormBuilder,
@@ -67,7 +69,14 @@ export class LoginComponent implements OnInit {
         if (err.code === 'auth/popup-closed-by-user') {
           this.loginError = '';
         } else {
-          this.loginError = err?.error?.message || err?.message || 'Error al iniciar sesión con Google';
+          const body = err?.error || err;
+          if (body?.banned) {
+            this.showBannedBanner = true;
+            this.bannedMessage = body.message;
+            this.loginError = '';
+          } else {
+            this.loginError = body?.message || err?.message || 'Error al iniciar sesión con Google';
+          }
         }
         this.googleLoading = false;
       });
@@ -104,7 +113,14 @@ export class LoginComponent implements OnInit {
         }, 1500);
       },
       error: (err) => {
-        this.loginError = err.message;
+        const body = err?.error || err;
+        if (body?.banned) {
+          this.showBannedBanner = true;
+          this.bannedMessage = body.message;
+          this.loginError = '';
+        } else {
+          this.loginError = body?.message || 'Error al iniciar sesión';
+        }
         this.loginBtnText = 'INICIAR SESIÓN';
         this.loginBtnDisabled = false;
       },
@@ -167,5 +183,10 @@ export class LoginComponent implements OnInit {
     const input = document.getElementById(inputId) as HTMLInputElement;
     if (!input) return;
     input.type = input.type === 'password' ? 'text' : 'password';
+  }
+
+  dismissBanned(): void {
+    this.showBannedBanner = false;
+    this.bannedMessage = '';
   }
 }

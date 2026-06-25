@@ -171,7 +171,7 @@ export async function login(req: AuthRequest, res: Response): Promise<void> {
     }
 
     if (user.isActive === false) {
-      res.status(403).json({ message: 'Cuenta desactivada. Contacta al administrador.' });
+      res.status(403).json({ message: 'Your account has been disabled; contact the owner', banned: true });
       return;
     }
 
@@ -240,6 +240,11 @@ export async function googleLogin(req: AuthRequest, res: Response): Promise<void
         email,
         password: randomPassword,
       });
+    }
+
+    if (user.isActive === false) {
+      res.status(403).json({ message: 'Your account has been disabled; contact the owner', banned: true });
+      return;
     }
 
     const token = jwt.sign({ id: user.id }, config.jwtSecret, { expiresIn: config.jwtExpiresIn });
