@@ -2390,6 +2390,91 @@ $topbar-height: 64px;
   font-size: 12px;
 }
 
+// Country grid
+.country-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+
+.country-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #fff;
+  font-size: 13px;
+
+  &:hover {
+    border-color: $cyan;
+    background: rgba(34, 211, 238, 0.05);
+  }
+}
+
+.country-flag {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.country-name {
+  font-weight: 500;
+}
+
+// Bank details
+.bank-details-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.bank-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+
+  &:last-child { border-bottom: none; }
+}
+
+.bank-label {
+  font-size: 12px;
+  color: #888;
+}
+
+.bank-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+
+  &.highlight { color: $cyan; }
+}
+
+.bank-note {
+  font-size: 11px;
+  color: #666;
+  margin-top: 12px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+
+  i { margin-right: 6px; color: $cyan; }
+}
+
+.bank-amount {
+  font-size: 13px;
+  color: #aaa;
+  margin-top: 10px;
+
+  strong { color: $lime; font-size: 16px; }
+}
+
 .transfer-info {
   margin-top: 16px;
 }
