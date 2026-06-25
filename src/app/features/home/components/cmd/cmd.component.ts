@@ -26,7 +26,7 @@ export class CmdComponent implements OnInit, AfterViewChecked {
   showCursor = true;
   isSuperAdmin = false;
   currentTimeStr = '';
-  private userIsScrolling = false;
+  private wasAtBottom = true;
 
   private cursorInterval: any;
 
@@ -55,7 +55,7 @@ export class CmdComponent implements OnInit, AfterViewChecked {
   }
 
   ngAfterViewChecked(): void {
-    if (!this.userIsScrolling) {
+    if (this.wasAtBottom) {
       this.scrollToBottom();
     }
   }
@@ -70,8 +70,7 @@ export class CmdComponent implements OnInit, AfterViewChecked {
   onBodyScroll(): void {
     if (!this.cmdOutputRef?.nativeElement) return;
     const el = this.cmdOutputRef.nativeElement;
-    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
-    this.userIsScrolling = !atBottom;
+    this.wasAtBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 30;
   }
 
   focusInput(): void {
@@ -91,6 +90,7 @@ export class CmdComponent implements OnInit, AfterViewChecked {
     } else if (event.key === 'l' && event.ctrlKey) {
       event.preventDefault();
       this.lines = [];
+      this.wasAtBottom = true;
       this.pushLine('Terminal limpiada.\n', 'system');
     }
   }
@@ -123,7 +123,7 @@ export class CmdComponent implements OnInit, AfterViewChecked {
 
     switch (command) {
       case 'help': this.cmdHelp(); break;
-      case 'clear': case 'cls': this.lines = []; break;
+      case 'clear': case 'cls': this.lines = []; this.wasAtBottom = true; break;
       case 'whoami': this.cmdWhoami(); break;
       case 'date': this.pushLine(new Date().toLocaleString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }), 'output'); break;
       case 'echo': this.pushLine(args.join(' ') || '', 'output'); break;
@@ -146,7 +146,7 @@ export class CmdComponent implements OnInit, AfterViewChecked {
         this.pushLine(`Comando no encontrado: "${command}". Escribe "help" para ver comandos.`, 'error');
     }
     this.pushLine('', 'output');
-    this.userIsScrolling = false;
+    this.wasAtBottom = true;
     setTimeout(() => this.focusInput(), 50);
   }
 
