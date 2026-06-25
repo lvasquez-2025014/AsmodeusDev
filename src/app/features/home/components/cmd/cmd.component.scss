@@ -124,6 +124,10 @@
   font-style: italic;
 }
 
+.cmd-line-success .cmd-text {
+  color: #22c55e;
+}
+
 .cmd-input-line {
   display: flex;
   align-items: center;
@@ -155,14 +159,8 @@
 .cmd-cursor {
   color: #22d3ee;
   font-weight: 700;
-  animation: none;
 
   &.cmd-cursor-hidden {
     opacity: 0;
   }
-}
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
 }
