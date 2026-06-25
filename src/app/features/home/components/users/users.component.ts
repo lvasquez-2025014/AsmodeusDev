@@ -32,6 +32,16 @@ export class UsersComponent implements OnInit, OnDestroy {
   showConfirmDelete = false;
   usUserToDelete: any = null;
 
+  showEditUserModal = false;
+  editingUser: any = null;
+  editName = '';
+  editEmail = '';
+  editPassword = '';
+  editRole = '';
+  editErrors: any = {};
+  editSaving = false;
+  editModalShake = false;
+
   usToasts: any[] = [];
   private usToastId = 0;
   private usSubtitleInterval: any;
@@ -215,6 +225,63 @@ export class UsersComponent implements OnInit, OnDestroy {
       return user.role !== 'superadmin';
     }
     return user.role === 'cliente';
+  }
+
+  openEditUser(user: any): void {
+    this.editingUser = user;
+    this.editName = user.name || '';
+    this.editEmail = user.email || '';
+    this.editPassword = '';
+    this.editRole = user.role || 'cliente';
+    this.editErrors = {};
+    this.editModalShake = false;
+    this.showEditUserModal = true;
+  }
+
+  closeEditUserModal(): void {
+    this.showEditUserModal = false;
+    this.editingUser = null;
+    this.editErrors = {};
+    this.editModalShake = false;
+  }
+
+  saveEditUser(): void {
+    if (!this.editingUser) return;
+    const name = this.editName.trim();
+    const email = this.editEmail.trim();
+    const password = this.editPassword.trim();
+    this.editErrors = {};
+    let hasError = false;
+
+    if (!name) { this.editErrors.name = true; hasError = true; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { this.editErrors.email = true; hasError = true; }
+
+    if (hasError) {
+      this.editModalShake = true;
+      setTimeout(() => this.editModalShake = false, 400);
+      return;
+    }
+
+    const body: any = { name, email };
+    if (password) body.password = password;
+
+    this.editSaving = true;
+    this.api.put<any>(`admin/users/${this.editingUser._id}`, body).subscribe({
+      next: () => {
+        this.editSaving = false;
+        this.editingUser.name = name;
+        this.editingUser.email = email;
+        this.closeEditUserModal();
+        this.showUsToast(`Usuario "${name}" actualizado`, 'success');
+      },
+      error: (err) => {
+        this.editSaving = false;
+        const msg = err?.error?.message || 'Error al actualizar usuario';
+        this.showUsToast(msg, 'error');
+        this.editModalShake = true;
+        setTimeout(() => this.editModalShake = false, 400);
+      }
+    });
   }
 
   executeDeleteUser(): void {
