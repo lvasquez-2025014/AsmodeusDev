@@ -1,14 +1,14 @@
-$bg-main: #0a0a0c;
-$bg-card: rgba(26, 26, 31, 0.8);
-$bg-card-hover: rgba(30, 30, 36, 0.9);
-$border-color: rgba(255, 255, 255, 0.06);
-$cyan: #22d3ee;
-$pink: #f472b6;
+$bg-main: #030408;
+$bg-card: rgba(12, 15, 26, 0.7);
+$bg-card-hover: rgba(12, 15, 26, 0.9);
+$border-color: #1a1f2e;
+$cyan: #06b6d4;
+$pink: #ec4899;
 $lime: #84cc16;
-$violet: #a78bfa;
+$violet: #8b5cf6;
 $orange: #f97316;
 $red: #ef4444;
-$green: #22c55e;
+$green: #00ff88;
 $yellow: #fbbf24;
 $text-primary: #f1f5f9;
 $text-secondary: #94a3b8;
@@ -100,8 +100,8 @@ $text-muted: #64748b;
 .discord-channels-panel {
   width: 240px;
   flex-shrink: 0;
-  background: #0d0d10;
-  border-right: 1px solid rgba(255,255,255,0.04);
+  background: #080a12;
+  border-right: 1px solid $border-color;
   display: flex;
   flex-direction: column;
 }
@@ -109,7 +109,7 @@ $text-muted: #64748b;
 .discord-channels-header {
   height: 48px;
   padding: 0 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid $border-color;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -148,7 +148,7 @@ $text-muted: #64748b;
     font-family: inherit;
 
     &::placeholder { color: #555; }
-    &:focus { border-color: rgba(34, 211, 238, 0.3); }
+    &:focus { border-color: rgba(139, 92, 246, 0.3); }
   }
 }
 
@@ -178,7 +178,7 @@ $text-muted: #64748b;
   transition: all 0.15s ease;
 
   &:hover { background: rgba(255,255,255,0.04); color: #fff; }
-  &.active { background: rgba(34, 211, 238, 0.08); color: #fff; }
+  &.active { background: rgba(139, 92, 246, 0.08); color: #fff; }
 }
 
 .discord-hash {
@@ -203,7 +203,7 @@ $text-muted: #64748b;
   transition: all 0.15s ease;
 
   &:hover { background: rgba(255,255,255,0.04); }
-  &.active { background: rgba(34, 211, 238, 0.08); }
+  &.active { background: rgba(139, 92, 246, 0.08); }
 }
 
 .discord-dm-avatar {
@@ -269,7 +269,7 @@ $text-muted: #64748b;
 
 .discord-user-bar {
   padding: 8px;
-  border-top: 1px solid rgba(255,255,255,0.05);
+  border-top: 1px solid $border-color;
   flex-shrink: 0;
 }
 
@@ -361,7 +361,7 @@ $text-muted: #64748b;
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  border: 2.5px solid #08080a;
+  border: 2.5px solid #030408;
   position: absolute;
   bottom: -2px;
   right: -2px;
@@ -373,7 +373,7 @@ $text-muted: #64748b;
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  border: 2px solid #0d0d10;
+  border: 2px solid #080a12;
   position: absolute;
   bottom: -1px;
   right: -1px;
@@ -401,16 +401,14 @@ $text-muted: #64748b;
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background:
-    radial-gradient(ellipse at top right, rgba(34, 211, 238, 0.02) 0%, transparent 50%),
-    #0a0a0c;
+  background: #030408;
   position: relative;
 }
 
 .discord-chat-header {
   height: 48px;
   padding: 0 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid $border-color;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -430,7 +428,7 @@ $text-muted: #64748b;
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: linear-gradient(135deg, $cyan, $pink);
+  background: linear-gradient(135deg, $violet, $cyan);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -526,12 +524,12 @@ $text-muted: #64748b;
   text-align: center;
   margin-bottom: 24px;
   padding-bottom: 24px;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid $border-color;
 
   h2 { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
   p { font-size: 13px; color: #555; }
   &.channel {
-    .discord-hash-lg { font-size: 48px; background: linear-gradient(135deg, $cyan, $pink); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 12px; font-weight: 900; }
+    .discord-hash-lg { font-size: 48px; background: linear-gradient(135deg, $violet, $cyan); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 12px; font-weight: 900; }
   }
 }
 
@@ -625,8 +623,8 @@ $text-muted: #64748b;
 }
 
 .discord-reply-preview {
-  background: rgba(34, 211, 238, 0.05);
-  border-left: 3px solid $cyan;
+  background: rgba(139, 92, 246, 0.05);
+  border-left: 3px solid $violet;
   padding: 6px 10px;
   border-radius: 0 6px 6px 0;
   margin-bottom: 6px;
@@ -654,8 +652,8 @@ $text-muted: #64748b;
 }
 
 .discord-reaction {
-  background: rgba(34, 211, 238, 0.08);
-  border: 1px solid rgba(34, 211, 238, 0.2);
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.2);
   padding: 2px 8px;
   border-radius: 6px;
   font-size: 12px;
@@ -665,14 +663,14 @@ $text-muted: #64748b;
   gap: 4px;
   transition: all 0.15s ease;
 
-  &:hover { background: rgba(34, 211, 238, 0.15); border-color: rgba(34, 211, 238, 0.4); }
-  &.active { background: rgba(34, 211, 238, 0.2); border-color: rgba(34, 211, 238, 0.5); }
+  &:hover { background: rgba(139, 92, 246, 0.15); border-color: rgba(139, 92, 246, 0.4); }
+  &.active { background: rgba(139, 92, 246, 0.2); border-color: rgba(139, 92, 246, 0.5); }
 }
 
 .discord-reaction-count {
   font-size: 11px;
   font-weight: 600;
-  color: $cyan;
+  color: $violet;
 }
 
 .discord-msg-actions {
@@ -681,8 +679,8 @@ $text-muted: #64748b;
   position: absolute;
   top: -14px;
   right: 12px;
-  background: #14141a;
-  border: 1px solid rgba(255,255,255,0.1);
+  background: #0c0f1a;
+  border: 1px solid $border-color;
   border-radius: 6px;
   padding: 2px;
   opacity: 0;
@@ -725,7 +723,7 @@ $text-muted: #64748b;
   width: 32px;
   height: 32px;
   border: 3px solid rgba(255,255,255,0.1);
-  border-top-color: $cyan;
+  border-top-color: $violet;
   border-radius: 50%;
   animation: discord-spin 0.8s linear infinite;
   margin: 0 auto;
@@ -738,8 +736,8 @@ $text-muted: #64748b;
 // Reply Bar
 .discord-reply-bar {
   padding: 8px 16px;
-  background: rgba(34, 211, 238, 0.05);
-  border-top: 1px solid rgba(34, 211, 238, 0.2);
+  background: rgba(139, 92, 246, 0.05);
+  border-top: 1px solid rgba(139, 92, 246, 0.2);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -751,7 +749,7 @@ $text-muted: #64748b;
   flex-direction: column;
   gap: 2px;
 
-  span { font-size: 11px; color: $cyan; }
+  span { font-size: 11px; color: $violet; }
   strong { color: #fff; }
 }
 
@@ -771,16 +769,16 @@ $text-muted: #64748b;
 }
 
 .discord-input-wrapper {
-  background: #1a1a1f;
-  border: 1px solid rgba(255,255,255,0.06);
+  background: #080a12;
+  border: 1px solid $border-color;
   border-radius: 12px;
   display: flex;
   align-items: flex-end;
   transition: all 0.2s ease;
 
   &:focus-within {
-    border-color: rgba(34, 211, 238, 0.4);
-    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+    border-color: rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
   }
 }
 
@@ -818,7 +816,7 @@ $text-muted: #64748b;
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: linear-gradient(135deg, $cyan, $lime);
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4);
   border: none;
   color: #fff;
   cursor: pointer;
@@ -845,8 +843,8 @@ $text-muted: #64748b;
   position: absolute;
   bottom: 80px;
   right: 16px;
-  background: #14141a;
-  border: 1px solid rgba(255,255,255,0.08);
+  background: #0c0f1a;
+  border: 1px solid $border-color;
   border-radius: 12px;
   padding: 12px;
   z-index: 50;
@@ -922,8 +920,8 @@ $text-muted: #64748b;
 .discord-members-panel {
   width: 240px;
   flex-shrink: 0;
-  background: #0d0d10;
-  border-left: 1px solid rgba(255,255,255,0.04);
+  background: #080a12;
+  border-left: 1px solid $border-color;
   overflow-y: auto;
 }
 
@@ -989,7 +987,7 @@ $text-muted: #64748b;
 .discord-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: rgba(0,0,0,0.8);
   backdrop-filter: blur(4px);
   z-index: 100;
   display: flex;
@@ -999,8 +997,8 @@ $text-muted: #64748b;
 }
 
 .discord-modal-content {
-  background: #14141a;
-  border: 1px solid rgba(255,255,255,0.08);
+  background: #0c0f1a;
+  border: 1px solid $border-color;
   border-radius: 16px;
   max-width: 440px;
   width: 90%;
@@ -1067,11 +1065,11 @@ $text-muted: #64748b;
 // Scrollbar
 .scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgba(34, 211, 238, 0.4) transparent;
+  scrollbar-color: rgba(139, 92, 246, 0.4) transparent;
   &::-webkit-scrollbar { width: 8px; }
-  &::-webkit-scrollbar-track { background: rgba(10, 10, 12, 0.6); border-radius: 4px; }
-  &::-webkit-scrollbar-thumb { background: rgba(34, 211, 238, 0.35); border-radius: 4px; border: 1px solid rgba(34, 211, 238, 0.15); }
-  &::-webkit-scrollbar-thumb:hover { background: rgba(34, 211, 238, 0.55); }
+  &::-webkit-scrollbar-track { background: rgba(3, 4, 8, 0.6); border-radius: 4px; }
+  &::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #8b5cf6, #06b6d4); border-radius: 4px; border: 1px solid rgba(139, 92, 246, 0.15); }
+  &::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #a78bfa, #22d3ee); }
 }
 
 // ==================== CYBERPUNK CHAT EFFECTS ====================
@@ -1092,6 +1090,21 @@ $text-muted: #64748b;
 @keyframes cyberGridMove {
   0% { transform: translate(0, 0); }
   100% { transform: translate(50px, 50px); }
+}
+
+// Scanlines
+.cyber-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(139, 92, 246, 0.015) 2px,
+    rgba(139, 92, 246, 0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
 }
 
 .cyber-aurora {
@@ -1275,13 +1288,13 @@ $text-muted: #64748b;
 
 // Glassmorphism panels
 .discord-channels-panel {
-  background: rgba(3, 4, 8, 0.85) !important;
+  background: rgba(8, 10, 18, 0.85) !important;
   backdrop-filter: blur(20px);
   border-right: 1px solid rgba(139, 92, 246, 0.12) !important;
 }
 
 .cyber-members-panel {
-  background: rgba(3, 4, 8, 0.85) !important;
+  background: rgba(8, 10, 18, 0.85) !important;
   backdrop-filter: blur(20px);
   border-left: 1px solid rgba(139, 92, 246, 0.12) !important;
 }
@@ -1432,7 +1445,7 @@ $text-muted: #64748b;
   gap: 10px;
   padding: 12px 16px;
   border-radius: 12px;
-  background: rgba(8, 10, 18, 0.9);
+  background: rgba(8, 10, 18, 0.95);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(139, 92, 246, 0.2);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -1514,7 +1527,7 @@ $text-muted: #64748b;
 
 // Scrollbar cyberpunk
 .discord-chat-section ::-webkit-scrollbar { width: 8px; }
-.discord-chat-section ::-webkit-scrollbar-track { background: rgba(10, 10, 12, 0.6); border-radius: 4px; }
+.discord-chat-section ::-webkit-scrollbar-track { background: rgba(3, 4, 8, 0.6); border-radius: 4px; }
 .discord-chat-section ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #8b5cf6, #06b6d4);
   border-radius: 4px;

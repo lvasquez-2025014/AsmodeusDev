@@ -1,6 +1,7 @@
 <section class="discord-chat-section" [class.focus-mode]="chatFocusMode">
   <div class="cyber-grid-bg"></div>
-  <div class="cyber-aurora"><div class="cyber-aurora-1"></div><div class="cyber-aurora-2"></div><div class="cyber-aurora-3"></div></div>
+  <div class="cyber-aurora"></div>
+  <div class="cyber-scanlines"></div>
 
   <!-- SERVER BAR -->
   <div class="discord-server-bar cyber-server-bar">
@@ -12,7 +13,7 @@
     <div class="cyber-divider"></div>
     <div class="discord-server-icon" title="Supremo Cheats"
          [class.active]="chatView === 'channels'" (click)="switchChatView('channels')">
-      <span class="discord-server-text cyber-server-icon">SC</span>
+      <span class="discord-server-text">SC</span>
     </div>
     <div class="flex-1"></div>
   </div>
