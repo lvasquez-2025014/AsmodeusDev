@@ -21,15 +21,17 @@
 
     <div class="cmd-input-line" (click)="focusInput()">
       <span class="cmd-prompt">C:\Users\dev&gt;</span>
-      <input #cmdInput
-             type="text"
-             [(ngModel)]="currentInput"
-             (keydown)="onKeyDown($event)"
-             class="cmd-input"
-             [disabled]="isExecuting"
-             autocomplete="off"
-             spellcheck="false">
-      <span class="cmd-cursor" [class.cmd-cursor-hidden]="!showCursor && !isExecuting">&block;</span>
+      <div class="cmd-input-wrap">
+        <input #cmdInput
+               type="text"
+               [(ngModel)]="currentInput"
+               (keydown)="onKeyDown($event)"
+               class="cmd-input"
+               [disabled]="isExecuting"
+               autocomplete="off"
+               spellcheck="false">
+        <span class="cmd-cursor" [class.cmd-cursor-hidden]="!showCursor && !isExecuting"></span>
+      </div>
     </div>
   </div>
 </section>

@@ -28,8 +28,6 @@ export class CmdComponent implements OnInit, AfterViewChecked {
   currentTimeStr = '';
   private wasAtBottom = true;
 
-  private cursorInterval: any;
-
   constructor(
     private api: ApiService,
     private auth: AuthService,
@@ -41,16 +39,11 @@ export class CmdComponent implements OnInit, AfterViewChecked {
     this.isSuperAdmin = user?.role === 'superadmin';
     this.pushLine('Microsoft Windows [Version 10.0.19045.6466]', 'system');
     this.pushLine('(c) Microsoft Corporation. Todos los derechos reservados.\n', 'system');
-    this.cursorInterval = setInterval(() => {
-      this.showCursor = !this.showCursor;
-      this.updateTime();
-    }, 530);
     this.updateTime();
+    setInterval(() => this.updateTime(), 1000);
   }
 
-  ngOnDestroy(): void {
-    if (this.cursorInterval) clearInterval(this.cursorInterval);
-  }
+  ngOnDestroy(): void {}
 
   ngAfterViewChecked(): void {
     if (this.wasAtBottom) {

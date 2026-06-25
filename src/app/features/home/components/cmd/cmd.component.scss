@@ -143,9 +143,14 @@
   font-size: 14px;
 }
 
-.cmd-input {
+.cmd-input-wrap {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
   flex: 0 1 auto;
-  min-width: 40px;
+}
+
+.cmd-input {
   background: transparent;
   border: none;
   outline: none;
@@ -153,6 +158,9 @@
   font-family: 'Consolas', 'Courier New', monospace;
   font-size: 14px;
   caret-color: transparent;
+  min-width: 2px;
+  width: auto;
+  max-width: 100%;
 
   &::placeholder {
     color: transparent;
@@ -160,12 +168,22 @@
 }
 
 .cmd-cursor {
-  color: #fff;
-  font-weight: 400;
-  font-family: 'Consolas', 'Courier New', monospace;
-  font-size: 14px;
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background: #fff;
+  flex-shrink: 0;
+  vertical-align: middle;
+  margin-left: 1px;
+  animation: cursorBlink 1s step-end infinite;
 
   &.cmd-cursor-hidden {
+    animation: none;
     opacity: 0;
   }
+}
+
+@keyframes cursorBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
