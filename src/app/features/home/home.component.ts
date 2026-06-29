@@ -1,10 +1,14 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { ApiService } from '@core/services/api.service';
 import { PanelStateService } from '@core/services/panel-state.service';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 import { environment } from '@env/environment';
+
+gsap.registerPlugin(ScrollTrigger);
 
 @Component({
   selector: 'app-home',
@@ -267,7 +271,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.isGuest) {
       this.scrollListener = () => this.updateActiveGuestSection();
       window.addEventListener('scroll', this.scrollListener, { passive: true });
-      setTimeout(() => this.updateActiveGuestSection(), 500);
+      setTimeout(() => {
+        this.updateActiveGuestSection();
+        this.initScrollAnimations();
+      }, 500);
     }
   }
 
@@ -276,6 +283,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.scrollListener) {
       window.removeEventListener('scroll', this.scrollListener);
     }
+    ScrollTrigger.getAll().forEach(t => t.kill());
   }
 
   updateClock(): void {
@@ -334,6 +342,97 @@ export class HomeComponent implements OnInit, OnDestroy {
       }
     }
     this.activeGuestSection = '';
+  }
+
+  private initScrollAnimations(): void {
+    gsap.utils.toArray('.feature-card').forEach((card: any, i: number) => {
+      gsap.from(card, {
+        y: 60,
+        opacity: 0,
+        duration: 0.8,
+        delay: i * 0.1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        }
+      });
+    });
+
+    gsap.utils.toArray('.guest-product-card').forEach((card: any, i: number) => {
+      gsap.from(card, {
+        y: 80,
+        opacity: 0,
+        duration: 0.9,
+        delay: (i % 3) * 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 88%',
+          toggleActions: 'play none none none',
+        }
+      });
+    });
+
+    gsap.utils.toArray('.testimonial-card').forEach((card: any, i: number) => {
+      gsap.from(card, {
+        y: 50,
+        opacity: 0,
+        duration: 0.7,
+        delay: i * 0.12,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: card,
+          start: 'top 85%',
+          toggleActions: 'play none none none',
+        }
+      });
+    });
+
+    gsap.from('.features-header', {
+      y: 40,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.features-header',
+        start: 'top 85%',
+      }
+    });
+
+    gsap.from('.products-header', {
+      y: 40,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.products-header',
+        start: 'top 85%',
+      }
+    });
+
+    gsap.from('.testimonials-header', {
+      y: 40,
+      opacity: 0,
+      duration: 0.8,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.testimonials-header',
+        start: 'top 85%',
+      }
+    });
+
+    gsap.from('.guest-cta-inner', {
+      y: 60,
+      opacity: 0,
+      duration: 1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: '.guest-cta-inner',
+        start: 'top 85%',
+      }
+    });
   }
 
   getUserColor(name: string): string {

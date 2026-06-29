@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asmodeus Developer - Diagrama de Flujo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#030408;--surface:#0a0d14;--card:#0f1219;--border:#1a1f2e;--cyan:#22d3ee;--lime:#a3e635;--violet:#a78bfa;--pink:#f472b6;--red:#ef4444;--yellow:#facc15;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b}
+body{font-family:'JetBrains Mono','Fira Code','Cascadia Code',monospace;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+a{color:var(--cyan);text-decoration:none}
+
+/* Header */
+.header{position:sticky;top:0;z-index:100;background:rgba(3,4,8,.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:18px;font-weight:900;background:linear-gradient(135deg,var(--cyan),var(--lime));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header .subtitle{font-size:11px;color:var(--text3);letter-spacing:.1em}
+.nav-tabs{display:flex;gap:4px}
+.nav-tab{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;border:1px solid transparent;transition:all .25s}
+.nav-tab:hover{color:var(--text);background:rgba(255,255,255,.03)}
+.nav-tab.active{color:var(--cyan);background:rgba(34,211,238,.08);border-color:rgba(34,211,238,.2)}
+
+/* Panels */
+.panel{display:none;padding:32px;max-width:1400px;margin:0 auto}
+.panel.active{display:block}
+
+/* Flow Container */
+.flow{position:relative}
+.flow-row{display:flex;gap:20px;align-items:stretch;margin-bottom:20px;flex-wrap:wrap}
+.flow-col{flex:1;min-width:280px}
+
+/* Nodes */
+.node{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;transition:all .3s cubic-bezier(.4,0,.2,1);cursor:pointer}
+.node:hover{border-color:rgba(34,211,238,.3);transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.node.expanded{border-color:rgba(34,211,238,.4)}
+.node-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.node-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.node-icon.cyan{background:rgba(34,211,238,.12);color:var(--cyan)}
+.node-icon.lime{background:rgba(163,230,53,.12);color:var(--lime)}
+.node-icon.violet{background:rgba(167,139,250,.12);color:var(--violet)}
+.node-icon.pink{background:rgba(244,114,182,.12);color:var(--pink)}
+.node-icon.red{background:rgba(239,68,68,.12);color:var(--red)}
+.node-icon.yellow{background:rgba(250,204,21,.12);color:var(--yellow)}
+.node-title{font-size:14px;font-weight:700}
+.node-subtitle{font-size:11px;color:var(--text3)}
+.node-body{font-size:12px;color:var(--text2);line-height:1.7}
+.node-body.collapsed{max-height:60px;overflow:hidden;position:relative}
+.node-body.collapsed::after{content:'';position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(transparent,var(--card))}
+.node-expand{font-size:11px;color:var(--cyan);cursor:pointer;margin-top:8px;display:inline-block}
+.node-expand:hover{text-decoration:underline}
+
+/* Lists inside nodes */
+.item-list{list-style:none;padding:0}
+.item-list li{padding:4px 0;border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;color:var(--text2);display:flex;align-items:center;gap:6px}
+.item-list li:last-child{border-bottom:none}
+.item-list .method{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;min-width:38px;text-align:center}
+.method.get{background:rgba(34,211,238,.15);color:var(--cyan)}
+.method.post{background:rgba(163,230,53,.15);color:var(--lime)}
+.method.put{background:rgba(250,204,21,.15);color:var(--yellow)}
+.method.delete{background:rgba(239,68,68,.15);color:var(--red)}
+
+/* Arrows / Connectors */
+.arrow-down{text-align:center;padding:8px 0;color:var(--text3);font-size:20px;letter-spacing:2px}
+.arrow-label{font-size:10px;color:var(--text3);display:block;margin-top:-4px}
+
+/* Section Titles */
+.section-title{font-size:20px;font-weight:900;margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.section-title .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.section-desc{font-size:13px;color:var(--text3);margin-bottom:28px;max-width:700px;line-height:1.6}
+
+/* Grid layouts */
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(400px,1fr));gap:20px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+
+/* Role badges */
+.role-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;display:inline-block}
+.role-badge.sa{background:rgba(239,68,68,.15);color:var(--red)}
+.role-badge.ad{background:rgba(250,204,21,.15);color:var(--yellow)}
+.role-badge.cl{background:rgba(34,211,238,.15);color:var(--cyan)}
+
+/* DB Schema */
+.schema{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.schema-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.schema-name{font-size:13px;font-weight:800;color:var(--cyan);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.schema-field{font-size:11px;color:var(--text2);padding:3px 0;display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.02)}
+.schema-field:last-child{border-bottom:none}
+.schema-type{color:var(--violet);font-size:10px}
+
+/* Flowchart lines */
+.connector{display:flex;justify-content:center;padding:4px 0}
+.connector .line{width:2px;height:24px;background:linear-gradient(180deg,var(--border),rgba(34,211,238,.3),var(--border))}
+.connector-branch{display:flex;justify-content:center;gap:0;padding:4px 0}
+.connector-branch .line{width:2px;height:20px;background:var(--border)}
+.connector-h{display:flex;align-items:center;justify-content:center;padding:4px 0;gap:0}
+.connector-h .hline{height:2px;flex:1;background:var(--border);max-width:100px}
+.connector-h .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0}
+
+/* Search */
+.search-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 16px;color:var(--text);font-size:13px;width:300px;font-family:inherit;outline:none;transition:border-color .2s}
+.search-box:focus{border-color:rgba(34,211,238,.4)}
+.search-box::placeholder{color:var(--text3)}
+
+/* Tooltip */
+.tooltip{position:relative}
+.tooltip::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:#1a1f2e;color:var(--text);font-size:11px;padding:6px 10px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10}
+.tooltip:hover::after{opacity:1}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.15)}
+
+/* Animations */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.panel.active .node{animation:fadeIn .4s ease both}
+.panel.active .node:nth-child(2){animation-delay:.05s}
+.panel.active .node:nth-child(3){animation-delay:.1s}
+.panel.active .node:nth-child(4){animation-delay:.15s}
+
+/* Responsive */
+@media(max-width:768px){
+  .header{flex-direction:column;gap:12px;padding:12px 16px}
+  .nav-tabs{flex-wrap:wrap;justify-content:center}
+  .panel{padding:16px}
+  .grid-2,.grid-3,.schema{grid-template-columns:1fr}
+  .flow-row{flex-direction:column}
+  .search-box{width:100%}
+}
+
+/* Mini flow */
+.mini-flow{display:flex;flex-direction:column;gap:0;align-items:center}
+.mini-node{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:11px;color:var(--text2);min-width:180px;text-align:center}
+.mini-arrow{color:var(--text3);font-size:14px;padding:2px 0}
+
+/* Highlight pulse */
+.highlight{animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,211,238,0)}50%{box-shadow:0 0 20px 4px rgba(34,211,238,.15)}}
+
+/* Tab content counter */
+.badge-count{font-size:10px;background:rgba(34,211,238,.15);color:var(--cyan);padding:2px 7px;border-radius:10px;margin-left:6px;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>ASMODEUS DEVELOPER</h1>
+    <div class="subtitle">DIAGRAMA DE FLUJO INTERACTIVO - ARQUITECTURA COMPLETA</div>
+  </div>
+  <input type="text" class="search-box" placeholder="Buscar..." id="searchInput" onkeyup="filterNodes()">
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showPanel('overview')">Vision General</div>
+    <div class="nav-tab" onclick="showPanel('auth')">Auth</div>
+    <div class="nav-tab" onclick="showPanel('routes')">Rutas API</div>
+    <div class="nav-tab" onclick="showPanel('models')">Modelos DB</div>
+    <div class="nav-tab" onclick="showPanel('frontend')">Frontend</div>
+    <div class="nav-tab" onclick="showPanel('security')">Seguridad</div>
+    <div class="nav-tab" onclick="showPanel('realtime')">Real-Time</div>
+  </div>
+</div>
+
+<!-- ==================== PANEL: OVERVIEW ==================== -->
+<div class="panel active" id="panel-overview">
+  <div class="section-title"><span class="dot"></span>Vision General del Sistema</div>
+  <div class="section-desc">Arquitectura completa: Angular 15 (Frontend) + Express.js + Mongoose (Backend) + MongoDB Atlas. Desplegado en Vercel + Render.</div>
+
+  <div class="flow-row">
+    <div class="flow-col">
+      <div class="node" onclick="toggleExpand(this)">
+        <div class="node-header">
+          <div class="node-icon cyan"><i class="fas fa-globe"></i>🌐</div>
+          <div><div class="node-title">Frontend - Angular 15</div><div class="node-subtitle">asmodeus-developer.vercel.app</div></div>
+        </div>
+        <div class="node-body">
+          <ul class="item-list">
+            <li>SPA con lazy loading (HomeModule + AuthModule)</li>
+            <li>12 componentes de panel (dashboard, chat, products...)</li>
+            <li>6 servicios (Auth, Api, Chat, Config, Firebase, PanelState)</li>
+            <li>AuthGuard + AuthInterceptor + ErrorInterceptor</li>
+            <li>Chart.js para graficas (line, bar, doughnut)</li>
+            <li>Polling HTTP para chat (2s-30s) y logs (5s)</li>
+          </ul>
+        </div>
+        <span class="node-expand" onclick="event.stopPropagation();toggleExpand(this.parentElement)">Ver mas ▾</span>
+      </div>
+    </div>
+
+    <div class="flow-col" style="display:flex;align-items:center;justify-content:center">
+      <div style="text-align:center">
+        <div style="font-size:32px;margin-bottom:8px">⬇️ ⬆️</div>
+        <div style="font-size:11px;color:var(--text3)">REST API + JWT</div>
+        <div style="font-size:10px;color:var(--text3)">HTTPS / Polling</div>
+      </div>
+    </div>
+
+    <div class="flow-col">
+      <div class="node" onclick="toggleExpand(this)">
+        <div class="node-header">
+          <div class="node-icon lime"><i class="fas fa-server"></i>⚙️</div>
+          <div><div class="node-title">Backend - Express.js</div><div class="node-subtitle">supremo-cheats-api.onrender.com</div></div>
+        </div>
+        <div class="node-body">
+          <ul class="item-list">
+            <li>44+ endpoints REST (9 archivos de rutas)</li>
+            <li>6 modelos Mongoose (User, Product, Order, Message, Conversation, Notification, Log)</li>
+            <li>JWT auth (24h) + role-based authorization</li>
+            <li>Helmet + Rate Limiting + Brute Force Protection</li>
+            <li>Multer para uploads (productos) + express-fileupload (avatares)</li>
+            <li>Seed automatico en startup (superadmin, products, channels, notifications)</li>
+          </ul>
+        </div>
+        <span class="node-expand" onclick="event.stopPropagation();toggleExpand(this.parentElement)">Ver mas ▾</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><div class="line"></div></div>
+
+  <div class="flow-row">
+    <div class="flow-col">
+      <div class="node">
+        <div class="node-header">
+          <div class="node-icon violet">🗄️</div>
+          <div><div class="node-title">MongoDB Atlas</div><div class="node-subtitle">Base de datos: pagina</div></div>
+        </div>
+        <div class="node-body">
+          <ul class="item-list">
+            <li>7 colecciones: users, products, orders, messages, conversations, notifications, logs</li>
+            <li>Conexion via MONGO_URI (env var)</li>
+            <li>Typegoose ORM (decorators)</li>
+            <li>Auto-hashing bcrypt (salt 12)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-col">
+      <div class="node">
+        <div class="node-header">
+          <div class="node-icon pink">🔐</div>
+          <div><div class="node-title">Firebase Auth</div><div class="node-subtitle">Google OAuth 2.0</div></div>
+        </div>
+        <div class="node-body">
+          <ul class="item-list">
+            <li>Config cargada desde backend (/api/config)</li>
+            <li>signInWithPopup → idToken → POST /api/auth/google</li>
+            <li>Verificacion: Identity Toolkit API + JWKS fallback</li>
+            <li>Auto-crear usuario si no existe (password random)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-col">
+      <div class="node">
+        <div class="node-header">
+          <div class="node-icon yellow">🛡️</div>
+          <div><div class="node-title">Seguridad</div><div class="node-subtitle">Multi-capa</div></div>
+        </div>
+        <div class="node-body">
+          <ul class="item-list">
+            <li>Helmet (CSP, HSTS, X-Frame-Options)</li>
+            <li>Rate Limit: 100req/15min global, 10req/15min auth</li>
+            <li>Brute Force: 5 intentos/15min → bloqueo 30min</li>
+            <li>Mongo sanitize + HPP + Attack pattern blocking</li>
+            <li>Input sanitization (strip &lt;&gt;, '";\, $)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><div class="line"></div></div>
+
+  <!-- Roles -->
+  <div class="section-title" style="font-size:16px;margin-top:20px"><span class="dot"></span>Sistema de Roles</div>
+  <div class="grid-3">
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon red">👑</div>
+        <div><div class="node-title">SuperAdmin</div><div class="node-subtitle">Control total</div></div>
+      </div>
+      <div class="node-body">
+        <span class="role-badge sa">SUPERADMIN</span>
+        <ul class="item-list" style="margin-top:8px">
+          <li>Todo lo del admin</li>
+          <li>Cambiar roles de usuarios</li>
+          <li>Ver audit logs</li>
+          <li>Terminal CMD (18+ comandos)</li>
+          <li>No puede ser eliminado</li>
+        </ul>
+      </div>
+    </div>
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon yellow">⚡</div>
+        <div><div class="node-title">Admin</div><div class="node-subtitle">Gestion operativa</div></div>
+      </div>
+      <div class="node-body">
+        <span class="role-badge ad">ADMIN</span>
+        <ul class="item-list" style="margin-top:8px">
+          <li>CRUD productos + imagen</li>
+          <li>Gestionar pedidos + ganancias</li>
+          <li>CRUD usuarios (solo clientes)</li>
+          <li>Analytics + Dashboard</li>
+          <li>Chat (pin, borrar msgs)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon cyan">👤</div>
+        <div><div class="node-title">Cliente</div><div class="node-subtitle">Usuario final</div></div>
+      </div>
+      <div class="node-body">
+        <span class="role-badge cl">CLIENTE</span>
+        <ul class="item-list" style="margin-top:8px">
+          <li>Ver tienda + comprar</li>
+          <li>Ver mis pedidos</li>
+          <li>Chat (DM + canales)</li>
+          <li>Perfil + notificaciones</li>
+          <li>No accede a admin</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PANEL: AUTH ==================== -->
+<div class="panel" id="panel-auth">
+  <div class="section-title"><span class="dot"></span>Flujo de Autenticacion</div>
+  <div class="section-desc">3 metodos de login: Local (email/usuario + password), Google OAuth, y Recuperacion de contraseña.</div>
+
+  <!-- Login Flow -->
+  <div class="grid-2" style="margin-bottom:32px">
+    <div class="node highlight">
+      <div class="node-header">
+        <div class="node-icon cyan">🔑</div>
+        <div><div class="node-title">Login Local</div><div class="node-subtitle">POST /api/auth/login</div></div>
+      </div>
+      <div class="node-body">
+        <div class="mini-flow">
+          <div class="mini-node">Usuario ingresa email/usuario + password</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">validateLogin middleware (sanitizacion)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">checkBruteForce (5 intentos/15min → bloqueo 30min)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Busqueda: email directo O username (regex exacto)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Verificar isActive (baneado → 403)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">bcrypt.compare() → logEvent(LOGIN)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node" style="border-color:rgba(34,211,238,.3)">Retorna JWT (24h) + userData → localStorage</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="node highlight">
+      <div class="node-header">
+        <div class="node-icon pink">🌐</div>
+        <div><div class="node-title">Google OAuth</div><div class="node-subtitle">POST /api/auth/google</div></div>
+      </div>
+      <div class="node-body">
+        <div class="mini-flow">
+          <div class="mini-node">FirebaseInitService carga config desde /api/config</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">signInWithPopup(FirebaseAuth, GoogleProvider)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Obtiene idToken de Firebase</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">POST /api/auth/google { idToken }</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Verificacion: Identity Toolkit API → JWKS fallback</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Find or Create user (password random)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node" style="border-color:rgba(34,211,238,.3)">Retorna JWT + userData</div>
+        </div>
+        <div style="margin-top:8px;font-size:10px;color:var(--text3)">Fallback: si popup bloqueado → signInWithRedirect</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Register + Reset -->
+  <div class="grid-2">
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon lime">📝</div>
+        <div><div class="node-title">Registro</div><div class="node-subtitle">POST /api/auth/register</div></div>
+      </div>
+      <div class="node-body">
+        <div class="mini-flow">
+          <div class="mini-node">validateRegister (name min2, email regex, pass min8, no spaces)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Sanitizacion: strip &lt;&gt;, '";\, $</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Verificar email unique</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">UserModel.create() → bcrypt auto-hash</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">logEvent(REGISTER) + JWT</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon yellow">🔄</div>
+        <div><div class="node-title">Recuperar Contraseña</div><div class="node-subtitle">2 pasos</div></div>
+      </div>
+      <div class="node-body">
+        <div class="mini-flow">
+          <div class="mini-node"><strong>Paso 1:</strong> POST /forgot-password { email }</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Genera codigo de 6 digitos → resetToken (15min expiry)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Retorna codigo en response (sin email service)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node"><strong>Paso 2:</strong> POST /reset-password { email, code, newPassword }</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Verifica codigo + no expirado → update password</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Retorna nuevo JWT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector" style="margin-top:24px"><div class="line"></div></div>
+
+  <!-- JWT Lifecycle -->
+  <div class="node" style="margin-top:16px">
+    <div class="node-header">
+      <div class="node-icon violet">🎫</div>
+      <div><div class="node-title">Ciclo de Vida del JWT</div><div class="node-subtitle">Token-based authentication</div></div>
+    </div>
+    <div class="node-body">
+      <div style="display:flex;gap:20px;flex-wrap:wrap">
+        <div style="flex:1;min-width:200px">
+          <strong style="color:var(--cyan)">Emision:</strong>
+          <ul class="item-list">
+            <li>Register, Login, Google Login</li>
+            <li>Reset Password, Heartbeat (chat)</li>
+          </ul>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <strong style="color:var(--lime)">Payload:</strong>
+          <ul class="item-list">
+            <li><code>{ id: userId }</code></li>
+            <li>Expiry: 86400s (24 horas)</li>
+          </ul>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <strong style="color:var(--violet)">Refresco:</strong>
+          <ul class="item-list">
+            <li>Chat heartbeat cada 30s</li>
+            <li>Devuelve nuevo JWT en response</li>
+          </ul>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <strong style="color:var(--pink)">Validacion:</strong>
+          <ul class="item-list">
+            <li>AuthInterceptor: agrega Bearer header</li>
+            <li>AuthGuard: verifica exp en payload</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PANEL: ROUTES ==================== -->
+<div class="panel" id="panel-routes">
+  <div class="section-title"><span class="dot"></span>Todas las Rutas API</div>
+  <div class="section-desc">44+ endpoints organizados por dominio. Cada ruta tiene middleware de autenticacion y autorizacion por rol.</div>
+
+  <div class="grid-2">
+    <!-- Auth Routes -->
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon cyan">🔐</div>
+        <div><div class="node-title">Auth Routes</div><div class="node-subtitle">/api/auth</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><span class="method post">POST</span> /register <span style="color:var(--text3)">→ validateRegister</span></li>
+          <li><span class="method post">POST</span> /login <span style="color:var(--text3)">→ validateLogin, bruteForce</span></li>
+          <li><span class="method post">POST</span> /google <span style="color:var(--text3)">→ verify idToken</span></li>
+          <li><span class="method get">GET</span> /profile <span style="color:var(--text3)">→ authenticate</span></li>
+          <li><span class="method post">POST</span> /forgot-password</li>
+          <li><span class="method post">POST</span> /reset-password</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Admin Routes -->
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon yellow">⚡</div>
+        <div><div class="node-title">Admin Routes</div><div class="node-subtitle">/api/admin</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><span class="method get">GET</span> /stats <span class="role-badge ad" style="font-size:8px">admin</span></li>
+          <li><span class="method get">GET</span> /activity <span class="role-badge ad" style="font-size:8px">admin</span></li>
+          <li><span class="method post">POST</span> /users <span class="role-badge ad" style="font-size:8px">admin</span></li>
+          <li><span class="method get">GET</span> /users <span class="role-badge ad" style="font-size:8px">admin</span></li>
+          <li><span class="method put">PUT</span> /users/:id/role <span class="role-badge sa" style="font-size:8px">super</span></li>
+          <li><span class="method put">PUT</span> /users/:id <span class="role-badge ad" style="font-size:8px">admin</span></li>
+          <li><span class="method delete">DEL</span> /users/:id <span class="role-badge ad" style="font-size:8px">admin</span></li>
+          <li><span class="method get">GET</span> /analytics <span class="role-badge ad" style="font-size:8px">admin</span></li>
+          <li><span class="method get">GET</span> /logs <span class="role-badge sa" style="font-size:8px">super</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Product Routes -->
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon lime">📦</div>
+        <div><div class="node-title">Product Routes</div><div class="node-subtitle">/api/products</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><span class="method get">GET</span> / <span style="color:var(--text3)">→ publico, activos</span></li>
+          <li><span class="method get">GET</span> /all <span style="color:var(--text3)">→ admin, todos</span></li>
+          <li><span class="method post">POST</span> / <span style="color:var(--text3)">→ admin, multer upload</span></li>
+          <li><span class="method put">PUT</span> /:id <span style="color:var(--text3)">→ admin, multer upload</span></li>
+          <li><span class="method delete">DEL</span> /:id <span style="color:var(--text3)">→ admin</span></li>
+          <li><span class="method post">POST</span> /fix-images <span style="color:var(--text3)">→ admin, util</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Order Routes -->
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon pink">🛒</div>
+        <div><div class="node-title">Order Routes</div><div class="node-subtitle">/api/orders</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><span class="method post">POST</span> / <span style="color:var(--text3)">→ authenticate, crear pedido</span></li>
+          <li><span class="method get">GET</span> / <span style="color:var(--text3)">→ admin, todos los pedidos</span></li>
+          <li><span class="method get">GET</span> /earnings <span style="color:var(--text3)">→ admin, graficas</span></li>
+          <li><span class="method put">PUT</span> /:id/status <span style="color:var(--text3)">→ admin, cambiar estado</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Chat Routes -->
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon violet">💬</div>
+        <div><div class="node-title">Chat Routes</div><div class="node-subtitle">/api/chat</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><span class="method get">GET</span> /conversations</li>
+          <li><span class="method post">POST</span> /conversations</li>
+          <li><span class="method get">GET</span> /conversations/:id/messages</li>
+          <li><span class="method post">POST</span> /conversations/:id/messages</li>
+          <li><span class="method delete">DEL</span> /conversations/:convId/messages/:msgId</li>
+          <li><span class="method post">POST</span> /messages/:msgId/reactions</li>
+          <li><span class="method put">PUT</span> /messages/:msgId/pin</li>
+          <li><span class="method put">PUT</span> /conversations/:id/read</li>
+          <li><span class="method get">GET</span> /users</li>
+          <li><span class="method post">POST</span> /heartbeat</li>
+          <li><span class="method get">GET</span> /online</li>
+          <li><span class="method get">GET</span> /notifications</li>
+          <li><span class="method put">PUT</span> /notifications/:id/read</li>
+          <li><span class="method put">PUT</span> /notifications/read-all</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Client + Profile Routes -->
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon cyan">👤</div>
+        <div><div class="node-title">Client + Profile Routes</div><div class="node-subtitle">/api/cliente + /api/profile</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><span class="method get">GET</span> /cliente/orders <span style="color:var(--text3)">→ mis pedidos</span></li>
+          <li><span class="method get">GET</span> /cliente/purchases <span style="color:var(--text3)">→ mis compras</span></li>
+          <li><span class="method get">GET</span> /profile <span style="color:var(--text3)">→ mi perfil</span></li>
+          <li><span class="method get">GET</span> /profile/:id <span style="color:var(--text3)">→ perfil por ID</span></li>
+          <li><span class="method put">PUT</span> /profile <span style="color:var(--text3)">→ actualizar</span></li>
+          <li><span class="method post">POST</span> /profile/avatar <span style="color:var(--text3)">→ subir avatar</span></li>
+          <li><span class="method get">GET</span> /config <span style="color:var(--text3)">→ Firebase config</span></li>
+          <li><span class="method get">GET</span> /health <span style="color:var(--text3)">→ health check</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PANEL: MODELS ==================== -->
+<div class="panel" id="panel-models">
+  <div class="section-title"><span class="dot"></span>Modelos de Base de Datos</div>
+  <div class="section-desc">6 modelos Mongoose con relaciones. Typegoose ORM para definicion con decorators.</div>
+
+  <div class="schema">
+    <div class="schema-card">
+      <div class="schema-name">👤 User</div>
+      <div class="schema-field"><span>name</span><span class="schema-type">string, required</span></div>
+      <div class="schema-field"><span>email</span><span class="schema-type">string, unique, lowercase</span></div>
+      <div class="schema-field"><span>password</span><span class="schema-type">string, bcrypt hash</span></div>
+      <div class="schema-field"><span>role</span><span class="schema-type">enum: superadmin|admin|cliente</span></div>
+      <div class="schema-field"><span>isActive</span><span class="schema-type">boolean (baneado)</span></div>
+      <div class="schema-field"><span>bio, avatar, discord</span><span class="schema-type">string</span></div>
+      <div class="schema-field"><span>country, phone</span><span class="schema-type">string</span></div>
+      <div class="schema-field"><span>resetToken</span><span class="schema-type">string|null (6 digitos)</span></div>
+      <div class="schema-field"><span>resetTokenExpiry</span><span class="schema-type">Date|null (15min)</span></div>
+    </div>
+
+    <div class="schema-card">
+      <div class="schema-name">📦 Product</div>
+      <div class="schema-field"><span>name</span><span class="schema-type">string, required</span></div>
+      <div class="schema-field"><span>description</span><span class="schema-type">string, required</span></div>
+      <div class="schema-field"><span>category</span><span class="schema-type">string (Free Fire PC, etc)</span></div>
+      <div class="schema-field"><span>prices</span><span class="schema-type">[{ duration, price }]</span></div>
+      <div class="schema-field"><span>stock</span><span class="schema-type">number, default: 999</span></div>
+      <div class="schema-field"><span>isActive</span><span class="schema-type">boolean</span></div>
+      <div class="schema-field"><span>badge, badgeType</span><span class="schema-type">string</span></div>
+      <div class="schema-field"><span>image</span><span class="schema-type">string (path)</span></div>
+      <div class="schema-field"><span>sales</span><span class="schema-type">number (counter)</span></div>
+    </div>
+
+    <div class="schema-card">
+      <div class="schema-name">🛒 Order</div>
+      <div class="schema-field"><span>product</span><span class="schema-type">Ref→Product</span></div>
+      <div class="schema-field"><span>buyer</span><span class="schema-type">Ref→User (optional)</span></div>
+      <div class="schema-field"><span>buyerName, buyerEmail</span><span class="schema-type">string</span></div>
+      <div class="schema-field"><span>planDuration</span><span class="schema-type">string ("7 Dias")</span></div>
+      <div class="schema-field"><span>amount</span><span class="schema-type">number, min: 0</span></div>
+      <div class="schema-field"><span>method</span><span class="schema-type">enum: paypal|binance|transferencia</span></div>
+      <div class="schema-field"><span>status</span><span class="schema-type">enum: pending|completed|cancelled</span></div>
+    </div>
+
+    <div class="schema-card">
+      <div class="schema-name">💬 Message</div>
+      <div class="schema-field"><span>sender</span><span class="schema-type">Ref→User</span></div>
+      <div class="schema-field"><span>content</span><span class="schema-type">string</span></div>
+      <div class="schema-field"><span>type</span><span class="schema-type">text|image|file|system</span></div>
+      <div class="schema-field"><span>conversation</span><span class="schema-type">Ref→Conversation</span></div>
+      <div class="schema-field"><span>replyTo</span><span class="schema-type">Ref→Message (thread)</span></div>
+      <div class="schema-field"><span>reactions</span><span class="schema-type">[{ emoji, user }]</span></div>
+      <div class="schema-field"><span>isPinned, isDeleted</span><span class="schema-type">boolean</span></div>
+      <div class="schema-field"><span>readBy</span><span class="schema-type">string[] (user IDs)</span></div>
+    </div>
+
+    <div class="schema-card">
+      <div class="schema-name">🗨️ Conversation</div>
+      <div class="schema-field"><span>name</span><span class="schema-type">string, required</span></div>
+      <div class="schema-field"><span>type</span><span class="schema-type">direct|group|channel</span></div>
+      <div class="schema-field"><span>members</span><span class="schema-type">string[] (user IDs)</span></div>
+      <div class="schema-field"><span>description</span><span class="schema-type">string</span></div>
+      <div class="schema-field"><span>isActive</span><span class="schema-type">boolean</span></div>
+    </div>
+
+    <div class="schema-card">
+      <div class="schema-name">🔔 Notification</div>
+      <div class="schema-field"><span>user</span><span class="schema-type">Ref→User</span></div>
+      <div class="schema-field"><span>title, message</span><span class="schema-type">string</span></div>
+      <div class="schema-field"><span>type</span><span class="schema-type">info|success|warning|error</span></div>
+      <div class="schema-field"><span>isRead</span><span class="schema-type">boolean</span></div>
+      <div class="schema-field"><span>targetRole</span><span class="schema-type">string (empty=all)</span></div>
+      <div class="schema-field"><span>icon</span><span class="schema-type">string (FontAwesome)</span></div>
+    </div>
+
+    <div class="schema-card">
+      <div class="schema-name">📋 Log</div>
+      <div class="schema-field"><span>event</span><span class="schema-type">LOGIN|REGISTER|LOGIN_FAILED|GOOGLE_LOGIN</span></div>
+      <div class="schema-field"><span>userName, email</span><span class="schema-type">string</span></div>
+      <div class="schema-field"><span>ip</span><span class="schema-type">string (IPv6 cleaned)</span></div>
+      <div class="schema-field"><span>userAgent</span><span class="schema-type">string</span></div>
+      <div class="schema-field"><span>country, city</span><span class="schema-type">string</span></div>
+      <div class="schema-field"><span>success</span><span class="schema-type">boolean</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PANEL: FRONTEND ==================== -->
+<div class="panel" id="panel-frontend">
+  <div class="section-title"><span class="dot"></span>Arquitectura Frontend</div>
+  <div class="section-desc">Angular 15 SPA con lazy loading. HomeComponent actua como shell, cambia secciones con *ngIf.</div>
+
+  <div class="grid-2">
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon cyan">📂</div>
+        <div><div class="node-title">Modulos y Rutas</div></div>
+      </div>
+      <div class="node-body">
+        <div class="mini-flow">
+          <div class="mini-node">AppComponent → router-outlet</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">'' → <strong>HomeModule</strong> (lazy)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">'auth' → <strong>AuthModule</strong> (lazy)</div>
+        </div>
+        <div style="margin-top:12px">
+          <strong style="color:var(--cyan)">AuthModule:</strong>
+          <ul class="item-list">
+            <li>/auth/login → LoginComponent (login+register)</li>
+            <li>/auth/forgot-password → ForgotPasswordComponent</li>
+          </ul>
+          <strong style="color:var(--lime);margin-top:8px;display:block">HomeModule:</strong>
+          <ul class="item-list">
+            <li>/ → HomeComponent (SPA shell)</li>
+            <li>12 child components (dashboard, chat, products...)</li>
+            <li>activeSection controla que se ve</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon lime">🔧</div>
+        <div><div class="node-title">Servicios Angular</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><strong>AuthService</strong> — login, register, googleLogin, logout, user state</li>
+          <li><strong>ApiService</strong> — HTTP wrapper (get, post, put, patch, delete)</li>
+          <li><strong>ChatService</strong> — conversations, messages, reactions, notifications</li>
+          <li><strong>ConfigService</strong> — Firebase config loader (cacheado)</li>
+          <li><strong>FirebaseInitService</strong> — initializeApp + GoogleAuthProvider</li>
+          <li><strong>PanelStateService</strong> — activeSection, sidebar, mobile (BehaviorSubjects)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon violet">🛡️</div>
+        <div><div class="node-title">Guards e Interceptors</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><strong>AuthGuard</strong> — verifica exp del JWT en payload</li>
+          <li><strong>AuthInterceptor</strong> — agrega Authorization: Bearer header</li>
+          <li><strong>ErrorInterceptor</strong> — catch 401 → redirect login</li>
+        </ul>
+        <div style="margin-top:12px">
+          <strong style="color:var(--pink)">Flujo de request:</strong>
+          <div class="mini-flow" style="margin-top:8px">
+            <div class="mini-node">Componente llama ApiService</div>
+            <div class="mini-arrow">↓</div>
+            <div class="mini-node">AuthInterceptor agrega JWT header</div>
+            <div class="mini-arrow">↓</div>
+            <div class="mini-node">Request HTTP al backend</div>
+            <div class="mini-arrow">↓</div>
+            <div class="mini-node">Backend valida JWT + role</div>
+            <div class="mini-arrow">↓</div>
+            <div class="mini-node">Response → ErrorInterceptor catch 401</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon pink">📊</div>
+        <div><div class="node-title">Componentes por Seccion</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><strong>DashboardComponent</strong> — stats cards, Chart.js line+doughnut</li>
+          <li><strong>ProductsComponent</strong> — CRUD + drag-drop image upload</li>
+          <li><strong>OrdersComponent</strong> — admin order list</li>
+          <li><strong>EarningsComponent</strong> — Chart.js line chart + transactions</li>
+          <li><strong>UsersComponent</strong> — CRUD + role management + modals</li>
+          <li><strong>AnalyticsComponent</strong> — line+bar+doughnut charts</li>
+          <li><strong>ChatComponent</strong> — DM+channels, reactions, pin, polling</li>
+          <li><strong>NotificationsComponent</strong> — notification list</li>
+          <li><strong>ProfileComponent</strong> — edit profile + avatar</li>
+          <li><strong>SettingsComponent</strong> — display-only settings</li>
+          <li><strong>LogsComponent</strong> — audit logs + 5s polling</li>
+          <li><strong>CmdComponent</strong> — terminal emulator (superadmin)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PANEL: SECURITY ==================== -->
+<div class="panel" id="panel-security">
+  <div class="section-title"><span class="dot"></span>Capas de Seguridad</div>
+  <div class="section-desc">Proteccion multi-capa: Helmet, Rate Limiting, Brute Force, Input Sanitization, Attack Pattern Blocking.</div>
+
+  <div class="grid-2">
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon red">🛡️</div>
+        <div><div class="node-title">Helmet + Headers</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li>Content Security Policy (CSP) — permite tailwind, FontAwesome, Google Fonts</li>
+          <li>Strict-Transport-Security (HSTS)</li>
+          <li>X-Content-Type-Options: nosniff</li>
+          <li>X-Frame-Options: DENY</li>
+          <li>X-XSS-Protection: 1; mode=block</li>
+          <li>Referrer-Policy: strict-origin</li>
+          <li>Permissions-Policy restricciones</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon yellow">⏱️</div>
+        <div><div class="node-title">Rate Limiting</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><strong>Global:</strong> 100 requests / 15 min por IP</li>
+          <li><strong>Auth endpoints:</strong> 10 requests / 15 min por IP</li>
+          <li><strong>Admin endpoints:</strong> 60 requests / 60s por IP</li>
+          <li>IPv6 compatible (ipKeyGenerator)</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon pink">🔒</div>
+        <div><div class="node-title">Brute Force Protection</div></div>
+      </div>
+      <div class="node-body">
+        <div class="mini-flow">
+          <div class="mini-node">Intento de login fallido</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Incrementar contador IP en memoria</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node"><strong>5 intentos / 15 min</strong> → Bloquear IP</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Bloqueo dura <strong>30 minutos</strong></div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Cleanup automatico cada 10 min</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon violet">🧹</div>
+        <div><div class="node-title">Input Sanitization</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><strong>express-mongo-sanitize:</strong> reemplaza $ y . por _</li>
+          <li><strong>hpp:</strong> HTTP parameter pollution protection</li>
+          <li><strong>Custom:</strong> strip &lt;&gt;, '";\, $ de inputs</li>
+          <li><strong>Validation:</strong> email regex, password min/max, name length</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="node" style="grid-column:1/-1">
+      <div class="node-header">
+        <div class="node-icon red">🚫</div>
+        <div><div class="node-title">Attack Pattern Blocking</div><div class="node-subtitle">Bloquea request que coincidan con patrones de ataque</div></div>
+      </div>
+      <div class="node-body">
+        <div style="display:flex;gap:20px;flex-wrap:wrap">
+          <div style="flex:1;min-width:200px">
+            <strong style="color:var(--red)">Path Traversal:</strong>
+            <ul class="item-list">
+              <li>\.\./  \.\.\%2f  %2e%2e%2f</li>
+              <li>\.\.\\  \.\.\%5c</li>
+            </ul>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <strong style="color:var(--red)">SQL Injection:</strong>
+            <ul class="item-list">
+              <li>union.*select, select.*from</li>
+              <li>insert.*into, delete.*from</li>
+              <li>drop.*table, update.*set</li>
+            </ul>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <strong style="color:var(--red)">XSS:</strong>
+            <ul class="item-list">
+              <li>&lt;script, javascript:</li>
+              <li>onload=, onerror=, onclick=</li>
+            </ul>
+          </div>
+          <div style="flex:1;min-width:200px">
+            <strong style="color:var(--red)">Command Injection:</strong>
+            <ul class="item-list">
+              <li>cmd=, exec=, system(</li>
+              <li>passthru, shell_exec</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PANEL: REALTIME ==================== -->
+<div class="panel" id="panel-realtime">
+  <div class="section-title"><span class="dot"></span>Sistema Real-Time (Polling)</div>
+  <div class="section-desc">No usa WebSockets. Todo funciona con HTTP polling a intervalos variables.</div>
+
+  <div class="grid-2">
+    <div class="node highlight">
+      <div class="node-header">
+        <div class="node-icon cyan">💬</div>
+        <div><div class="node-title">Chat Polling</div><div class="node-subtitle">3 intervalos simultaneos</div></div>
+      </div>
+      <div class="node-body">
+        <div class="mini-flow">
+          <div class="mini-node" style="border-color:rgba(34,211,238,.3)">
+            <strong>cada 30s</strong> → POST /chat/heartbeat<br>
+            <span style="font-size:10px;color:var(--text3)">Refresca JWT + marca usuario online</span>
+          </div>
+          <div class="mini-arrow">+ 30s</div>
+          <div class="mini-node" style="border-color:rgba(163,230,53,.3)">
+            <strong>cada 5s</strong> → GET /chat/conversations<br>
+            <span style="font-size:10px;color:var(--text3)">Recarga lista (unread counts, last message)</span>
+          </div>
+          <div class="mini-arrow">+ 5s</div>
+          <div class="mini-node" style="border-color:rgba(167,139,250,.3)">
+            <strong>cada 2s</strong> → GET /chat/conversations/:id/messages<br>
+            <span style="font-size:10px;color:var(--text3)">Detecta nuevos mensajes por diff de IDs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="node highlight">
+      <div class="node-header">
+        <div class="node-icon yellow">📋</div>
+        <div><div class="node-title">Logs Polling</div><div class="node-subtitle">Superadmin only</div></div>
+      </div>
+      <div class="node-body">
+        <div class="mini-flow">
+          <div class="mini-node" style="border-color:rgba(250,204,21,.3)">
+            <strong>cada 5s</strong> → GET /admin/logs?since=timestamp<br>
+            <span style="font-size:10px;color:var(--text3)">Carga nuevos logs desde ultima consulta</span>
+          </div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Filtra duplicados por _id</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Prepende a la lista (max 100)</div>
+          <div class="mini-arrow">↓</div>
+          <div class="mini-node">Actualiza lastTimestamp</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon lime">🟢</div>
+        <div><div class="node-title">Online Status</div><div class="node-subtitle">In-memory tracking</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li>Almacenado en <code>Map&lt;userId, { lastSeen }&gt;</code> en memoria del servidor</li>
+          <li>Se actualiza en: heartbeat, conversation list fetch</li>
+          <li>Expuesto via GET /chat/online</li>
+          <li>Cada conversation incluye <code>memberDetails[].isOnline</code></li>
+          <li>No persiste en DB — se pierde al reiniciar servidor</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="node">
+      <div class="node-header">
+        <div class="node-icon violet">📡</div>
+        <div><div class="node-title">Seed Data en Startup</div><div class="node-subtitle">Datos iniciales automaticos</div></div>
+      </div>
+      <div class="node-body">
+        <ul class="item-list">
+          <li><strong>ensureSuperAdmin():</strong> si no hay superadmin, promueve al primer admin</li>
+          <li><strong>seedProducts():</strong> si DB vacia, crea 5 productos (Panel VIP, Bypass, Proxy...)</li>
+          <li><strong>patchProductImages():</strong> asegura que Bypass APK tenga imagen</li>
+          <li><strong>seedChatData():</strong> crea 4 canales (general, soporte, anuncios, off-topic) + 6 notificaciones</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showPanel(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleExpand(node) {
+  const body = node.querySelector('.node-body');
+  const expandBtn = node.querySelector('.node-expand');
+  if (body.classList.contains('collapsed')) {
+    body.classList.remove('collapsed');
+    if (expandBtn) expandBtn.textContent = 'Ver menos ▴';
+    node.classList.add('expanded');
+  } else {
+    body.classList.add('collapsed');
+    if (expandBtn) expandBtn.textContent = 'Ver mas ▾';
+    node.classList.remove('expanded');
+  }
+}
+
+function filterNodes() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.node').forEach(node => {
+    const text = node.textContent.toLowerCase();
+    node.style.display = text.includes(query) ? '' : 'none';
+  });
+}
+
+// Auto-collapse long node bodies on load
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.node-body').forEach(body => {
+    if (body.scrollHeight > 200) {
+      body.classList.add('collapsed');
+      const expand = body.parentElement.querySelector('.node-expand');
+      if (expand) expand.style.display = 'inline-block';
+    }
+  });
+});
+</script>
+
+</body>
+</html>

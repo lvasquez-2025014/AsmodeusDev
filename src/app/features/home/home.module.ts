@@ -14,6 +14,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { LogsComponent } from './components/logs/logs.component';
 import { CmdComponent } from './components/cmd/cmd.component';
+import { ThreeBgComponent } from './components/three-bg/three-bg.component';
 
 const routes: Routes = [{ path: '', component: HomeComponent }];
 
@@ -32,6 +33,7 @@ const routes: Routes = [{ path: '', component: HomeComponent }];
     ProfileComponent,
     LogsComponent,
     CmdComponent,
+    ThreeBgComponent,
   ],
   imports: [SharedModule, RouterModule.forChild(routes)],
 })
