@@ -11,6 +11,11 @@
           <span class="logo-subtitle">Tienda Oficial</span>
         </div>
       </div>
+      <nav class="guest-nav">
+        <a class="guest-nav-link" href="#productos">Productos</a>
+        <a class="guest-nav-link" href="#ventajas">Ventajas</a>
+        <a class="guest-nav-link" href="#opiniones">Opiniones</a>
+      </nav>
       <div class="guest-header-actions">
         <a routerLink="/auth/login" class="guest-login-btn">
           <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
@@ -21,6 +26,7 @@
 
   <!-- Hero Section -->
   <section class="guest-hero">
+    <div class="hero-grid-bg"></div>
     <div class="hero-particles">
       <span class="particle"></span>
       <span class="particle"></span>
@@ -30,25 +36,91 @@
       <span class="particle"></span>
       <span class="particle"></span>
       <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
+      <span class="particle"></span>
     </div>
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
     <div class="guest-hero-inner">
-      <span class="hero-badge">PANEL FREE FIRE</span>
+      <span class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        PANEL FREE FIRE
+      </span>
       <h1 class="hero-title">Productos <span class="text-gradient-brand">Premium</span> para Free Fire</h1>
       <p class="hero-subtitle">Herramientas de alto rendimiento con precios imbatibles. Precios desde $1.</p>
+      <div class="hero-cta-group">
+        <a routerLink="/auth/login" class="hero-cta-primary">
+          <span>Explorar Productos</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a routerLink="/auth/login" class="hero-cta-secondary">
+          Crear Cuenta Gratis
+        </a>
+      </div>
       <div class="hero-badges">
         <span class="hero-feature"><i class="fas fa-shield-alt"></i> Seguros</span>
         <span class="hero-feature"><i class="fas fa-bolt"></i> Entrega Instantánea</span>
         <span class="hero-feature"><i class="fas fa-headset"></i> Soporte 24/7</span>
       </div>
     </div>
+    <div class="hero-scroll-indicator">
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Features / Ventajas Section -->
+  <section class="guest-features" id="ventajas">
+    <div class="guest-features-inner">
+      <div class="features-header">
+        <span class="features-eyebrow">POR QUE ELEGIRNOS</span>
+        <h2 class="features-title">La mejor experiencia en <span class="text-gradient-brand">herramientas</span></h2>
+        <p class="features-subtitle">Ofrecemos soluciones de alto rendimiento con la calidad que mereces</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon-wrap cyan">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="feature-title">100% Seguro</h3>
+          <p class="feature-desc">Todas nuestras herramientas pasan por rigurosos controles de seguridad antes de ser ofrecidas.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap lime">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <h3 class="feature-title">Entrega Instantánea</h3>
+          <p class="feature-desc">Recibe tu producto al instante después de confirmar tu pago. Sin esperas innecesarias.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap pink">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h3 class="feature-title">Soporte 24/7</h3>
+          <p class="feature-desc">Equipo disponible a cualquier hora para ayudarte con cualquier duda o problema.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon-wrap violet">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <h3 class="feature-title">Precios Desde $1</h3>
+          <p class="feature-desc">Accede a herramientas premium sin romper tu presupuesto. Calidad accesible para todos.</p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Products Grid -->
-  <section class="guest-products">
+  <section class="guest-products" id="productos">
     <div class="guest-products-inner">
-      <h2 class="section-title">Nuestros Productos</h2>
+      <div class="products-header">
+        <span class="products-eyebrow">CATALOGO</span>
+        <h2 class="section-title">Nuestros Productos</h2>
+        <p class="products-subtitle">Herramientas seleccionadas para ofrecerte la mejor experiencia</p>
+      </div>
       <div class="guest-products-grid">
-        <div class="guest-product-card" *ngFor="let product of products">
+        <div class="guest-product-card" *ngFor="let product of products; let i = index">
           <div class="guest-product-image">
             <img *ngIf="product.image" [src]="imageUrl + product.image" [alt]="product.name" class="guest-product-img" />
             <div *ngIf="!product.image" class="guest-product-img-placeholder">
@@ -56,25 +128,104 @@
             </div>
             <span class="badge" [ngClass]="'badge-' + product.badgeType">{{ product.badge }}</span>
           </div>
-          <h3 class="guest-product-name">{{ product.name }}</h3>
-          <p class="guest-product-desc">{{ product.description }}</p>
-          <div class="guest-product-prices" *ngIf="product.prices.length > 0">
-            <div class="guest-price-row" *ngFor="let p of product.prices">
-              <span class="guest-price-duration">{{ p.duration }}</span>
-              <span class="guest-price-value">${{ p.price }}</span>
+          <div class="guest-product-body">
+            <h3 class="guest-product-name">{{ product.name }}</h3>
+            <p class="guest-product-desc">{{ product.description }}</p>
+            <div class="guest-product-prices" *ngIf="product.prices.length > 0">
+              <div class="guest-price-row" *ngFor="let p of product.prices">
+                <span class="guest-price-duration">{{ p.duration }}</span>
+                <span class="guest-price-value">${{ p.price }}</span>
+              </div>
             </div>
+            <div class="guest-product-prices" *ngIf="product.prices.length === 0">
+              <span class="price-soon">Próximamente</span>
+            </div>
+            <button class="guest-buy-btn" *ngIf="product.prices.length > 0" (click)="buyProduct(product)">
+              <i class="fas fa-shopping-cart"></i> Comprar Ahora
+            </button>
+            <button class="guest-buy-btn disabled" *ngIf="product.prices.length === 0" disabled>
+              Próximamente
+            </button>
           </div>
-          <div class="guest-product-prices" *ngIf="product.prices.length === 0">
-            <span class="price-soon">Próximamente</span>
-          </div>
-          <button class="guest-buy-btn" *ngIf="product.prices.length > 0" (click)="buyProduct(product)">
-            <i class="fas fa-shopping-cart"></i> Comprar Ahora
-          </button>
-          <button class="guest-buy-btn disabled" *ngIf="product.prices.length === 0" disabled>
-            Próximamente
-          </button>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="guest-testimonials" id="opiniones">
+    <div class="guest-testimonials-inner">
+      <div class="testimonials-header">
+        <span class="testimonials-eyebrow">OPINIONES</span>
+        <h2 class="testimonials-title">Lo que dicen nuestros <span class="text-gradient-brand">clientes</span></h2>
+        <p class="testimonials-subtitle">Miles de clientes satisfechos confían en nosotros</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p class="testimonial-text">"Excelente servicio, entrega rápida y soporte muy profesional. Totalmente recomendado."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">C</div>
+            <div>
+              <span class="testimonial-name">Carlos M.</span>
+              <span class="testimonial-role">Cliente VIP</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card featured">
+          <div class="testimonial-stars">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p class="testimonial-text">"El mejor panel que he usado. Los precios son imbatibles y la calidad es insuperable. Llevo meses siendo cliente y nunca me ha fallado."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar featured-avatar">A</div>
+            <div>
+              <span class="testimonial-name">Andrea L.</span>
+              <span class="testimonial-role">Cliente Diamond</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#fbbf24" stroke="#fbbf24" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <p class="testimonial-text">"Muy fácil de usar y el soporte técnico es increíble. Resuelven todo rapidísimo."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">M</div>
+            <div>
+              <span class="testimonial-name">Miguel R.</span>
+              <span class="testimonial-role">Cliente</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="guest-cta-section">
+    <div class="guest-cta-inner">
+      <div class="cta-glow"></div>
+      <h2 class="cta-title">¿Listo para empezar?</h2>
+      <p class="cta-subtitle">Crea tu cuenta gratuita y accede a todas nuestras herramientas premium</p>
+      <a routerLink="/auth/login" class="cta-button">
+        <span>Crear Cuenta Gratis</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
     </div>
   </section>
 
