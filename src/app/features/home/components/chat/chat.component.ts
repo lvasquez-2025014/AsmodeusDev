@@ -3,6 +3,7 @@ import { ChatService } from '@core/services/chat.service';
 import { AuthService } from '@core/services/auth.service';
 import { ApiService } from '@core/services/api.service';
 import { Conversation, Message, Notification, User } from '@models/index';
+import { gsap } from 'gsap';
 
 @Component({
   selector: 'app-chat',
@@ -54,6 +55,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadChat();
     this.loadNotifications();
+    setTimeout(() => this.animateChat(), 500);
 
     this.heartbeatInterval = setInterval(() => {
       if (this.auth.isLoggedIn) {
@@ -83,6 +85,30 @@ export class ChatComponent implements OnInit, OnDestroy {
     if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
     if (this.refreshInterval) clearInterval(this.refreshInterval);
     if (this.msgPollInterval) clearInterval(this.msgPollInterval);
+  }
+
+  private animateChat(): void {
+    gsap.from('.chat-sidebar', {
+      x: -30,
+      opacity: 0,
+      duration: 0.6,
+      ease: 'power3.out',
+    });
+    gsap.from('.chat-main', {
+      y: 20,
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power3.out',
+      delay: 0.2,
+    });
+    gsap.from('.chat-conversation-item', {
+      x: -15,
+      opacity: 0,
+      duration: 0.3,
+      stagger: 0.04,
+      ease: 'power3.out',
+      delay: 0.4,
+    });
   }
 
   loadChat(): void {

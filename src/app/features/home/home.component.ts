@@ -266,6 +266,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
     setTimeout(() => {
       this.loading = false;
+      if (!this.isGuest) {
+        this.animateSidebar();
+      }
     }, 1500);
 
     if (this.isGuest) {
@@ -432,6 +435,38 @@ export class HomeComponent implements OnInit, OnDestroy {
         trigger: '.guest-cta-inner',
         start: 'top 85%',
       }
+    });
+  }
+
+  private animateSidebar(): void {
+    gsap.from('.sidebar-logo', {
+      x: -30,
+      opacity: 0,
+      duration: 0.6,
+      ease: 'power3.out',
+      delay: 0.3,
+    });
+    gsap.from('.nav-item', {
+      x: -20,
+      opacity: 0,
+      duration: 0.4,
+      stagger: 0.04,
+      ease: 'power3.out',
+      delay: 0.5,
+    });
+    gsap.from('.sidebar-user', {
+      y: 20,
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power3.out',
+      delay: 0.9,
+    });
+    gsap.from('.topbar', {
+      y: -20,
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power3.out',
+      delay: 0.4,
     });
   }
 

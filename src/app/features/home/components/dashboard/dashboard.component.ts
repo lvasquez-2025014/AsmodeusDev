@@ -3,6 +3,7 @@ import { ApiService } from '@core/services/api.service';
 import { AuthService } from '@core/services/auth.service';
 import { Chart, registerables } from 'chart.js';
 import { StatsCard, TopProduct, ActivityItem } from '@models/index';
+import { gsap } from 'gsap';
 
 Chart.register(...registerables);
 
@@ -75,11 +76,49 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.initCharts(), 100);
+    setTimeout(() => {
+      this.initCharts();
+      this.animateDashboard();
+    }, 100);
   }
 
   ngOnDestroy(): void {
     this.destroyCharts();
+  }
+
+  private animateDashboard(): void {
+    gsap.from('.dash-metric-card', {
+      y: 30,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.1,
+      ease: 'power3.out',
+      delay: 0.2,
+    });
+    gsap.from('.dash-section-card', {
+      y: 40,
+      opacity: 0,
+      duration: 0.7,
+      stagger: 0.15,
+      ease: 'power3.out',
+      delay: 0.5,
+    });
+    gsap.from('.dash-product-row', {
+      x: -20,
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.08,
+      ease: 'power3.out',
+      delay: 0.8,
+    });
+    gsap.from('.dash-activity-item', {
+      x: -20,
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.08,
+      ease: 'power3.out',
+      delay: 1.0,
+    });
   }
 
   loadStats(): void {

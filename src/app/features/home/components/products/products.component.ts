@@ -4,6 +4,7 @@ import { AuthService } from '@core/services/auth.service';
 import { ApiService } from '@core/services/api.service';
 import { environment } from '@env/environment';
 import { Product } from '@models/index';
+import { gsap } from 'gsap';
 
 @Component({
   selector: 'app-products',
@@ -62,8 +63,26 @@ export class ProductsComponent implements OnInit {
             priceTo: p.prices?.length > 0 ? Math.max(...p.prices.map((pr: any) => pr.price)) : 0,
           }));
         }
+        setTimeout(() => this.animateProducts(), 100);
       },
       error: () => {}
+    });
+  }
+
+  private animateProducts(): void {
+    gsap.from('.section-header', {
+      y: 20,
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power3.out',
+    });
+    gsap.from('.product-card', {
+      y: 40,
+      opacity: 0,
+      duration: 0.6,
+      stagger: 0.08,
+      ease: 'power3.out',
+      delay: 0.2,
     });
   }
 

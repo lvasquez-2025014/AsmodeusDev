@@ -254,6 +254,7 @@
 
 <!-- ==================== DASHBOARD VIEW (logged in) ==================== -->
 <div *ngIf="!isGuest" class="dashboard-layout">
+  <app-dashboard-bg></app-dashboard-bg>
   <div class="mobile-overlay" [class.active]="mobileMenuOpen" (click)="toggleMobileMenu()"></div>
 
   <!-- Loading Screen -->

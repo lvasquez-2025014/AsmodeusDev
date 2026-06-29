@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { AuthService } from '@core/services/auth.service';
 import { ApiService } from '@core/services/api.service';
 import { PanelStateService } from '@core/services/panel-state.service';
+import { gsap } from 'gsap';
 
 @Component({
   selector: 'app-users',
@@ -117,8 +118,36 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   loadUsers(): void {
     this.api.get<any>('admin/users').subscribe({
-      next: (res) => { this.allUsers = (res.data || []); },
+      next: (res) => {
+        this.allUsers = (res.data || []);
+        setTimeout(() => this.animateUsers(), 100);
+      },
       error: (err) => { console.error('[UsersComponent] Error loading users:', err); }
+    });
+  }
+
+  private animateUsers(): void {
+    gsap.from('.us-header', {
+      y: 20,
+      opacity: 0,
+      duration: 0.5,
+      ease: 'power3.out',
+    });
+    gsap.from('.us-stats-row .us-stat-card', {
+      y: 30,
+      opacity: 0,
+      duration: 0.5,
+      stagger: 0.08,
+      ease: 'power3.out',
+      delay: 0.2,
+    });
+    gsap.from('.us-user-row', {
+      x: -20,
+      opacity: 0,
+      duration: 0.4,
+      stagger: 0.05,
+      ease: 'power3.out',
+      delay: 0.5,
     });
   }
 
