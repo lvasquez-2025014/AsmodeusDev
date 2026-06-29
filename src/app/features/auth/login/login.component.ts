@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
-import { gsap } from 'gsap';
 
 @Component({
   selector: 'app-login',
@@ -49,54 +48,6 @@ export class LoginComponent implements OnInit {
       if (data) {
         this.router.navigate(['/']);
       }
-    });
-    this.animateEntry();
-  }
-
-  private animateEntry(): void {
-    gsap.from('.form-panel', {
-      y: 40,
-      opacity: 0,
-      duration: 0.8,
-      ease: 'power3.out',
-      delay: 0.1,
-    });
-    gsap.from('.benefit-pill', {
-      x: -30,
-      opacity: 0,
-      duration: 0.6,
-      stagger: 0.1,
-      ease: 'power3.out',
-      delay: 0.3,
-    });
-    gsap.from('.input-glow', {
-      y: 15,
-      opacity: 0,
-      duration: 0.5,
-      stagger: 0.1,
-      ease: 'power3.out',
-      delay: 0.6,
-    });
-    gsap.from('.glow-btn', {
-      y: 20,
-      opacity: 0,
-      duration: 0.5,
-      ease: 'power3.out',
-      delay: 0.9,
-    });
-    gsap.from('.divider-line', {
-      scaleX: 0,
-      opacity: 0,
-      duration: 0.5,
-      ease: 'power3.out',
-      delay: 1.0,
-    });
-    gsap.from('.google-btn', {
-      y: 20,
-      opacity: 0,
-      duration: 0.5,
-      ease: 'power3.out',
-      delay: 1.1,
     });
   }
 
