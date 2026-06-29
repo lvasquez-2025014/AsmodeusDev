@@ -30,6 +30,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   activeGuestSection = '';
   private clockInterval: any;
   private scrollListener: any;
+  private cursorListener: any;
 
   get isClient(): boolean { return this.user?.role === 'cliente'; }
   get isAdmin(): boolean { return this.user?.role === 'admin' || this.user?.role === 'superadmin'; }
@@ -276,12 +277,21 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.initScrollAnimations();
       }, 500);
     }
+
+    this.cursorListener = (e: MouseEvent) => {
+      document.documentElement.style.setProperty('--cursor-x', e.clientX + 'px');
+      document.documentElement.style.setProperty('--cursor-y', e.clientY + 'px');
+    };
+    document.addEventListener('mousemove', this.cursorListener, { passive: true });
   }
 
   ngOnDestroy(): void {
     if (this.clockInterval) clearInterval(this.clockInterval);
     if (this.scrollListener) {
       window.removeEventListener('scroll', this.scrollListener);
+    }
+    if (this.cursorListener) {
+      document.removeEventListener('mousemove', this.cursorListener);
     }
     ScrollTrigger.getAll().forEach(t => t.kill());
   }

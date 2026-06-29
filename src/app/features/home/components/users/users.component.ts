@@ -326,15 +326,6 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   trackByToastId(_index: number, t: any): number { return t.id; }
 
-  onUsCardMove(event: MouseEvent, index: number): void {
-    const cards = document.querySelectorAll('.us-card');
-    if (cards[index]) {
-      const rect = cards[index].getBoundingClientRect();
-      (cards[index] as HTMLElement).style.setProperty('--mouse-x', ((event.clientX - rect.left) / rect.width) * 100 + '%');
-      (cards[index] as HTMLElement).style.setProperty('--mouse-y', ((event.clientY - rect.top) / rect.height) * 100 + '%');
-    }
-  }
-
   showUsToast(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
     const id = ++this.usToastId;
     this.usToasts.push({ id, message, type, _removing: false });

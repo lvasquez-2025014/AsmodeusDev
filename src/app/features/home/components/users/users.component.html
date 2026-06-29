@@ -102,8 +102,7 @@
         <!-- Users Grid -->
         <div class="us-grid" *ngIf="filteredUsers.length > 0">
           <div class="us-card" *ngFor="let u of filteredUsers; trackBy: trackByUserId; let i = index"
-               [class.us-entering]="u._new"
-               (mousemove)="onUsCardMove($event, i)">
+               [class.us-entering]="u._new">
             <div class="us-card-inner">
               <div class="us-card-top">
                 <div class="us-avatar-wrap">

@@ -430,22 +430,10 @@ $text-muted: #64748b;
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
   }
 
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(168, 85, 247, 0.08), transparent 50%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-  }
-
   &:hover {
     border-color: rgba(168, 85, 247, 0.2);
     box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.6), 0 0 30px -10px rgba(168, 85, 247, 0.15);
     transform: translateY(-4px);
-
-    &::after { opacity: 1; }
   }
 }
 

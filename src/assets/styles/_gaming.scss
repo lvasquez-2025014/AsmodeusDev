@@ -109,3 +109,56 @@ html { scroll-behavior: smooth; }
 ::-webkit-scrollbar-track { background: $bg-dark; }
 ::-webkit-scrollbar-thumb { background: $neon-pink; border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: $neon-orange; }
+
+// ═══════════════ GLOBAL CURSOR GLOW ═══════════════
+:root {
+  --cursor-x: 50%;
+  --cursor-y: 50%;
+}
+
+.glow-card,
+.dash-metric-card,
+.dash-section-card,
+.feature-card,
+.guest-product-card,
+.testimonial-card,
+.product-card,
+.us-card,
+.us-stat-card,
+.kpi-card,
+.earnings-chart-card,
+.earnings-tx-card,
+.analytics-kpi-card,
+.analytics-chart-card,
+.cyber-config-card,
+.cyber-profile-card,
+.rank-hero-card,
+.rank-tier-card,
+.rank-info-card,
+.purchase-stat-card,
+.purchases-list-card,
+.bank-details-card,
+.card,
+.modal-content.card {
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      600px circle at var(--cursor-x) var(--cursor-y),
+      rgba(168, 85, 247, 0.1),
+      transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+}
