@@ -279,8 +279,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     this.cursorListener = (e: MouseEvent) => {
-      document.documentElement.style.setProperty('--cursor-x', e.clientX + 'px');
-      document.documentElement.style.setProperty('--cursor-y', e.clientY + 'px');
+      const glow = document.getElementById('cursor-glow');
+      if (glow) {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+      }
     };
     document.addEventListener('mousemove', this.cursorListener, { passive: true });
   }
